@@ -35,35 +35,35 @@ import "./styles.css";
 const modules = [
   {
     image: "/assets/module-welcome.png",
-    title: "1. Willkommen",
-    text: "Das Unternehmen kennenlernen",
+    title: "1. Willkommen im Haus",
+    text: "Hotel, Team und Wege kennenlernen",
     progress: 100,
     status: "done"
   },
   {
     image: "/assets/module-safety.png",
-    title: "2. Sicherheit am Arbeitsplatz",
-    text: "Wichtige Regeln und Verhalten",
+    title: "2. Zimmer & Hygiene",
+    text: "Hausstandard Schritt für Schritt",
     progress: 60
   },
   {
     image: "/assets/module-machine.png",
-    title: "3. Maschinen & Geräte",
-    text: "Grundlagen und Bedienung",
+    title: "3. Wäsche & Geräte",
+    text: "Abläufe sicher bedienen",
     progress: 0,
     status: "play"
   },
   {
     image: "/assets/module-process.png",
-    title: "4. Arbeitsprozesse",
-    text: "Schritt für Schritt erklärt",
+    title: "4. Rezeption & Systeme",
+    text: "Buchungen und Übergaben",
     progress: 0,
     status: "locked"
   },
   {
     image: "/assets/module-team.png",
-    title: "5. Kommunikation im Team",
-    text: "Wichtige Sätze und Fachbegriffe",
+    title: "5. Team & Gäste",
+    text: "Sätze, Kontakte und Notfälle",
     progress: 0,
     status: "locked"
   }
@@ -123,8 +123,8 @@ function Sidebar() {
           <Building2 size={24} />
         </div>
         <div>
-          <strong>Demo GmbH</strong>
-          <span>Gemeinsam mehr erreichen.</span>
+          <strong>Hotel Alpenblick</strong>
+          <span>Wissen bleibt im Haus.</span>
         </div>
       </div>
     </aside>
@@ -152,7 +152,7 @@ function Topbar() {
           <div className="avatar">MY</div>
           <div>
             <strong>Maria Yılmaz</strong>
-            <span>Produktion</span>
+            <span>Housekeeping</span>
           </div>
           <ChevronDown size={16} />
         </div>
@@ -167,9 +167,9 @@ function Hero() {
       <div className="hero-copy">
         <h1>
           Willkommen bei <br />
-          WorkLingo, <span>Maria!</span>
+          Hotel Alpenblick, <span>Maria!</span>
         </h1>
-        <p>Lerne deinen Arbeitsplatz. In deiner Sprache. Schritt für Schritt - in deinem Tempo.</p>
+        <p>Lerne Zimmerstandards, Rezeption und Teamwege. In deiner Sprache. Schritt für Schritt.</p>
         <div className="hero-actions">
           <button className="primary-btn">
             Weiter lernen
@@ -177,7 +177,7 @@ function Hero() {
           </button>
           <button className="secondary-btn">
             <Play size={17} />
-            Einführung anschauen
+            Hausstandard anschauen
           </button>
         </div>
       </div>
@@ -307,10 +307,10 @@ function ChatPanel() {
   const [question, setQuestion] = useState("");
   const [quickReply, setQuickReply] = useState("");
   const prompts = [
-    "Wie melde ich mich krank?",
-    "Was mache ich bei einer Störung?",
-    "Wo finde ich meine Arbeitskleidung?",
-    "Wer ist mein Vorgesetzter?"
+    "Wie reinige ich Zimmer 203?",
+    "Was mache ich bei einer Gastbeschwerde?",
+    "Wo finde ich die Wäschekammer?",
+    "Wer ist heute an der Rezeption?"
   ];
 
   function handleSubmit(event) {
@@ -336,10 +336,10 @@ function ChatPanel() {
             <MoreVertical size={20} />
           </button>
         </div>
-        <p className="chat-intro">Frage alles rund um deinen Job, das Unternehmen oder deine Aufgaben.</p>
+        <p className="chat-intro">Frage alles rund um Zimmerstandards, Rezeption, Gäste oder deine Aufgaben.</p>
         <div className="conversation">
           <div className="message outgoing">
-            Wo finde ich das Formular für Krankmeldung?
+            Wie bereite ich ein Zimmer nach Abreise vor?
             <time>10:24</time>
           </div>
           <div className="answer-row">
@@ -347,14 +347,14 @@ function ChatPanel() {
               <Bot size={18} />
             </div>
             <div className="message incoming">
-              <p>Das Formular für die Krankmeldung findest du im Mitarbeiterportal unter "Personal" → "Formulare" → "Krankmeldung".</p>
-              <p>Hier ist der direkte Link:</p>
+              <p>Öffne das Modul "Zimmer & Hygiene". Dort findest du die Checkliste für Abreisezimmer: lüften, Bad prüfen, Bettwäsche wechseln und Minibar melden.</p>
+              <p>Hier ist der direkte Ablauf:</p>
               <a className="document-link" href="#">
                 <FileText size={18} />
-                Krankmeldung (PDF)
+                Abreisezimmer-Checkliste
                 <ExternalLink size={15} />
               </a>
-              <p>Wenn du Fragen zum Ablauf hast, kann ich dir das auch Schritt für Schritt erklären.</p>
+              <p>Ich kann dir jeden Schritt auch auf Slowakisch, Türkisch oder Englisch erklären.</p>
               <time>10:24</time>
             </div>
           </div>
@@ -397,9 +397,9 @@ function ChatPanel() {
           </button>
         </div>
         <div className="terms">
-          <div><b>DE</b><span>die Maschine</span></div>
-          <div><b>TR</b><span>makine</span></div>
-          <div><b>EN</b><span>machine</span></div>
+          <div><b>DE</b><span>das Zimmer</span></div>
+          <div><b>SK</b><span>izba</span></div>
+          <div><b>EN</b><span>room</span></div>
           <Zap size={15} fill="currentColor" />
         </div>
       </section>
