@@ -96,8 +96,8 @@ export function recordAnswer(state, exerciseId, quality, now = Date.now()) {
 }
 
 /** Lektion abschliessen: XP gutschreiben, Streak setzen, Bestwert merken. */
-export function completeLesson(state, lessonId, { xp, perfect }, now = Date.now()) {
-  const prev = state.lessons[lessonId] || { completed: false, timesDone: 0, perfect: false };
+export function completeLesson(state, lessonId, { xp, stars = 0, ms = 0 }, now = Date.now()) {
+  const prev = state.lessons[lessonId] || { completed: false, timesDone: 0, stars: 0, bestMs: 0 };
   const next = {
     ...state,
     xp: (state.xp || 0) + xp,
@@ -106,7 +106,9 @@ export function completeLesson(state, lessonId, { xp, perfect }, now = Date.now(
       [lessonId]: {
         completed: true,
         timesDone: prev.timesDone + 1,
-        perfect: prev.perfect || perfect,
+        // Bestwerte behalten: ein schlechterer Durchlauf nimmt nichts weg
+        stars: Math.max(prev.stars || 0, stars),
+        bestMs: prev.bestMs ? Math.min(prev.bestMs, ms) : ms,
         lastDone: now
       }
     }

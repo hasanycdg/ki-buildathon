@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { BedDouble, Check, Clock, ConciergeBell, Flame, Heart, SprayCan, Star, Trophy, UtensilsCrossed } from "lucide-react";
+import { BedDouble, Check, Clock, Flag, ConciergeBell, Flame, Heart, SprayCan, Star, Trophy, UtensilsCrossed } from "lucide-react";
 import { ROLES, getRole } from "./tasks/index.js";
+import { stagesOf, formatTime, STAR_TEXT } from "./stages.js";
 import { LANGS, t } from "./i18n.js";
 import * as store from "./store.js";
-import TaskPlayer from "./TaskPlayer.jsx";
+import TaskPlayer, { Stars } from "./TaskPlayer.jsx";
 import "./learn.css";
 
 const ICONS = { BedDouble, ConciergeBell, UtensilsCrossed, SprayCan };
@@ -32,6 +33,11 @@ const UI = {
                pl: "Rozwiązałeś poprawnie każdy krok.", hr: "Riješio si svaki korak točno.",
                sr: "Rešio si svaki korak tačno." },
   steps:     { de: "Schritte", en: "steps", pl: "kroki", hr: "koraci", sr: "koraci" },
+  stagesN:   { de: "Etappen", en: "stages", pl: "etapy", hr: "etape", sr: "etape" },
+  time:      { de: "Zeit", en: "Time", pl: "Czas", hr: "Vrijeme", sr: "Vreme" },
+  best:      { de: "Bestzeit", en: "Best", pl: "Najlepszy", hr: "Najbolje", sr: "Najbolje" },
+  backList:  { de: "Zurück zur Übersicht", en: "Back to the list", pl: "Powrót do listy",
+               hr: "Natrag na popis", sr: "Nazad na listu" },
   cont:      { de: "Weiter", en: "Continue", pl: "Dalej", hr: "Dalje", sr: "Dalje" }
 };
 
@@ -102,13 +108,15 @@ function Done({ result, lang, onClose }) {
     <div className="lt-done">
       <div className="lt-done-card">
         <span className="lt-done-badge"><Trophy size={34} color="#fff" /></span>
-        <h2>{t(result.perfect ? UI.perfect : UI.doneT, lang)}</h2>
-        <p>{t(result.perfect ? UI.perfectS : UI.doneS, lang)}</p>
+        <h2>{t(result.stars === 5 ? UI.perfect : UI.doneT, lang)}</h2>
+        <Stars n={result.stars} size={34} />
+        <p>{t(STAR_TEXT[result.stars], lang)}</p>
         <div className="lt-done-stats">
           <div><b>+{result.xp}</b><span>XP</span></div>
+          <div><b>{formatTime(result.ms)}</b><span>{t(UI.time, lang)}</span></div>
           <div><b>{result.steps}</b><span>{t(UI.steps, lang)}</span></div>
         </div>
-        <button type="button" onClick={onClose}>{t(UI.cont, lang)}</button>
+        <button type="button" onClick={onClose}>{t(UI.backList, lang)}</button>
       </div>
     </div>
   );
@@ -138,12 +146,10 @@ export default function LearnTab() {
       <TaskPlayer
         task={active}
         lang={lang}
-        hearts={state.hearts.count}
-        onHeartLost={() => setState((s) => store.loseHeart(s))}
-        onAnswered={(id, quality) => setState((s) => store.recordAnswer(s, id, quality))}
-        onFinish={({ xp, perfect, steps }) => {
-          setState((s) => store.completeLesson(s, active.id, { xp, perfect }));
-          setResult({ xp, perfect, steps });
+        onFinish={({ stars, mistakes, resets, ms, steps }) => {
+          const xp = 10 + stars * 8;
+          setState((s) => store.completeLesson(s, active.id, { xp, stars, ms }));
+          setResult({ xp, stars, mistakes, resets, ms, steps });
           setActive(null);
         }}
         onQuit={() => setActive(null)}
@@ -158,7 +164,9 @@ export default function LearnTab() {
           onSwitch={() => setState((s) => ({ ...s, roleId: null }))} />
         <h2 className="lt-section">{t(UI.yourTasks, lang)}</h2>
         {role.tasks.map((task, i) => {
-          const done = Boolean(state.lessons[task.id]?.completed);
+          const rec = state.lessons[task.id];
+          const done = Boolean(rec?.completed);
+          const nStages = stagesOf(task).length;
           return (
             <button key={task.id} type="button" className={"lt-task" + (done ? " done" : "")}
               onClick={() => setActive(task)}>
@@ -166,8 +174,12 @@ export default function LearnTab() {
               <span className="lt-task-main">
                 <strong>{t(task.title, lang)}</strong>
                 <span>{t(task.goal, lang)}</span>
+                {done && <Stars n={rec.stars} size={15} />}
               </span>
-              <span className="lt-task-meta"><Clock size={14} /> {task.minutes} {t(UI.min, lang)}</span>
+              <span className="lt-task-meta">
+                <span><Flag size={13} /> {nStages} {t(UI.stagesN, lang)}</span>
+                <span><Clock size={13} /> {done && rec.bestMs ? formatTime(rec.bestMs) : task.minutes + " " + t(UI.min, lang)}</span>
+              </span>
             </button>
           );
         })}

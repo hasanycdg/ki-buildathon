@@ -8,6 +8,7 @@
  */
 import { ROLES } from "./tasks/index.js";
 import { missingTranslations, LANG_CODES, t } from "./i18n.js";
+import { stagesOf } from "./stages.js";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -46,9 +47,26 @@ for (const role of ROLES) {
     if (ids.has(task.id)) fail(where, "doppelte Taetigkeits-ID");
     ids.add(task.id);
     if (typeof task.minutes !== "number") fail(where, "minutes fehlt oder ist keine Zahl");
-    if (!task.steps?.length) fail(where, "keine Schritte");
+    const stages = stagesOf(task);
+    if (!task.stages) warn.push(`${where}: noch keine Etappen — laeuft als EINE Etappe`);
+    if (task.stages) {
+      if (stages.length < 2 || stages.length > 4) fail(where, `${stages.length} Etappen (erlaubt 2-4)`);
+      const sids = new Set();
+      stages.forEach((st, si) => {
+        if (!st.goal) fail(where, `Etappe ${si + 1}: Lernziel fehlt`);
+        if (sids.has(st.id)) fail(where, `doppelte Etappen-ID ${st.id}`);
+        sids.add(st.id);
+        const n = st.steps?.length || 0;
+        if (n < 1) fail(where, `Etappe ${si + 1} ist leer`);
+        if (n > 3) fail(where, `Etappe ${si + 1} hat ${n} Schritte — Wiederholung waere zu lang`);
+        if (si === 0 && st.steps?.[0]?.type === "demo" && n > 1)
+          fail(where, "Etappe 1: die Vorfuehrung muss allein stehen");
+      });
+    }
+    const flat = stages.flatMap((st) => st.steps || []);
+    if (!flat.length) fail(where, "keine Schritte");
 
-    for (const [i, step] of (task.steps || []).entries()) {
+    for (const [i, step] of flat.entries()) {
       steps++;
       const w = `${where}#${i}(${step.type})`;
 
@@ -119,7 +137,7 @@ for (const role of ROLES) {
 console.log(`Rollen: ${ROLES.length} | Taetigkeiten: ${tasks} | Schritte: ${steps} | Sprachen: ${LANG_CODES.join(", ")}`);
 for (const role of ROLES) {
   console.log(`  ${String(t(role.name, "de")).padEnd(22)} ${role.tasks.length} Taetigkeiten: ` +
-    role.tasks.map((x) => x.steps.length + " Schr.").join(", "));
+    role.tasks.map((x) => stagesOf(x).length + " Et.").join(", "));
 }
 if (warn.length) { console.log("\nHinweise:"); warn.forEach((w) => console.log("  ~ " + w)); }
 if (problems.length) {

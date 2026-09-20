@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Check, ChevronLeft, ChevronRight, Heart, Play, Pause, RotateCcw, X } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Clock, Flag, Heart, Play, Pause, RotateCcw, Star, Target, X } from "lucide-react";
 import * as Scenes from "./scenes/index.js";
 import { createQueue, current, answer, isComplete, progress, qualityOf } from "./queue.js";
 import { t, tList } from "./i18n.js";
+import { stagesOf, starsFor, formatTime, STAR_TEXT } from "./stages.js";
 
 
 /* Feste Oberflaechentexte — dieselbe Struktur wie die Inhalte. */
@@ -29,6 +30,28 @@ const ORDER_H = { de: "Tippe die Schritte in der richtigen Reihenfolge an",
                   en: "Tap the steps in the right order", pl: "Dotknij kroków we właściwej kolejności",
                   hr: "Dodirni korake ispravnim redoslijedom", sr: "Dodirni korake ispravnim redosledom" };
 
+
+const STAGE     = { de: "Etappe", en: "Stage", pl: "Etap", hr: "Etapa", sr: "Etapa" };
+const GOAL      = { de: "Dein Lernziel", en: "Your learning goal", pl: "Twój cel",
+                    hr: "Tvoj cilj učenja", sr: "Tvoj cilj učenja" };
+const START     = { de: "Los geht's", en: "Let's go", pl: "Zaczynamy", hr: "Idemo", sr: "Idemo" };
+const STAGE_OK  = { de: "Etappe geschafft", en: "Stage complete", pl: "Etap zaliczony",
+                    hr: "Etapa završena", sr: "Etapa završena" };
+const SAVED     = { de: "Gespeichert. Ab hier geht es weiter, wenn die Herzen ausgehen.",
+                    en: "Saved. If your hearts run out, you continue from here.",
+                    pl: "Zapisane. Jeśli skończą się serca, wrócisz tutaj.",
+                    hr: "Spremljeno. Ako ti ponestane srca, nastavljaš odavde.",
+                    sr: "Sačuvano. Ako ti ponestane srca, nastavljaš odavde." };
+const NO_HEARTS = { de: "Herzen alle", en: "Out of hearts", pl: "Koniec serc",
+                    hr: "Nema više srca", sr: "Nema više srca" };
+const RESET_MSG = { de: "Du gehst zurück an den Anfang dieser Etappe. Was du davor geschafft hast, bleibt dir.",
+                    en: "You go back to the start of this stage. What you finished before stays yours.",
+                    pl: "Wracasz na początek tego etapu. To, co zrobiłeś wcześniej, zostaje.",
+                    hr: "Vraćaš se na početak ove etape. Ono što si prije završio, ostaje tvoje.",
+                    sr: "Vraćaš se na početak ove etape. Ono što si pre završio, ostaje tvoje." };
+const RETRY_ST  = { de: "Etappe wiederholen", en: "Retry stage", pl: "Powtórz etap",
+                    hr: "Ponovi etapu", sr: "Ponovi etapu" };
+
 const SCENES = {
   bed: Scenes.BedScene, room: Scenes.RoomScene, bath: Scenes.BathScene,
   reception: Scenes.ReceptionScene, buffet: Scenes.BuffetScene, lobby: Scenes.LobbyScene
@@ -43,6 +66,20 @@ function shuffle(list, seed) {
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
+}
+
+
+function Stars({ n, size = 26 }) {
+  return (
+    <div className="tp-stars" aria-label={n + " von 5 Sternen"}>
+      {[1, 2, 3, 4, 5].map((i) => (
+        <Star key={i} size={size} fill={i <= n ? "#f5b93b" : "none"}
+          color={i <= n ? "#f5b93b" : "#cfdaec"}
+          style={{ animationDelay: (i * 90) + "ms" }}
+          className={i <= n ? "on" : ""} />
+      ))}
+    </div>
+  );
 }
 
 /* ============================================ Vorfuehrung mit Animation */
@@ -161,7 +198,7 @@ function Hotspot({ step, found, setFound, miss, setMiss, locked, lang }) {
 function Sequence({ step, value, setValue, locked, lang }) {
   const labels = useMemo(() => tList(step.steps, lang), [step, lang]);
   const pool = useMemo(() => shuffle(labels, labels.join("").length * 53), [labels]);
-  const picked = value || [];
+  const picked = Array.isArray(value) ? value : [];
   return (
     <>
       <ol className="tp-seq-line">
@@ -188,11 +225,12 @@ function Sequence({ step, value, setValue, locked, lang }) {
 /* ================================================= Entscheidung */
 
 function Decide({ step, value, setValue, locked, lang }) {
+  const chosen = typeof value === "number" ? value : null;
   return (
     <div className="tp-options">
       {tList(step.options, lang).map((opt, i) => (
         <button key={i} type="button" disabled={locked}
-          className={"tp-option" + (value === i ? " selected" : "")}
+          className={"tp-option" + (chosen === i ? " selected" : "")}
           onClick={() => setValue(i)}>{opt}</button>
       ))}
     </div>
@@ -202,7 +240,7 @@ function Decide({ step, value, setValue, locked, lang }) {
 /* ================================================= Checkliste */
 
 function Checklist({ step, value, setValue, locked, lang }) {
-  const picked = value || [];
+  const picked = Array.isArray(value) ? value : [];
   return (
     <div className="tp-options">
       {step.items.map((item, i) => {
@@ -224,19 +262,19 @@ function Checklist({ step, value, setValue, locked, lang }) {
 
 export function stepAnswered(step, value, found) {
   if (step.type === "hotspot") return found.length === step.spots.length;
-  if (step.type === "sequence") return (value || []).length === step.steps.length;
-  if (step.type === "checklist") return (value || []).length > 0;
-  if (step.type === "decide") return value !== null && value !== undefined;
+  if (step.type === "sequence") return Array.isArray(value) && value.length === step.steps.length;
+  if (step.type === "checklist") return Array.isArray(value) && value.length > 0;
+  if (step.type === "decide") return typeof value === "number";
   return true;
 }
 
 export function stepCorrect(step, value, found, lang = "de") {
   if (step.type === "hotspot") return found.length === step.spots.length;
-  if (step.type === "sequence") return (value || []).join("|") === tList(step.steps, lang).join("|");
+  if (step.type === "sequence") return Array.isArray(value) && value.join("|") === tList(step.steps, lang).join("|");
   if (step.type === "decide") return value === step.answer;
   if (step.type === "checklist") {
     const want = step.items.map((it, i) => (it.correct ? i : null)).filter((x) => x !== null);
-    const got = [...(value || [])].sort((a, b) => a - b);
+    const got = [...(Array.isArray(value) ? value : [])].sort((a, b) => a - b);
     return got.join(",") === want.join(",");
   }
   return true;
@@ -248,33 +286,176 @@ function promptOf(step, lang) {
 
 /* ================================================= Der Player */
 
-export default function TaskPlayer({ task, hearts, lang, onHeartLost, onAnswered, onFinish, onQuit }) {
-  const interactive = task.steps.filter((s) => s.type !== "demo");
-  const [demoIndex, setDemoIndex] = useState(task.steps[0]?.type === "demo" ? 0 : -1);
-  const [queue, setQueue] = useState(() => createQueue(interactive));
+export default function TaskPlayer({ task, lang, onFinish, onQuit }) {
+  const stages = useMemo(() => stagesOf(task), [task]);
+
+  const [stageIndex, setStageIndex] = useState(0);
+  const [phase, setPhase] = useState("intro");   // intro | play | stagedone | lost
+  const [queue, setQueue] = useState(() => createQueue(stages[0].steps));
+  const [demoIndex, setDemoIndex] = useState(-1);
   const [value, setValue] = useState(null);
   const [found, setFound] = useState([]);
   const [miss, setMiss] = useState(0);
   const [feedback, setFeedback] = useState(null);
-  const [firstTry, setFirstTry] = useState(0);
 
+  const [hearts, setHearts] = useState(5);
+  const [mistakes, setMistakes] = useState(0);
+  const [resets, setResets] = useState(0);
+
+  const startedAt = useRef(Date.now());
+  const [elapsed, setElapsed] = useState(0);
+
+  // Laufende Zeit im Kopf
+  useEffect(() => {
+    const id = setInterval(() => setElapsed(Date.now() - startedAt.current), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const stage = stages[stageIndex];
   const entry = current(queue);
   const step = entry?.exercise;
   const locked = feedback !== null;
 
   useEffect(() => { setValue(null); setFound([]); setMiss(0); }, [step, entry?.attempts]);
 
-  // Zuerst die Vorfuehrung, danach die interaktiven Schritte
-  if (demoIndex >= 0) {
-    const demo = task.steps[demoIndex];
+  /** Startet eine Etappe (neu oder nach Rueckwurf). */
+  function beginStage(index) {
+    const st = stages[index];
+    setQueue(createQueue(st.steps));
+    setDemoIndex(st.steps[0]?.type === "demo" ? 0 : -1);
+    setFeedback(null);
+    setValue(null);
+    setFound([]);
+    setPhase("play");
+  }
+
+  function loseHeart() {
+    setMistakes((m) => m + 1);
+    setHearts((h) => Math.max(0, h - 1));
+  }
+
+  // Der Rueckwurf gehoert in einen Effekt, nicht in den State-Updater:
+  // Updater muessen frei von Seiteneffekten sein, sonst geht der Wechsel
+  // unter Umstaenden verloren.
+  useEffect(() => {
+    if (hearts === 0 && phase === "play") setPhase("lost");
+  }, [hearts, phase]);
+
+  /* ---------------------------------------------------------- Kopfzeile */
+  const stageProgress = (stageIndex + progress(queue)) / stages.length;
+  const head = (
+    <header className="tp-head">
+      <button type="button" className="tp-quit" onClick={onQuit} aria-label="Verlassen"><X size={22} /></button>
+      <div className="tp-bar" role="progressbar" aria-valuenow={Math.round(stageProgress * 100)}>
+        <span style={{ width: Math.round(stageProgress * 100) + "%" }} />
+      </div>
+      <div className="tp-timer"><Clock size={16} /> {formatTime(elapsed)}</div>
+      <div className="tp-hearts">
+        {[1, 2, 3, 4, 5].map((i) => (
+          <Heart key={i} size={17} fill={i <= hearts ? "#e0405d" : "none"}
+            color={i <= hearts ? "#e0405d" : "#d7dfec"} />
+        ))}
+      </div>
+    </header>
+  );
+
+  /* ------------------------------------------------- Etappen-Ansage */
+  if (phase === "intro") {
     return (
       <div className="tp">
-        <header className="tp-head">
-          <button type="button" className="tp-quit" onClick={onQuit} aria-label="Verlassen"><X size={22} /></button>
-          <div className="tp-title"><strong>{t(task.title, lang)}</strong><span>{t(demo.title, lang)}</span></div>
-          <div className="tp-hearts"><Heart size={19} fill="#e0405d" color="#e0405d" /><b>{hearts}</b></div>
-        </header>
-        <div className="tp-body"><Demo step={demo} lang={lang} onDone={() => setDemoIndex(-1)} /></div>
+        {head}
+        <div className="tp-body tp-center">
+          <div className="tp-stage-card">
+            <span className="tp-stage-no">{t(STAGE, lang)} {stageIndex + 1} / {stages.length}</span>
+            <h2>{t(task.title, lang)}</h2>
+            <div className="tp-goal">
+              <Target size={20} />
+              <div>
+                <strong>{t(GOAL, lang)}</strong>
+                <p>{t(stage.goal, lang)}</p>
+              </div>
+            </div>
+            <button type="button" className="tp-action ok" onClick={() => beginStage(stageIndex)}>
+              {t(START, lang)}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* --------------------------------------------------- Herzen leer */
+  if (phase === "lost") {
+    return (
+      <div className="tp">
+        {head}
+        <div className="tp-body tp-center">
+          <div className="tp-stage-card lost">
+            <span className="tp-lost-icon"><Heart size={34} color="#fff" /></span>
+            <h2>{t(NO_HEARTS, lang)}</h2>
+            <p>{t(RESET_MSG, lang)}</p>
+            <div className="tp-goal">
+              <Flag size={20} />
+              <div>
+                <strong>{t(STAGE, lang)} {stageIndex + 1}</strong>
+                <p>{t(stage.goal, lang)}</p>
+              </div>
+            </div>
+            <button type="button" className="tp-action bad"
+              onClick={() => { setResets((r) => r + 1); setHearts(5); beginStage(stageIndex); }}>
+              {t(RETRY_ST, lang)}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* --------------------------------------------- Etappe geschafft */
+  if (phase === "stagedone") {
+    const last = stageIndex === stages.length - 1;
+    return (
+      <div className="tp">
+        {head}
+        <div className="tp-body tp-center">
+          <div className="tp-stage-card done">
+            <span className="tp-stage-badge"><Check size={30} color="#fff" /></span>
+            <h2>{t(STAGE_OK, lang)}</h2>
+            <p>{t(SAVED, lang)}</p>
+            <button type="button" className="tp-action ok" onClick={() => {
+              if (last) {
+                onFinish({
+                  stars: starsFor({ mistakes, resets }),
+                  mistakes, resets, ms: Date.now() - startedAt.current,
+                  steps: stages.reduce((n, st) => n + st.steps.length, 0)
+                });
+              } else {
+                setStageIndex(stageIndex + 1);
+                setPhase("intro");
+              }
+            }}>
+              {last ? t(NEXT, lang) : t(START, lang)}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* --------------------------------------------------- Vorfuehrung */
+  if (demoIndex >= 0) {
+    const demo = stage.steps[demoIndex];
+    return (
+      <div className="tp">
+        {head}
+        <div className="tp-body">
+          <Demo step={demo} lang={lang} onDone={() => {
+            setDemoIndex(-1);
+            const rest = stage.steps.filter((x) => x.type !== "demo");
+            if (rest.length === 0) setPhase("stagedone");
+            else setQueue(createQueue(rest));
+          }} />
+        </div>
       </div>
     );
   }
@@ -284,36 +465,29 @@ export default function TaskPlayer({ task, hearts, lang, onHeartLost, onAnswered
   function check() {
     if (!stepAnswered(step, value, found) || locked) return;
     const correct = stepCorrect(step, value, found, lang);
-    if (!correct) onHeartLost();
+    if (!correct) loseHeart();
     setFeedback({ correct, explain: t(step.explain, lang) });
   }
 
   function next() {
     const result = answer(queue, feedback.correct);
-    if (result.finished) {
-      onAnswered(task.id + ":" + result.finished.exercise.type, qualityOf(result.finished));
-      if (result.finished.firstTry) setFirstTry((c) => c + 1);
-    }
     setFeedback(null);
-    if (isComplete(result.queue)) {
-      onFinish({ xp: 15 + interactive.length * 5, perfect: firstTry + 1 === queue.total, steps: queue.total });
-      return;
-    }
+    // Antwortzustand sofort leeren: sonst sieht die naechste Aufgabe fuer
+    // einen Render lang noch den Wert der vorigen (Zahl statt Liste -> Absturz).
+    setValue(null);
+    setFound([]);
+    setMiss(0);
+    if (isComplete(result.queue)) { setPhase("stagedone"); return; }
     setQueue(result.queue);
   }
 
-  const pct = Math.round(progress(queue) * 100);
-
   return (
     <div className="tp">
-      <header className="tp-head">
-        <button type="button" className="tp-quit" onClick={onQuit} aria-label="Verlassen"><X size={22} /></button>
-        <div className="tp-bar"><span style={{ width: pct + "%" }} /></div>
-        <div className="tp-hearts"><Heart size={19} fill={hearts > 0 ? "#e0405d" : "none"} color="#e0405d" /><b>{hearts}</b></div>
-      </header>
-
+      {head}
       <div className="tp-body">
-        <p className="tp-kicker">{!entry.firstTry ? t(RETRY, lang) : t(task.title, lang)}</p>
+        <p className="tp-kicker">
+          {t(STAGE, lang)} {stageIndex + 1} · {!entry.firstTry ? t(RETRY, lang) : t(stage.goal, lang)}
+        </p>
         <h2 className="tp-prompt">{promptOf(step, lang)}</h2>
 
         {step.type === "hotspot" && <Hotspot step={step} found={found} setFound={setFound} miss={miss} setMiss={setMiss} locked={locked} lang={lang} />}
@@ -339,3 +513,5 @@ export default function TaskPlayer({ task, hearts, lang, onHeartLost, onAnswered
     </div>
   );
 }
+
+export { Stars };
