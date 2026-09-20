@@ -22,7 +22,10 @@ import {
   Globe2,
   Home,
   LayoutDashboard,
+  Lock,
+  Monitor,
   MessageCircle,
+  Moon,
   MoreHorizontal,
   MoreVertical,
   Paperclip,
@@ -35,6 +38,7 @@ import {
   Sparkles,
   SprayCan,
   Star,
+  Sun,
   Trophy,
   UserPlus,
   UserRoundCheck,
@@ -560,10 +564,11 @@ function Sidebar({ activeTab, onTabChange }) {
           <Building2 size={20} />
           <span>Unternehmen</span>
         </button>
-        <a className="nav-item" href="#">
+        <button className={activeTab === "settings" ? "nav-item active" : "nav-item"}
+          type="button" onClick={() => onTabChange("settings")}>
           <Settings size={20} />
           <span>Einstellungen</span>
-        </a>
+        </button>
       </nav>
 
       <div className="company">
@@ -1813,11 +1818,64 @@ function QuickHelpWorkspace({ threads, setThreads, activeThreadId, setActiveThre
   );
 }
 
+function SettingsPage({ theme, setTheme, language, setLanguage, reducedMotion, setReducedMotion }) {
+  const themeOptions = [
+    ["light", "Hell", "Helle Oberfläche", Sun],
+    ["dark", "Dunkel", "Dunkle Oberfläche", Moon],
+    ["system", "System", "Geräteeinstellung", Monitor]
+  ];
+  const languages = [["de", "Deutsch"], ["en", "English"], ["pl", "Polski"], ["hr", "Hrvatski"], ["sr", "Srpski"]];
+
+  return (
+    <div className="content-grid tab-grid settings-grid">
+      <section className="tab-page settings-page">
+        <div className="tab-heading"><h1>Einstellungen</h1><p>Darstellung und Sprache für deinen Arbeitsplatz.</p></div>
+        <section className="settings-card">
+          <div className="settings-card-head"><div className="settings-icon"><Sun size={19} /></div><div><h2>Darstellung</h2><p>Wähle, wie WorkLingo aussehen soll.</p></div></div>
+          <div className="theme-choice" role="radiogroup" aria-label="Darstellung auswählen">
+            {themeOptions.map(([id, label, description, Icon]) => <button type="button" key={id} role="radio" aria-checked={theme === id} className={theme === id ? "active" : ""} onClick={() => setTheme(id)}><Icon size={19} /><strong>{label}</strong><span>{description}</span>{theme === id && <i><Check size={12} /></i>}</button>)}
+          </div>
+        </section>
+        <section className="settings-card">
+          <div className="settings-card-head"><div className="settings-icon"><Globe2 size={19} /></div><div><h2>Sprache</h2><p>Für Menüs und Hinweise in WorkLingo.</p></div></div>
+          <label className="settings-select"><span>App-Sprache</span><select value={language} onChange={(event) => setLanguage(event.target.value)}>{languages.map(([code, label]) => <option key={code} value={code}>{label}</option>)}</select></label>
+        </section>
+        <section className="settings-card settings-row"><div><h2>Weniger Bewegung</h2><p>Reduziert Animationen in der Oberfläche.</p></div><button type="button" className={`settings-switch ${reducedMotion ? "on" : ""}`} role="switch" aria-checked={reducedMotion} onClick={() => setReducedMotion(!reducedMotion)}><i /><span>{reducedMotion ? "An" : "Aus"}</span></button></section>
+      </section>
+    </div>
+  );
+}
+
 function App() {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [theme, setTheme] = useState(() => localStorage.getItem("worklingo-theme") || "system");
+  const [language, setLanguage] = useState(() => localStorage.getItem("worklingo-language") || "de");
+  const [reducedMotion, setReducedMotion] = useState(() => localStorage.getItem("worklingo-reduced-motion") === "true");
   const [quickHelpMessages, setQuickHelpMessages] = useState([]);
   const [quickHelpThreads, setQuickHelpThreads] = useState([]);
   const [activeQuickHelpThreadId, setActiveQuickHelpThreadId] = useState(null);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const applyTheme = () => {
+      const dark = theme === "dark" || (theme === "system" && media.matches);
+      document.documentElement.dataset.theme = dark ? "dark" : "light";
+    };
+    applyTheme();
+    media.addEventListener("change", applyTheme);
+    localStorage.setItem("worklingo-theme", theme);
+    return () => media.removeEventListener("change", applyTheme);
+  }, [theme]);
+
+  useEffect(() => {
+    document.documentElement.lang = language;
+    localStorage.setItem("worklingo-language", language);
+  }, [language]);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("reduced-motion", reducedMotion);
+    localStorage.setItem("worklingo-reduced-motion", String(reducedMotion));
+  }, [reducedMotion]);
 
   return (
     <div className="app-shell">
@@ -1833,6 +1891,12 @@ function App() {
           setQuickHelpThreads={setQuickHelpThreads}
           activeQuickHelpThreadId={activeQuickHelpThreadId}
           setActiveQuickHelpThreadId={setActiveQuickHelpThreadId}
+          theme={theme}
+          setTheme={setTheme}
+          language={language}
+          setLanguage={setLanguage}
+          reducedMotion={reducedMotion}
+          setReducedMotion={setReducedMotion}
         />
       </main>
     </div>
@@ -1847,7 +1911,13 @@ function TabContent({
   quickHelpThreads,
   setQuickHelpThreads,
   activeQuickHelpThreadId,
-  setActiveQuickHelpThreadId
+  setActiveQuickHelpThreadId,
+  theme,
+  setTheme,
+  language,
+  setLanguage,
+  reducedMotion,
+  setReducedMotion
 }) {
   if (activeTab === "quickhelp") {
     return (
@@ -1874,6 +1944,10 @@ function TabContent({
 
   if (activeTab === "unternehmen") {
     return <AdminPanel />;
+  }
+
+  if (activeTab === "settings") {
+    return <SettingsPage theme={theme} setTheme={setTheme} language={language} setLanguage={setLanguage} reducedMotion={reducedMotion} setReducedMotion={setReducedMotion} />;
   }
 
   if (activeTab === "fortschritt") {

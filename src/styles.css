@@ -2708,3 +2708,27 @@ h2 {
   color: #7a4b00;
   background: #ffeecc;
 }
+
+/* Einstellungen */
+.settings-grid { max-width: 780px; }
+.settings-page { gap: 14px; }
+.settings-card { padding: 18px; border: 1px solid #dce5f1; border-radius: 14px; background: #fff; box-shadow: 0 8px 26px rgba(24,49,96,.05); }
+.settings-card-head { display: flex; align-items: center; gap: 11px; margin-bottom: 16px; }
+.settings-icon { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; color: #1765ff; background: #edf4ff; }
+.settings-card h2, .settings-card p { margin: 0; }.settings-card h2 { color: #17284b; font-size: 14px; }.settings-card p { margin-top: 3px; color: #71809a; font-size: 10.5px; }
+.theme-choice { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.theme-choice button { position: relative; display: grid; justify-items: start; gap: 4px; min-height: 94px; padding: 13px; border: 1px solid #dae3ef; border-radius: 11px; color: #65748d; background: #fbfcfe; text-align: left; cursor: pointer; }
+.theme-choice button svg { color: #7183a1; }.theme-choice button strong { color: #243757; font-size: 11.5px; }.theme-choice button span { font-size: 9.5px; }.theme-choice button.active { border-color: #76a0f2; background: #edf4ff; }.theme-choice button.active svg, .theme-choice button.active strong { color: #1765ff; }
+.theme-choice button i { position: absolute; top: 9px; right: 9px; display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; color: #fff; background: #1765ff; }
+.settings-select { display: grid; gap: 7px; color: #435571; font-size: 10.5px; font-weight: 800; }.settings-select select { width: 100%; height: 42px; padding: 0 11px; border: 1px solid #d7e1ee; border-radius: 9px; outline: 0; color: #263956; background: #fbfcfe; font: inherit; font-size: 11.5px; }.settings-select select:focus { border-color: #75a0f6; box-shadow: 0 0 0 3px #e9f0ff; }
+.settings-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; }.settings-switch { display: inline-flex; align-items: center; gap: 7px; padding: 4px 8px 4px 5px; border: 0; border-radius: 99px; color: #71809a; background: #eef2f7; font-size: 10px; font-weight: 800; cursor: pointer; }.settings-switch i { width: 25px; height: 25px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(21,42,79,.18); transition: transform .2s ease; }.settings-switch.on { color: #1765ff; background: #dce9ff; }.settings-switch.on i { transform: translateX(18px); background: #1765ff; }
+
+html[data-theme="dark"] { color-scheme: dark; --text: #e7edf9; --muted: #9daec8; --soft: #1d2a40; --line: #31425d; --panel: #162238; --blue-dark: #eef4ff; background: #0e1625; }
+html[data-theme="dark"] .app-shell { background: radial-gradient(circle at 44% 0%, rgba(63,108,205,.18), transparent 33%), linear-gradient(180deg,#111b2d,#0e1625); }
+html[data-theme="dark"] .sidebar, html[data-theme="dark"] .topbar { border-color: #273751; background: rgba(18,29,48,.88); }
+html[data-theme="dark"] .brand strong, html[data-theme="dark"] .company strong, html[data-theme="dark"] .nav-item, html[data-theme="dark"] .nav-item svg, html[data-theme="dark"] .tab-heading h1 { color: #e8effc; }
+html[data-theme="dark"] .nav-item.active { color: #8db4ff; background: #1c3155; } html[data-theme="dark"] .nav-item.active svg { color: #8db4ff; fill: #8db4ff; }
+html[data-theme="dark"] .settings-card { border-color: #2c3e5a; background: #162238; box-shadow: none; } html[data-theme="dark"] .settings-card h2, html[data-theme="dark"] .theme-choice button strong { color: #ebf2ff; } html[data-theme="dark"] .settings-card p, html[data-theme="dark"] .settings-select { color: #a7b7cf; }
+html[data-theme="dark"] .settings-icon, html[data-theme="dark"] .theme-choice button.active { background: #1c3155; } html[data-theme="dark"] .theme-choice button { border-color: #2e405c; color: #9eafc8; background: #1a2941; } html[data-theme="dark"] .theme-choice button.active { border-color: #4b7ed8; } html[data-theme="dark"] .settings-select select { border-color: #2e405c; color: #e7eefb; background: #1a2941; }
+html.reduced-motion *, html.reduced-motion *::before, html.reduced-motion *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+@media (max-width: 620px) { .theme-choice { grid-template-columns: 1fr; }.settings-row { align-items: flex-start; flex-direction: column; } }
