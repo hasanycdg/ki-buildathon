@@ -211,9 +211,127 @@
   .lp-prompt { font-size: 20px; }
   .lp-term { font-size: 24px; }
 }
-
-/* Navigation ist jetzt ein <button> — Button-Defaults zuruecksetzen */
-.nav-item { width: 100%; font: inherit; text-align: left; background: none; cursor: pointer; }
-.content-single { padding: 0 34px 40px; }
-@media (max-width: 720px) { .content-single { padding: 0 16px 32px; } }
 .lp-match-slots { display: block; font-size: 11.5px; color: var(--muted); margin-top: 4px; font-weight: 600; }
+
+/* ==================================================== Aufgaben-Player */
+.tp { position: fixed; inset: 0; background: #fff; display: flex; flex-direction: column; z-index: 70; }
+.tp-head { display: flex; align-items: center; gap: 16px; padding: 16px 24px; border-bottom: 1px solid var(--line); }
+.tp-quit { background: none; border: none; color: var(--muted); cursor: pointer; display: grid; place-items: center; }
+.tp-title { flex: 1; }
+.tp-title strong { display: block; font-size: 15px; }
+.tp-title span { font-size: 13px; color: var(--muted); }
+.tp-bar { flex: 1; height: 13px; background: #e8eef9; border-radius: 999px; overflow: hidden; }
+.tp-bar span { display: block; height: 100%; background: var(--green); border-radius: 999px; transition: width .3s ease; }
+.tp-hearts { display: inline-flex; align-items: center; gap: 6px; color: #e0405d; font-weight: 700; }
+
+.tp-body { flex: 1; overflow-y: auto; padding: 22px 24px 28px; max-width: 680px; margin: 0 auto; width: 100%; }
+.tp-kicker { color: var(--muted); font-size: 13px; font-weight: 600; margin: 0 0 6px; }
+.tp-prompt { font-size: 22px; line-height: 1.32; margin: 0 0 20px; letter-spacing: -0.01em; }
+.tp-intro, .tp-hint { color: var(--muted); font-size: 14.5px; margin: 0 0 16px; line-height: 1.55; }
+
+/* Bühne für die Animationen */
+.tp-stage {
+  background: var(--soft); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 14px; margin-bottom: 18px; position: relative;
+}
+.scene { width: 100%; height: auto; display: block; }
+.scene.dim { opacity: .82; }
+.tp-stage-click { cursor: crosshair; }
+
+/* Vorführung */
+.tp-caption { background: #fff; border: 1px solid var(--line); border-left: 4px solid var(--blue);
+  border-radius: var(--radius); padding: 14px 16px; margin-bottom: 16px; }
+.tp-step-badge { display: inline-block; font-size: 11.5px; font-weight: 700; color: var(--blue);
+  background: var(--soft); padding: 3px 9px; border-radius: 999px; margin-bottom: 6px; }
+.tp-caption strong { display: block; font-size: 17px; margin-bottom: 4px; }
+.tp-caption p { margin: 0; font-size: 14.5px; color: var(--muted); line-height: 1.55; }
+
+.tp-controls { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px; }
+.tp-controls button { background: #fff; border: 2px solid var(--line); border-radius: var(--radius);
+  padding: 9px 12px; cursor: pointer; color: var(--text); display: inline-flex; align-items: center; gap: 7px; }
+.tp-controls button:disabled { opacity: .4; cursor: not-allowed; }
+.tp-play { font-weight: 700; font-size: 14px; padding: 9px 20px !important; }
+
+.tp-dots { display: flex; justify-content: center; gap: 7px; margin-bottom: 20px; }
+.tp-dots button { width: 9px; height: 9px; border-radius: 50%; border: none; padding: 0;
+  background: #cfdaec; cursor: pointer; }
+.tp-dots button.on { background: var(--blue); transform: scale(1.3); }
+
+/* Hotspots */
+.tp-spot {
+  position: absolute; transform: translate(-50%, -50%); border-radius: 50%; cursor: pointer;
+  background: rgba(36, 104, 242, .12); border: 2px dashed rgba(36, 104, 242, .45);
+  display: grid; place-items: center; color: #fff; padding: 0;
+}
+.tp-spot:hover { background: rgba(36, 104, 242, .22); }
+.tp-spot.hit { background: var(--green); border: 2px solid var(--green); cursor: default; }
+.tp-found { border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; }
+.tp-found-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.tp-found-head strong { font-size: 14.5px; }
+.tp-miss { font-size: 12.5px; color: #c13049; font-weight: 600; }
+.tp-found ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+.tp-found li { font-size: 13.5px; color: var(--muted); line-height: 1.5; display: flex; gap: 7px; align-items: flex-start; }
+.tp-found li.on b { color: var(--text); }
+.tp-found li svg { flex: none; color: var(--green); margin-top: 2px; }
+.tp-blank { display: block; height: 15px; width: 100%; background: repeating-linear-gradient(
+  90deg, #e8eef9 0 22px, transparent 22px 30px); border-radius: 3px; }
+
+/* Reihenfolge */
+.tp-seq-line { min-height: 54px; border-bottom: 2px solid var(--line); padding: 0 0 14px;
+  margin: 0 0 18px; display: flex; flex-direction: column; gap: 8px; list-style: none; }
+.tp-seq-pool { display: flex; flex-direction: column; gap: 8px; }
+.tp-placeholder { color: #9aa7c0; font-size: 14px; }
+.tp-chip { width: 100%; text-align: left; padding: 13px 16px; font-size: 15px; cursor: pointer;
+  background: #fff; border: 2px solid var(--line); border-bottom-width: 4px; border-radius: var(--radius);
+  color: var(--text); display: flex; align-items: center; gap: 10px; }
+.tp-chip.picked { border-color: var(--blue); background: var(--soft); }
+.tp-chip-no { width: 24px; height: 24px; border-radius: 50%; background: var(--blue); color: #fff;
+  display: grid; place-items: center; font-size: 12.5px; font-weight: 700; flex: none; }
+
+/* Auswahl + Checkliste */
+.tp-options { display: grid; gap: 10px; }
+.tp-option { text-align: left; padding: 15px 17px; font-size: 15px; cursor: pointer; background: #fff;
+  border: 2px solid var(--line); border-bottom-width: 4px; border-radius: var(--radius); color: var(--text);
+  display: flex; align-items: center; gap: 11px; }
+.tp-option:hover:not(:disabled) { background: var(--soft); }
+.tp-option.selected { border-color: var(--blue); background: var(--soft); }
+.tp-box { width: 22px; height: 22px; border-radius: 5px; border: 2px solid var(--line); flex: none;
+  display: grid; place-items: center; color: #fff; }
+.tp-option.selected .tp-box { background: var(--blue); border-color: var(--blue); }
+
+/* Fuss */
+.tp-foot { border-top: 2px solid var(--line); padding: 16px 24px; }
+.tp-foot.ok { background: #eefaf1; border-color: #bfe8cb; }
+.tp-foot.bad { background: #fdeef0; border-color: #f6c9d0; }
+.tp-feedback { max-width: 680px; margin: 0 auto 13px; }
+.tp-feedback strong { display: flex; align-items: center; gap: 8px; font-size: 16.5px; margin-bottom: 4px; }
+.tp-foot.ok .tp-feedback strong { color: #2f8c4d; }
+.tp-foot.bad .tp-feedback strong { color: #c13049; }
+.tp-feedback p { margin: 0; font-size: 14.5px; line-height: 1.55; }
+.tp-action { display: block; max-width: 680px; margin: 0 auto; width: 100%; border: none;
+  border-radius: var(--radius); padding: 15px; font-weight: 800; font-size: 15.5px; cursor: pointer;
+  background: var(--green); color: #fff; }
+.tp-action:disabled { background: #dfe6f2; color: #9aa7c0; cursor: not-allowed; }
+.tp-action.bad { background: #e0405d; }
+
+/* Aufgabenliste im Pfad */
+.lt-task { display: flex; align-items: center; gap: 16px; background: #fff; border: 1px solid var(--line);
+  border-bottom-width: 3px; border-radius: var(--radius); padding: 16px 18px; margin-bottom: 12px;
+  width: 100%; text-align: left; cursor: pointer; }
+.lt-task:hover { border-color: var(--blue); }
+.lt-task-no { width: 44px; height: 44px; border-radius: 12px; flex: none; display: grid; place-items: center;
+  font-weight: 800; font-size: 16px; background: var(--soft); color: var(--blue); }
+.lt-task.done .lt-task-no { background: var(--green); color: #fff; }
+.lt-task-main { flex: 1; }
+.lt-task-main strong { display: block; font-size: 16px; }
+.lt-task-main span { font-size: 13.5px; color: var(--muted); }
+.lt-task-meta { font-size: 12.5px; color: var(--muted); flex: none; }
+
+@media (max-width: 720px) {
+  .tp-prompt { font-size: 19px; }
+  .tp-body { padding: 16px; }
+}
+.content-single { padding: 26px 34px 40px; }
+.lt-section { font-size: 18px; margin: 0 0 14px; }
+.lt-task-meta { display: inline-flex; align-items: center; gap: 5px; }
+@media (max-width: 720px) { .content-single { padding: 16px; } }

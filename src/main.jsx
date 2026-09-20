@@ -99,15 +99,15 @@ function Sidebar({ active, onNavigate }) {
 
       <nav className="nav-list">
         {navItems.map(([label, Icon]) => (
-          <button
-            type="button"
+          <a
             className={active === label ? "nav-item active" : "nav-item"}
+            href="#"
             key={label}
-            onClick={() => onNavigate(label)}
+            onClick={(event) => { event.preventDefault(); onNavigate(label); }}
           >
             <Icon size={20} />
             <span>{label}</span>
-          </button>
+          </a>
         ))}
       </nav>
 
@@ -422,9 +422,7 @@ function App() {
       <main className="main">
         <Topbar />
         {tab === "Lernen" ? (
-          <div className="content-single">
-            <LearnTab />
-          </div>
+          <LearnTab />
         ) : (
           <div className="content-grid">
             <div className="dashboard">
