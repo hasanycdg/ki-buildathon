@@ -79,9 +79,9 @@ const quickCards = [
 const navItems = [
   ["Dashboard", Home, true],
   ["Lernen", BookOpen],
-  ["Quick Help (KI-Chat)", MessageCircle],
   ["Mein Fortschritt", ChartNoAxesColumn],
-  ["Meine Dokumente", FileText],
+  ["Quick Help (KI-Chat)", MessageCircle],
+  ["Sprachhilfe", Globe2],
   ["Team & Kontakte", Users]
 ];
 
