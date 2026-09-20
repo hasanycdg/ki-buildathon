@@ -4,20 +4,34 @@
  */
 export const cleaning = {
   id: "cleaning",
-  name: "Öffentliche Bereiche",
-  tagline: "Lobby, Gänge, Wellness und WC sauber halten",
+  name: { de: "Öffentliche Bereiche", en: "Public areas", tr: "Ortak alanlar", sk: "Verejné priestory", pl: "Strefy publiczne", hr: "Javni prostori", sr: "Javni prostori", sl: "Javni prostori" },
+  tagline: { de: "Lobby, Gänge, Wellness und WC sauber halten", en: "Keeping lobby, corridors, spa and toilets clean", tr: "Lobi, koridor, spa ve tuvaletleri temiz tutmak", sk: "Udržiavať lobby, chodby, wellness a WC čisté", pl: "Utrzymywać w czystości lobby, korytarze, wellness i WC", hr: "Održavati čistima predvorje, hodnike, wellness i WC", sr: "Održavati čistim lobi, hodnike, wellness i WC", sl: "Ohranjati čiste avlo, hodnike, wellness in WC" },
   icon: "SprayCan",
   accent: "#0f9b8e",
-  blurb: "Du machst alles außerhalb der Zimmer. Du arbeitest oft vor Gästen. Du lernst die Bereiche, die Regeln und die wichtigsten Wörter — auch ohne Deutsch.",
+  blurb: { de: "Du machst alles außerhalb der Zimmer. Du arbeitest oft vor Gästen. Du lernst die Bereiche, die Regeln und die wichtigsten Wörter — auch ohne Deutsch.",
+           en: "You do everything outside the rooms. You often work in front of guests. You learn the areas, the rules and the most important words — even without German.",
+           tr: "Odaların dışındaki her şeyi sen yaparsın. Sık sık misafirlerin önünde çalışırsın. Alanları, kuralları ve en önemli kelimeleri öğrenirsin — Almanca bilmeden de.",
+           sk: "Robíš všetko mimo izieb. Často pracuješ pred hosťami. Naučíš sa priestory, pravidlá a najdôležitejšie slová — aj bez nemčiny.",
+           pl: "Robisz wszystko poza pokojami. Często pracujesz na oczach gości. Nauczysz się stref, zasad i najważniejszych słów — nawet bez niemieckiego.",
+           hr: "Radiš sve izvan soba. Često radiš pred gostima. Naučit ćeš prostore, pravila i najvažnije riječi — i bez njemačkog.",
+           sr: "Radiš sve izvan soba. Često radiš pred gostima. Naučićeš prostore, pravila i najvažnije reči — i bez nemačkog.",
+           sl: "Delaš vse zunaj sob. Pogosto delaš pred gosti. Naučiš se prostore, pravila in najpomembnejše besede — tudi brez nemščine." },
   units: [
     {
       id: "cl-u1",
-      title: "Einheit 1 — Bereiche & Geräte",
-      subtitle: "Du kennst alle Bereiche im Haus und dein Werkzeug.",
+      title: { de: "Einheit 1 — Bereiche & Geräte", en: "Unit 1 — Areas & equipment", tr: "Ünite 1 — Alanlar ve ekipman", sk: "Jednotka 1 — Priestory a prístroje", pl: "Jednostka 1 — Strefy i sprzęt", hr: "Cjelina 1 — Prostori i uređaji", sr: "Celina 1 — Prostori i uređaji", sl: "Enota 1 — Prostori in naprave" },
+      subtitle: { de: "Du kennst alle Bereiche im Haus und dein Werkzeug.",
+                  en: "You know every area in the house and your equipment.",
+                  tr: "Oteldeki tüm alanları ve ekipmanını bilirsin.",
+                  sk: "Poznáš všetky priestory v dome a svoje náradie.",
+                  pl: "Znasz wszystkie strefy w hotelu i swój sprzęt.",
+                  hr: "Poznaješ sve prostore u kući i svoj alat.",
+                  sr: "Poznaješ sve prostore u kući i svoj alat.",
+                  sl: "Poznaš vse prostore v hiši in svoje orodje." },
       lessons: [
         {
           id: "cl-u1-l1",
-          title: "Wörter für die Bereiche",
+          title: { de: "Wörter für die Bereiche", en: "Words for the areas", tr: "Alanlar için kelimeler", sk: "Slová pre priestory", pl: "Słowa do stref", hr: "Riječi za prostore", sr: "Reči za prostore", sl: "Besede za prostore" },
           kind: "lesson",
           exercises: [
             { id: "cl-1", type: "vocab", term: "die Lobby", options: ["entrance hall", "the kitchen", "the garage", "the bedroom"], answer: 0,
@@ -39,7 +53,7 @@ export const cleaning = {
         },
         {
           id: "cl-u1-l2",
-          title: "Geräte und Wagen",
+          title: { de: "Geräte und Wagen", en: "Equipment and trolleys", tr: "Ekipman ve arabalar", sk: "Prístroje a vozíky", pl: "Sprzęt i wózki", hr: "Uređaji i kolica", sr: "Uređaji i kolica", sl: "Naprave in vozički" },
           kind: "lesson",
           exercises: [
             { id: "cl-7", type: "vocab", term: "der Wischmopp", options: ["the mop", "the broom", "the bucket", "the sponge"], answer: 0,
@@ -60,7 +74,7 @@ export const cleaning = {
         },
         {
           id: "cl-u1-l3",
-          title: "Prüfung — Bereiche & Geräte",
+          title: { de: "Prüfung — Bereiche & Geräte", en: "Test — Areas & equipment", tr: "Sınav — Alanlar ve ekipman", sk: "Test — Priestory a prístroje", pl: "Test — Strefy i sprzęt", hr: "Provjera — Prostori i uređaji", sr: "Provera — Prostori i uređaji", sl: "Preverjanje — Prostori in naprave" },
           kind: "checkpoint",
           exercises: [
             { id: "cl-13", type: "vocab", term: "die Glastür", options: ["glass door", "back door", "fire door", "room door"], answer: 0,
@@ -82,12 +96,19 @@ export const cleaning = {
     },
     {
       id: "cl-u2",
-      title: "Einheit 2 — Arbeiten vor Gästen",
-      subtitle: "Du arbeitest sicher und leise, während Gäste da sind.",
+      title: { de: "Einheit 2 — Arbeiten vor Gästen", en: "Unit 2 — Working in front of guests", tr: "Ünite 2 — Misafirlerin önünde çalışmak", sk: "Jednotka 2 — Práca pred hosťami", pl: "Jednostka 2 — Praca przy gościach", hr: "Cjelina 2 — Rad pred gostima", sr: "Celina 2 — Rad pred gostima", sl: "Enota 2 — Delo pred gosti" },
+      subtitle: { de: "Du arbeitest sicher und leise, während Gäste da sind.",
+                  en: "You work safely and quietly while guests are around.",
+                  tr: "Misafirler varken güvenli ve sessiz çalışırsın.",
+                  sk: "Pracuješ bezpečne a ticho, kým sú hostia nablízku.",
+                  pl: "Pracujesz bezpiecznie i cicho, kiedy są goście.",
+                  hr: "Radiš sigurno i tiho dok su gosti prisutni.",
+                  sr: "Radiš bezbedno i tiho dok su gosti prisutni.",
+                  sl: "Delaš varno in tiho, medtem ko so gostje prisotni." },
       lessons: [
         {
           id: "cl-u2-l1",
-          title: "Absperren und Rutschgefahr",
+          title: { de: "Absperren und Rutschgefahr", en: "Cordoning off and slip hazards", tr: "Alanı kapatma ve kayma tehlikesi", sk: "Ohradenie a riziko pošmyknutia", pl: "Odgradzanie i ryzyko poślizgu", hr: "Ograđivanje i opasnost od klizanja", sr: "Ograđivanje i opasnost od klizanja", sl: "Ograditev in nevarnost zdrsa" },
           kind: "lesson",
           exercises: [
             { id: "cl-19", type: "vocab", term: "die Rutschgefahr", options: ["risk of slipping", "risk of fire", "risk of theft", "risk of noise"], answer: 0,
@@ -107,7 +128,7 @@ export const cleaning = {
         },
         {
           id: "cl-u2-l2",
-          title: "Lärm, Randzeiten und Gäste",
+          title: { de: "Lärm, Randzeiten und Gäste", en: "Noise, quiet hours and guests", tr: "Gürültü, sessiz saatler ve misafirler", sk: "Hluk, okrajové časy a hostia", pl: "Hałas, godziny brzegowe i goście", hr: "Buka, rubni termini i gosti", sr: "Buka, rubni termini i gosti", sl: "Hrup, robni časi in gostje" },
           kind: "lesson",
           exercises: [
             { id: "cl-25", type: "vocab", term: "die Randzeit", options: ["off-peak time", "closing time", "overtime", "break time"], answer: 0,
@@ -127,7 +148,7 @@ export const cleaning = {
         },
         {
           id: "cl-u2-l3",
-          title: "Prüfung — Vor Gästen arbeiten",
+          title: { de: "Prüfung — Vor Gästen arbeiten", en: "Test — Working in front of guests", tr: "Sınav — Misafirlerin önünde çalışmak", sk: "Test — Práca pred hosťami", pl: "Test — Praca przy gościach", hr: "Provjera — Rad pred gostima", sr: "Provera — Rad pred gostima", sl: "Preverjanje — Delo pred gosti" },
           kind: "checkpoint",
           exercises: [
             { id: "cl-31", type: "truefalse", statement: "Beim Arbeiten im Gästebereich grüßt du jeden Gast, den du siehst.", answer: true,
@@ -149,12 +170,19 @@ export const cleaning = {
     },
     {
       id: "cl-u3",
-      title: "Einheit 3 — Wellness, Müll & Sicherheit",
-      subtitle: "Du machst Sauna und Fitness hygienisch und meldest Gefahren richtig.",
+      title: { de: "Einheit 3 — Wellness, Müll & Sicherheit", en: "Unit 3 — Spa, waste & safety", tr: "Ünite 3 — Spa, çöp ve güvenlik", sk: "Jednotka 3 — Wellness, odpad a bezpečnosť", pl: "Jednostka 3 — Wellness, śmieci i bezpieczeństwo", hr: "Cjelina 3 — Wellness, otpad i sigurnost", sr: "Celina 3 — Wellness, otpad i bezbednost", sl: "Enota 3 — Wellness, odpadki in varnost" },
+      subtitle: { de: "Du machst Sauna und Fitness hygienisch und meldest Gefahren richtig.",
+                  en: "You clean sauna and gym hygienically and report hazards properly.",
+                  tr: "Sauna ve fitness alanını hijyenik temizlersin ve tehlikeleri doğru bildirirsin.",
+                  sk: "Saunu a fitness upratuješ hygienicky a nebezpečenstvá hlásiš správne.",
+                  pl: "Czyścisz saunę i siłownię higienicznie i prawidłowo zgłaszasz zagrożenia.",
+                  hr: "Saunu i teretanu čistiš higijenski i opasnosti prijavljuješ ispravno.",
+                  sr: "Saunu i teretanu čistiš higijenski i opasnosti prijavljuješ ispravno.",
+                  sl: "Savno in fitnes očistiš higiensko in nevarnosti pravilno javiš." },
       lessons: [
         {
           id: "cl-u3-l1",
-          title: "Wellness und Fitness",
+          title: { de: "Wellness und Fitness", en: "Spa and gym", tr: "Spa ve fitness", sk: "Wellness a fitness", pl: "Wellness i siłownia", hr: "Wellness i teretana", sr: "Wellness i teretana", sl: "Wellness in fitnes" },
           kind: "lesson",
           exercises: [
             { id: "cl-37", type: "vocab", term: "der Barfußbereich", options: ["barefoot area", "car park", "storage room", "smoking area"], answer: 0,
@@ -174,7 +202,7 @@ export const cleaning = {
         },
         {
           id: "cl-u3-l2",
-          title: "Müll und Trennung",
+          title: { de: "Müll und Trennung", en: "Waste and separation", tr: "Çöp ve ayrıştırma", sk: "Odpad a triedenie", pl: "Śmieci i segregacja", hr: "Otpad i odvajanje", sr: "Otpad i odvajanje", sl: "Odpadki in ločevanje" },
           kind: "lesson",
           exercises: [
             { id: "cl-43", type: "vocab", term: "die Mülltrennung", options: ["waste separation", "waste collection", "recycling bin", "cleaning plan"], answer: 0,
@@ -194,7 +222,7 @@ export const cleaning = {
         },
         {
           id: "cl-u3-l3",
-          title: "Prüfung — Sicher im ganzen Haus",
+          title: { de: "Prüfung — Sicher im ganzen Haus", en: "Test — Safe throughout the house", tr: "Sınav — Tüm otelde güvenlik", sk: "Test — Bezpečne v celom dome", pl: "Test — Bezpiecznie w całym hotelu", hr: "Provjera — Sigurno u cijeloj kući", sr: "Provera — Bezbedno u celoj kući", sl: "Preverjanje — Varno v celi hiši" },
           kind: "checkpoint",
           exercises: [
             { id: "cl-49", type: "vocab", term: "der Fluchtweg", options: ["escape route", "service lift", "main corridor", "delivery entrance"], answer: 0,

@@ -4,20 +4,41 @@
  */
 export const reception = {
   id: "reception",
-  name: "Rezeption",
-  tagline: "Gäste empfangen und das Buchungssystem bedienen",
+  name: { de: "Rezeption", en: "Reception", tr: "Resepsiyon", sk: "Recepcia", pl: "Recepcja", hr: "Recepcija", sr: "Recepcija", sl: "Recepcija" },
+  tagline: { de: "Gäste empfangen und das Buchungssystem bedienen",
+             en: "Welcoming guests and running the booking system",
+             tr: "Misafirleri karşılamak ve rezervasyon sistemini kullanmak",
+             sk: "Vítať hostí a obsluhovať rezervačný systém",
+             pl: "Przyjmowanie gości i obsługa systemu rezerwacji",
+             hr: "Primanje gostiju i rad u sustavu rezervacija",
+             sr: "Primanje gostiju i rad u sistemu rezervacija",
+             sl: "Sprejemanje gostov in delo z rezervacijskim sistemom" },
   icon: "ConciergeBell",
   accent: "#7c3aed",
-  blurb: "Du bist der erste Mensch, den der Gast sieht. Du lernst den Check-in, unser Buchungssystem und die Sätze für schwierige Momente — auch ohne Deutsch.",
+  blurb: { de: "Du bist der erste Mensch, den der Gast sieht. Du lernst den Check-in, unser Buchungssystem und die Sätze für schwierige Momente — auch ohne Deutsch.",
+           en: "You are the first person the guest sees. You learn check-in, our booking system and the phrases for difficult moments — even without German.",
+           tr: "Misafirin gördüğü ilk kişi sensin. Check-in'i, rezervasyon sistemimizi ve zor anlar için cümleleri öğrenirsin — Almanca bilmeden de.",
+           sk: "Si prvý človek, ktorého hosť uvidí. Naučíš sa check-in, náš rezervačný systém a vety pre ťažké chvíle — aj bez nemčiny.",
+           pl: "Jesteś pierwszą osobą, którą widzi gość. Nauczysz się check-inu, naszego systemu rezerwacji i zdań na trudne chwile — nawet bez niemieckiego.",
+           hr: "Ti si prva osoba koju gost vidi. Naučit ćeš prijavu, naš sustav rezervacija i rečenice za teške trenutke — i bez njemačkog.",
+           sr: "Ti si prva osoba koju gost vidi. Naučićeš prijavu, naš sistem rezervacija i rečenice za teške trenutke — i bez nemačkog.",
+           sl: "Si prva oseba, ki jo gost vidi. Naučiš se prijave, našega rezervacijskega sistema in stavkov za težke trenutke — tudi brez nemščine." },
   units: [
     {
       id: "rc-u1",
-      title: "Einheit 1 — Gast & Ankunft",
-      subtitle: "Du empfängst einen Gast und machst den Check-in allein.",
+      title: { de: "Einheit 1 — Gast & Ankunft", en: "Unit 1 — Guest & arrival", tr: "Ünite 1 — Misafir ve varış", sk: "Jednotka 1 — Hosť a príchod", pl: "Jednostka 1 — Gość i przyjazd", hr: "Cjelina 1 — Gost i dolazak", sr: "Celina 1 — Gost i dolazak", sl: "Enota 1 — Gost in prihod" },
+      subtitle: { de: "Du empfängst einen Gast und machst den Check-in allein.",
+                  en: "You welcome a guest and handle check-in on your own.",
+                  tr: "Bir misafiri karşılar ve check-in'i tek başına yaparsın.",
+                  sk: "Privítaš hosťa a check-in zvládneš sám.",
+                  pl: "Przyjmujesz gościa i robisz check-in samodzielnie.",
+                  hr: "Primaš gosta i sam obaviš prijavu.",
+                  sr: "Primaš gosta i sam obaviš prijavu.",
+                  sl: "Sprejmeš gosta in prijavo opraviš sam." },
       lessons: [
         {
           id: "rc-u1-l1",
-          title: "Wörter an der Rezeption",
+          title: { de: "Wörter an der Rezeption", en: "Words at reception", tr: "Resepsiyonda kelimeler", sk: "Slová na recepcii", pl: "Słowa na recepcji", hr: "Riječi na recepciji", sr: "Reči na recepciji", sl: "Besede na recepciji" },
           kind: "lesson",
           exercises: [
             { id: "rc-1", type: "vocab", term: "die Anreise", options: ["arrival", "departure", "invoice", "cleaning"], answer: 0,
@@ -39,7 +60,7 @@ export const reception = {
         },
         {
           id: "rc-u1-l2",
-          title: "Der Check-in",
+          title: { de: "Der Check-in", en: "Check-in", tr: "Check-in", sk: "Check-in", pl: "Check-in", hr: "Prijava", sr: "Prijava", sl: "Prijava" },
           kind: "lesson",
           exercises: [
             { id: "rc-7", type: "order", prompt: "So läuft ein Check-in.", steps: ["Grüßen und nach dem Namen fragen", "Buchung im System suchen", "Meldezettel ausfüllen lassen", "Zimmerkarte programmieren", "Frühstückszeit und Weg zum Zimmer erklären"],
@@ -59,7 +80,7 @@ export const reception = {
         },
         {
           id: "rc-u1-l3",
-          title: "Prüfung — Gast & Ankunft",
+          title: { de: "Prüfung — Gast & Ankunft", en: "Test — Guest & arrival", tr: "Sınav — Misafir ve varış", sk: "Test — Hosť a príchod", pl: "Test — Gość i przyjazd", hr: "Provjera — Gost i dolazak", sr: "Provera — Gost i dolazak", sl: "Preverjanje — Gost in prihod" },
           kind: "checkpoint",
           exercises: [
             { id: "rc-13", type: "vocab", term: "die Abreise", options: ["check-out", "check-in", "booking", "complaint"], answer: 0,
@@ -81,12 +102,19 @@ export const reception = {
     },
     {
       id: "rc-u2",
-      title: "Einheit 2 — Buchungssystem & Übergabe",
-      subtitle: "Du bedienst das Buchungssystem und gibst dein Wissen weiter.",
+      title: { de: "Einheit 2 — Buchungssystem & Übergabe", en: "Unit 2 — Booking system & handover", tr: "Ünite 2 — Rezervasyon sistemi ve devir", sk: "Jednotka 2 — Rezervačný systém a odovzdanie", pl: "Jednostka 2 — System rezerwacji i przekazanie", hr: "Cjelina 2 — Sustav rezervacija i primopredaja", sr: "Celina 2 — Sistem rezervacija i primopredaja", sl: "Enota 2 — Rezervacijski sistem in predaja" },
+      subtitle: { de: "Du bedienst das Buchungssystem und gibst dein Wissen weiter.",
+                  en: "You operate the booking system and pass your knowledge on.",
+                  tr: "Rezervasyon sistemini kullanır ve bilgini aktarırsın.",
+                  sk: "Obsluhuješ rezervačný systém a odovzdávaš svoje znalosti ďalej.",
+                  pl: "Obsługujesz system rezerwacji i przekazujesz swoją wiedzę dalej.",
+                  hr: "Radiš u sustavu rezervacija i prenosiš svoje znanje dalje.",
+                  sr: "Radiš u sistemu rezervacija i prenosiš svoje znanje dalje.",
+                  sl: "Delaš z rezervacijskim sistemom in svoje znanje predaš naprej." },
       lessons: [
         {
           id: "rc-u2-l1",
-          title: "Das Buchungssystem",
+          title: { de: "Das Buchungssystem", en: "The booking system", tr: "Rezervasyon sistemi", sk: "Rezervačný systém", pl: "System rezerwacji", hr: "Sustav rezervacija", sr: "Sistem rezervacija", sl: "Rezervacijski sistem" },
           kind: "lesson",
           exercises: [
             { id: "rc-19", type: "vocab", term: "die Buchung", options: ["booking", "invoice", "key", "shift"], answer: 0,
@@ -106,7 +134,7 @@ export const reception = {
         },
         {
           id: "rc-u2-l2",
-          title: "Übergabe & Wissen sichern",
+          title: { de: "Übergabe & Wissen sichern", en: "Handover & securing knowledge", tr: "Devir ve bilgiyi kayıt altına alma", sk: "Odovzdanie a zaistenie znalostí", pl: "Przekazanie i zapisanie wiedzy", hr: "Primopredaja i osiguranje znanja", sr: "Primopredaja i osiguranje znanja", sl: "Predaja in zavarovanje znanja" },
           kind: "lesson",
           exercises: [
             { id: "rc-25", type: "order", prompt: "Schichtübergabe an die Kollegin", steps: ["Übergabebuch öffnen", "Offene Anreisen durchgehen", "Probleme und Beschwerden nennen", "Kassa und Belege prüfen", "Übergabe unterschreiben"],
@@ -126,7 +154,7 @@ export const reception = {
         },
         {
           id: "rc-u2-l3",
-          title: "Prüfung — System & Übergabe",
+          title: { de: "Prüfung — System & Übergabe", en: "Test — System & handover", tr: "Sınav — Sistem ve devir", sk: "Test — Systém a odovzdanie", pl: "Test — System i przekazanie", hr: "Provjera — Sustav i primopredaja", sr: "Provera — Sistem i primopredaja", sl: "Preverjanje — Sistem in predaja" },
           kind: "checkpoint",
           exercises: [
             { id: "rc-31", type: "order", prompt: "Ein Gast will seine Buchung um eine Nacht verlängern.", steps: ["Im System prüfen, ob das Zimmer frei bleibt", "Preis für die Zusatznacht nennen", "Buchung verlängern und speichern", "Housekeeping informieren", "Im Übergabebuch notieren"],
@@ -148,12 +176,19 @@ export const reception = {
     },
     {
       id: "rc-u3",
-      title: "Einheit 3 — Schwierige Situationen",
-      subtitle: "Du bleibst ruhig bei Beschwerden, am Telefon und im Notfall.",
+      title: { de: "Einheit 3 — Schwierige Situationen", en: "Unit 3 — Difficult situations", tr: "Ünite 3 — Zor durumlar", sk: "Jednotka 3 — Ťažké situácie", pl: "Jednostka 3 — Trudne sytuacje", hr: "Cjelina 3 — Teške situacije", sr: "Celina 3 — Teške situacije", sl: "Enota 3 — Težke situacije" },
+      subtitle: { de: "Du bleibst ruhig bei Beschwerden, am Telefon und im Notfall.",
+                  en: "You stay calm with complaints, on the phone and in an emergency.",
+                  tr: "Şikâyetlerde, telefonda ve acil durumda sakin kalırsın.",
+                  sk: "Zostaneš pokojný pri sťažnostiach, na telefóne aj v núdzi.",
+                  pl: "Zachowujesz spokój przy reklamacjach, przy telefonie i w nagłym wypadku.",
+                  hr: "Ostaješ miran kod pritužbi, na telefonu i u hitnom slučaju.",
+                  sr: "Ostaješ miran kod žalbi, na telefonu i u hitnom slučaju.",
+                  sl: "Ostaneš miren pri pritožbah, na telefonu in v nujnem primeru." },
       lessons: [
         {
           id: "rc-u3-l1",
-          title: "Beschwerden",
+          title: { de: "Beschwerden", en: "Complaints", tr: "Şikâyetler", sk: "Sťažnosti", pl: "Reklamacje", hr: "Pritužbe", sr: "Žalbe", sl: "Pritožbe" },
           kind: "lesson",
           exercises: [
             { id: "rc-37", type: "choice", prompt: "Ein Gast beschwert sich laut über sein Zimmer. Was tust du zuerst?", options: ["Widersprechen", "Zuhören und ausreden lassen", "Chef holen", "Rabatt anbieten"], answer: 1,
@@ -173,7 +208,7 @@ export const reception = {
         },
         {
           id: "rc-u3-l2",
-          title: "Telefon & Notfall",
+          title: { de: "Telefon & Notfall", en: "Phone & emergency", tr: "Telefon ve acil durum", sk: "Telefón a núdza", pl: "Telefon i nagły wypadek", hr: "Telefon i hitan slučaj", sr: "Telefon i hitan slučaj", sl: "Telefon in nujni primer" },
           kind: "lesson",
           exercises: [
             { id: "rc-43", type: "vocab", term: "der Notruf", options: ["emergency call", "wake-up call", "room service", "reminder"], answer: 0,
@@ -193,7 +228,7 @@ export const reception = {
         },
         {
           id: "rc-u3-l3",
-          title: "Prüfung — Schwierige Situationen",
+          title: { de: "Prüfung — Schwierige Situationen", en: "Test — Difficult situations", tr: "Sınav — Zor durumlar", sk: "Test — Ťažké situácie", pl: "Test — Trudne sytuacje", hr: "Provjera — Teške situacije", sr: "Provera — Teške situacije", sl: "Preverjanje — Težke situacije" },
           kind: "checkpoint",
           exercises: [
             { id: "rc-49", type: "truefalse", statement: "Wenn du eine Frage nicht beantworten kannst, darfst du das sagen.", answer: true,

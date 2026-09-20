@@ -32,6 +32,7 @@ import {
   X
 } from "lucide-react";
 import LearnTab from "./learn/LearnTab.jsx";
+import SprachhilfeTab from "./sprachhilfe/SprachhilfeTab.jsx";
 import quickHelpKnowledge from "./data/quickHelpKnowledge.json";
 import { analyzeImage, isSupportedImage, readImageFile, visionEnabled } from "./imageAnalysis";
 import "./styles.css";
@@ -1083,21 +1084,7 @@ function TabContent({
   }
 
   if (activeTab === "sprachhilfe") {
-    return (
-      <div className="content-grid tab-grid">
-        <section className="tab-page language-page">
-          <div className="tab-heading">
-            <h1>Sprachhilfe</h1>
-            <p>Die Einträge wurden entfernt. Hier kann später ein eigener Sprachhilfe-Katalog entstehen.</p>
-          </div>
-          <div className="language-empty-card">
-            <Globe2 size={24} />
-            <strong>Keine Sprachhilfe-Einträge</strong>
-            <span>Der Bereich ist vorbereitet, aber aktuell leer.</span>
-          </div>
-        </section>
-      </div>
-    );
+    return <SprachhilfeTab />;
   }
 
   if (activeTab === "team") {
