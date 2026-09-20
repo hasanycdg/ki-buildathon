@@ -1,36 +1,18 @@
-# Buildathon — Kontext & Case Studies
+# Buildathon — Kontext
 
-Grundlage des Buildathons. Transkription des ausgeteilten Briefings
-(Foto der gedruckten Unterlage, siehe `Codex-Bild 20. Sept. 2026, 08_37_48.png`).
+**Unser Case: Case Study 02 — „Wissen bleibt im Haus"** (Team-Entscheidung, 20.09.2026)
 
-> **Stand der Transkription:** Das Foto zeigt nur einen Ausschnitt der Seite.
-> Vollständig erfasst ist **Case Study 02**. Von **Case Study 01** ist nur der
-> untere Teil sichtbar (Szenario fehlt), von **Case Study 03** nur die
-> Überschrift. Die fehlenden Teile sind unten als offene Lücken markiert und
-> müssen noch ergänzt werden.
+Die Cases 01 und 03 bearbeiten wir nicht. Sie stehen unten nur als Umfeld,
+weil sie dieselbe Betriebsrealität beschreiben.
 
----
-
-## Case Study 01 — *(Titel unbekannt)*
-
-> ⚠️ **Unvollständig.** Titel und Abschnitt „Szenario" liegen außerhalb des
-> Fotoausschnitts. Thema laut sichtbarem Text: Mitarbeiterbindung,
-> Saisonrückkehr und Nutzung von Leerzeiten.
-
-**Warum es zählt:** Der Fachkräftemangel ist das Dauerthema der Branche - und
-teuer: Jede Neubesetzung kostet Zeit, Wissen und Nerven. Tools für Recruiting
-und Dienstpläne gibt es viele, aber kaum etwas macht Bindung, Sinn und
-Entwicklung im Alltag eines kleinen Betriebs greifbar. Gleichzeitig liegen
-Steh- und Leerzeiten ungenutzt, die man in Entwicklung oder Teamgefühl stecken
-könnte.
-
-> **Die Challenge:** Wie werden die Jobs so, dass Menschen gerne bleiben, nach
-> der Saison wiederkommen und sich weiterentwickeln - und wie wird ungenutzte
-> Zeit zu ihrer Zeit?
+Quelle: Transkription des gedruckten Briefings
+(`Codex-Bild 20. Sept. 2026, 08_37_48.png`).
 
 ---
 
 ## Case Study 02 — Wissen bleibt im Haus: Onboarding & Einarbeitung
+
+> Der folgende Text ist wörtlich aus dem Briefing übernommen.
 
 **Szenario:** Anfang Dezember: Ein neues Zimmermädchen aus der Slowakei fängt
 an - kein Deutsch, noch nie die Hausstandards gesehen. Die erfahrene Kollegin
@@ -46,37 +28,58 @@ Schulungsvideos und Hygiene-Programme gibt es - aber sie lassen sich nicht auf
 die Abläufe des einzelnen Hauses zuschneiden, und Housekeeping und Rezeption
 fallen oft ganz durchs Raster.
 
-> **Die Challenge:** Wie sind neue Mitarbeiter:innen - auch ohne
-> Deutschkenntnisse - in Stunden statt Wochen eingearbeitet und angekommen,
-> ohne die Erfahrenen ständig zu binden - und wie bleibt ihr Wissen im Haus,
-> wenn sie weiterziehen?
+### Die Challenge
+
+> Wie sind neue Mitarbeiter:innen - auch ohne Deutschkenntnisse - in Stunden
+> statt Wochen eingearbeitet und angekommen, ohne die Erfahrenen ständig zu
+> binden - und wie bleibt ihr Wissen im Haus, wenn sie weiterziehen?
 
 ---
 
-## Case Study 03 — Nachfolge, Übernahme & Neuausrichtung
+## Was der Text uns als Anforderungen vorgibt
 
-> ⚠️ **Unvollständig.** Nur die Überschrift ist auf dem Foto sichtbar.
-> Szenario, „Warum es zählt" und „Die Challenge" fehlen und müssen noch
-> nachgetragen werden.
+> Direkt aus der Challenge und dem Szenario abgeleitet — das ist die Messlatte,
+> an der unsere Lösung sich bewerten lassen muss.
+
+| # | Anforderung | Woher |
+|---|---|---|
+| 1 | **Ohne Deutschkenntnisse nutzbar** | „auch ohne Deutschkenntnisse" |
+| 2 | **Stunden statt Wochen** bis zur Einsatzfähigkeit | „in Stunden statt Wochen" |
+| 3 | **Erfahrene entlasten**, nicht zusätzlich binden | „ohne die Erfahrenen ständig zu binden" |
+| 4 | **Wissen bleibt im Betrieb**, wenn Personen gehen | „wie bleibt ihr Wissen im Haus" |
+| 5 | **Auf das einzelne Haus zuschneidbar** — generische Inhalte reichen nicht | „lassen sich nicht auf die Abläufe des einzelnen Hauses zuschneiden" |
+| 6 | **Housekeeping und Rezeption** explizit abdecken | „fallen oft ganz durchs Raster" |
+| 7 | **„Angekommen sein"**, nicht nur eingearbeitet — soziale Dimension | „eingearbeitet und angekommen" |
+
+### Randbedingungen
+
+- **Zielgruppe:** kleine Hotelbetriebe, keine Ketten mit HR-Abteilung
+- **Saisonbetrieb:** Fluktuation ist Dauerzustand, nicht Ausnahme
+- **Sprachmix im Team** ist der Normalfall, keine gemeinsame Sprache garantiert
+- **Engpass ist die Zeit der Erfahrenen** — jede Lösung, die deren Aufwand
+  erhöht, verfehlt den Punkt
+- **Konkurrenz existiert** (Schulungsvideos, Hygiene-Programme) und scheitert
+  an der fehlenden Anpassbarkeit — daran misst man uns
 
 ---
 
-## Wiederkehrende Muster über alle Cases
+## Nicht unser Scope
 
-Aus den erfassten Teilen lassen sich diese gemeinsamen Nenner ablesen:
+**Case Study 01** — Mitarbeiterbindung, Saisonrückkehr, Nutzung von Steh- und
+Leerzeiten. Challenge im Original: *„Wie werden die Jobs so, dass Menschen
+gerne bleiben, nach der Saison wiederkommen und sich weiterentwickeln - und wie
+wird ungenutzte Zeit zu ihrer Zeit?"*
 
-- **Branche:** Hotellerie / Gastgewerbe, Fokus auf **kleine Betriebe**
-- **Saisonalität & Fluktuation** als struktureller Dauerzustand, nicht als Ausnahme
-- **Sprachbarrieren** im Team — kein gemeinsames Deutsch als Voraussetzung
-- **Wissen an Personen gebunden** statt im Betrieb verankert
-- **Zeit der Erfahrenen** ist der eigentliche Engpass
-- **Bestehende Tools greifen nicht:** zu generisch, nicht auf das einzelne Haus
-  zuschneidbar; Housekeeping und Rezeption werden meist gar nicht abgedeckt
-- **Ungenutzte Steh- und Leerzeiten** als brachliegende Ressource
+**Case Study 03** — Nachfolge, Übernahme & Neuausrichtung. (Nur die Überschrift
+lag im Fotoausschnitt vor.)
+
+Berührungspunkt zu unserem Case: Bindung und Wissenstransfer hängen zusammen —
+wer gut ankommt, bleibt eher. Wir lösen aber Onboarding, nicht Retention.
+
+---
 
 ## Offene Punkte
 
-- [ ] Case Study 01: Titel und Szenario ergänzen
-- [ ] Case Study 03: vollständigen Text ergänzen
-- [ ] Prüfen, ob es Case Studies über 03 hinaus gibt
-- [ ] Rahmenbedingungen des Buildathons (Zeitrahmen, Abgabe, Bewertung) ergänzen
+- [ ] Rahmenbedingungen des Buildathons ergänzen (Zeitrahmen, Abgabeform, Bewertungskriterien)
+- [ ] Zielbild festlegen: Was zeigen wir in der Demo?
+- [ ] Technischen Ansatz festhalten, sobald entschieden
