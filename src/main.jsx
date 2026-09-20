@@ -276,15 +276,15 @@ function createOpenAiSetupMessage(language) {
     id: crypto.randomUUID(),
     role: "assistant",
     text: language === "en"
-      ? "WorkLingo AI is not configured yet. Add OPENAI_API_KEY to the local .env file and restart the dev server."
+      ? "WorkLingo AI is not configured yet. Add OPENAI_API_KEY locally in .env or in Vercel Environment Variables and redeploy."
       : language === "tr"
-        ? "WorkLingo AI henüz yapılandırılmadı. Yerel .env dosyasına OPENAI_API_KEY ekle ve dev server'ı yeniden başlat."
-        : "WorkLingo AI ist noch nicht konfiguriert. Trage OPENAI_API_KEY in die lokale .env ein und starte den Dev-Server neu.",
+        ? "WorkLingo AI henüz yapılandırılmadı. OPENAI_API_KEY değerini yerel .env dosyasına veya Vercel Environment Variables bölümüne ekleyip yeniden deploy et."
+        : "WorkLingo AI ist noch nicht konfiguriert. Trage OPENAI_API_KEY lokal in .env oder in Vercel unter Environment Variables ein und deploye neu.",
     steps: language === "en"
-      ? ["Create or open .env", "Set OPENAI_API_KEY", "Restart npm run dev"]
+      ? ["Open local .env or Vercel project settings", "Set OPENAI_API_KEY", "Restart locally or redeploy on Vercel"]
       : language === "tr"
-        ? [".env dosyasını aç veya oluştur", "OPENAI_API_KEY değerini ekle", "npm run dev komutunu yeniden başlat"]
-        : [".env öffnen oder erstellen", "OPENAI_API_KEY eintragen", "npm run dev neu starten"],
+        ? [".env dosyasını veya Vercel proje ayarlarını aç", "OPENAI_API_KEY değerini ekle", "Yerelde yeniden başlat veya Vercel'de redeploy et"]
+        : [".env oder Vercel-Projekteinstellungen öffnen", "OPENAI_API_KEY eintragen", "Lokal neu starten oder auf Vercel neu deployen"],
     linkLabel: "WorkLingo AI Setup",
     source: "setup",
     time: "jetzt"
