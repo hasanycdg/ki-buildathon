@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
   BedDouble,
-  Bell,
   BookOpen,
   BookOpenCheck,
   Bot,
@@ -48,6 +47,8 @@ import {
 } from "lucide-react";
 import LearnTab from "./learn/LearnTab.jsx";
 import AdminContentStudio from "./admin/AdminContentStudio.jsx";
+import { loadContentState } from "./admin/contentStore.js";
+import { LEARNING_ASSETS } from "./admin/assetLibrary.js";
 import { ROLES as LEARN_ROLES } from "./learn/tasks/index.js";
 import * as learnStore from "./learn/store.js";
 import * as LearningScenes from "./learn/scenes/index.js";
@@ -57,6 +58,7 @@ import * as languageStore from "./sprachhilfe/store.js";
 import { countWordsOfRole, WORD_LANGS } from "./sprachhilfe/vokabular.js";
 import quickHelpKnowledge from "./data/quickHelpKnowledge.json";
 import { isSupportedImage, readImageFile } from "./imageAnalysis";
+import { APP_LANGUAGE_EVENT, APP_LANGUAGES, AppLanguageContext, appText, contentLanguage } from "./appLanguage.js";
 import "./styles.css";
 
 /* Bild je Bereich. Die vier Bereiche kommen aus den Lerninhalten selbst
@@ -80,12 +82,12 @@ const contentStats = {
 };
 
 const navItems = [
-  { id: "dashboard", label: "Dashboard", icon: Home },
-  { id: "lernen", label: "Lernen", icon: BookOpen },
-  { id: "fortschritt", label: "Mein Fortschritt", icon: ChartNoAxesColumn },
-  { id: "quickhelp", label: "Quick Help (KI-Chat)", icon: MessageCircle },
-  { id: "sprachhilfe", label: "Sprachhilfe", icon: Globe2 },
-  { id: "team", label: "Team & Kontakte", icon: Users }
+  { id: "dashboard", labelKey: "nav.dashboard", icon: Home },
+  { id: "lernen", labelKey: "nav.learn", icon: BookOpen },
+  { id: "fortschritt", labelKey: "nav.progress", icon: ChartNoAxesColumn },
+  { id: "quickhelp", labelKey: "nav.help", icon: MessageCircle },
+  { id: "sprachhilfe", labelKey: "nav.language", icon: Globe2 },
+  { id: "team", labelKey: "nav.team", icon: Users }
 ];
 
 /* Alle vier Vorschlaege treffen einen Eintrag in quickHelpKnowledge.json. */
@@ -531,7 +533,8 @@ function ChatLearningAnimation({ type }) {
   );
 }
 
-function Sidebar({ activeTab, onTabChange }) {
+function Sidebar({ activeTab, onTabChange, language }) {
+  const t = (key) => appText(language, key);
   return (
     <aside className="sidebar">
       <div className="brand">
@@ -543,7 +546,7 @@ function Sidebar({ activeTab, onTabChange }) {
       </div>
 
       <nav className="nav-list">
-        {navItems.map(({ id, label, icon: Icon }) => (
+        {navItems.map(({ id, labelKey, icon: Icon }) => (
           <button
             className={activeTab === id ? "nav-item active" : "nav-item"}
             type="button"
@@ -551,7 +554,7 @@ function Sidebar({ activeTab, onTabChange }) {
             key={id}
           >
             <Icon size={20} />
-            <span>{label}</span>
+            <span>{t(labelKey)}</span>
           </button>
         ))}
       </nav>
@@ -562,12 +565,12 @@ function Sidebar({ activeTab, onTabChange }) {
         <button className={activeTab === "unternehmen" ? "nav-item active" : "nav-item"}
           type="button" onClick={() => onTabChange("unternehmen")}>
           <Building2 size={20} />
-          <span>Unternehmen</span>
+          <span>{t("nav.company")}</span>
         </button>
         <button className={activeTab === "settings" ? "nav-item active" : "nav-item"}
           type="button" onClick={() => onTabChange("settings")}>
           <Settings size={20} />
-          <span>Einstellungen</span>
+          <span>{t("nav.settings")}</span>
         </button>
       </nav>
 
@@ -736,31 +739,89 @@ function AdminPanel() {
   );
 }
 
-function Topbar() {
+function searchResultsFor(query) {
+  const needle = normalizeText(query);
+  if (needle.length < 2) return [];
+  const tokens = needle.split(" ").filter(Boolean);
+  const customTasks = loadContentState().customTasks || [];
+  const entries = [
+    ...navItems.map((item) => ({ id: `page-${item.id}`, type: "page", tab: item.id, title: item.label, detail: "Bereich öffnen", Icon: item.icon, text: item.label })),
+    { id: "page-company", type: "page", tab: "unternehmen", title: "Unternehmen", detail: "Admin-Bereich", Icon: Building2, text: "unternehmen admin lerninhalte mitarbeitende" },
+    { id: "page-settings", type: "page", tab: "settings", title: "Einstellungen", detail: "Darstellung und Sprache", Icon: Settings, text: "einstellungen hell dunkel system sprache" },
+    ...LEARN_ROLES.flatMap((role) => role.tasks.map((task) => ({
+      id: `task-${task.id}`, type: "learning", tab: "lernen", title: task.title.de, detail: `${role.name.de} · ${task.minutes} Min.`, Icon: BookOpenCheck,
+      text: `${task.title.de} ${task.goal.de} ${role.name.de}`
+    }))),
+    ...customTasks.filter((task) => task.active !== false).map((task) => ({
+      id: `custom-${task.id}`, type: "learning", tab: "lernen", title: task.title?.de || "Eigener Lerninhalt", detail: "Eigener Lerninhalt · Lernen öffnen", Icon: Sparkles,
+      text: `${task.title?.de || ""} ${task.goal?.de || ""}`
+    })),
+    ...LEARNING_ASSETS.map((asset) => ({ id: `asset-${asset.id}`, type: "asset", tab: "unternehmen", title: asset.name, detail: "Objektbibliothek · Lerninhalt erstellen", Icon: Sparkles, text: `${asset.name} ${asset.keywords.join(" ")} ${asset.actions.join(" ")}` })),
+    ...Object.values(learningAnimations).map((item) => ({ id: `animation-${item.title}`, type: "learning", tab: "lernen", title: item.title, detail: "Schritt-für-Schritt lernen", Icon: Play, text: `${item.title} ${item.keywords.join(" ")}` })),
+    ...quickHelpKnowledge.map((item) => ({ id: `help-${item.id}`, type: "quickhelp", tab: "quickhelp", title: item.question, detail: "Antwort aus Unternehmenswissen", Icon: Bot, question: item.question, text: `${item.question} ${item.answer} ${item.keywords.join(" ")}` }))
+  ];
+  return entries.map((entry) => {
+    const text = normalizeText(entry.text);
+    const score = (text.includes(needle) ? 40 : 0) + tokens.reduce((sum, token) => sum + (text.includes(token) ? 8 : 0), 0) + (normalizeText(entry.title).startsWith(needle) ? 20 : 0);
+    return { ...entry, score };
+  }).filter((entry) => entry.score > 0).sort((a, b) => b.score - a.score).slice(0, 6);
+}
+
+function Topbar({ onSearchSelect, language, setLanguage, onOpenProfile }) {
+  const [query, setQuery] = useState("");
+  const [open, setOpen] = useState(false);
+  const [languageOpen, setLanguageOpen] = useState(false);
+  const results = searchResultsFor(query);
+  const languageLabel = APP_LANGUAGES.find(([code]) => code === language)?.[1] || "Deutsch";
+  const t = (key) => appText(language, key);
+
+  useEffect(() => {
+    const focusSearch = (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        document.querySelector(".global-search-input")?.focus();
+      }
+    };
+    window.addEventListener("keydown", focusSearch);
+    return () => window.removeEventListener("keydown", focusSearch);
+  }, []);
+
+  function select(result) {
+    onSearchSelect(result);
+    setQuery("");
+    setOpen(false);
+  }
+
   return (
     <header className="topbar">
+      <div className="global-search-wrap">
       <label className="search">
         <Search size={18} />
-        <input placeholder="Frage etwas oder suche nach einem Thema ..." />
+        <input className="global-search-input" value={query} onFocus={() => setOpen(true)} onChange={(event) => { setQuery(event.target.value); setOpen(true); }} onKeyDown={(event) => { if (event.key === "Enter" && results[0]) select(results[0]); if (event.key === "Escape") { setQuery(""); setOpen(false); } }} placeholder={t("search.placeholder")} />
+        {query && <button type="button" className="search-clear" aria-label="Suche löschen" onClick={() => { setQuery(""); setOpen(false); }}><X size={15} /></button>}
         <kbd>⌘ K</kbd>
       </label>
+      {open && query.trim().length >= 2 && <div className="global-search-results" role="listbox">
+        {results.length ? results.map((result) => { const Icon = result.Icon; return <button type="button" role="option" key={result.id} onMouseDown={(event) => event.preventDefault()} onClick={() => select(result)}><span className={`search-result-icon ${result.type}`}><Icon size={16} /></span><span><strong>{result.title}</strong><small>{result.detail}</small></span><ChevronRight size={15} /></button>; }) : <div className="search-no-result"><Search size={17} /><span>{t("search.empty")}</span></div>}
+      </div>}
+      </div>
       <div className="top-actions">
-        <button className="language">
+        <div className="top-language-wrap">
+        <button className="language" type="button" aria-expanded={languageOpen} onClick={() => setLanguageOpen((current) => !current)}>
           <Globe2 size={18} />
-          Deutsch
+          {languageLabel}
           <ChevronDown size={14} />
         </button>
-        <button className="icon-button notify" aria-label="Benachrichtigungen">
-          <Bell size={20} />
-        </button>
-        <div className="profile">
+        {languageOpen && <div className="top-language-menu">{APP_LANGUAGES.map(([code, label]) => <button type="button" className={language === code ? "active" : ""} key={code} onClick={() => { setLanguage(code); setLanguageOpen(false); }}><span>{label}</span>{language === code && <Check size={14} />}</button>)}</div>}
+        </div>
+        <button type="button" className="profile profile-trigger" onClick={onOpenProfile} aria-haspopup="dialog">
           <div className="avatar">MY</div>
           <div>
             <strong>Maria Yılmaz</strong>
             <span>Housekeeping</span>
           </div>
           <ChevronDown size={16} />
-        </div>
+        </button>
       </div>
     </header>
   );
@@ -773,7 +834,8 @@ function Topbar() {
  * kommen aus den Inhalten, der Fortschritt aus den beiden Speichern von
  * Lernen und Sprachhilfe.
  */
-function createDashboardSnapshot() {
+function createDashboardSnapshot(language = "de") {
+  const contentLang = contentLanguage(language);
   const learnState = learnStore.load();
   const languageState = languageStore.load();
 
@@ -783,8 +845,8 @@ function createDashboardSnapshot() {
     const next = role.tasks.find((task) => !learnState.lessons[task.id]?.completed) || null;
     return {
       id: role.id,
-      title: role.name.de,
-      text: role.tagline.de,
+      title: role.name[contentLang] || role.name.de,
+      text: role.tagline[contentLang] || role.tagline.de,
       image: roleImages[role.id],
       accent: role.accent,
       icon: role.icon,
@@ -792,7 +854,7 @@ function createDashboardSnapshot() {
       done,
       stars,
       percent: percent(done, role.tasks.length),
-      nextTitle: next ? next.title.de : null,
+      nextTitle: next ? (next.title[contentLang] || next.title.de) : null,
       nextMinutes: next ? next.minutes : 0
     };
   });
@@ -828,11 +890,11 @@ function createDashboardSnapshot() {
   };
 }
 
-function useDashboardSnapshot() {
-  const [snapshot, setSnapshot] = useState(createDashboardSnapshot);
+function useDashboardSnapshot(language) {
+  const [snapshot, setSnapshot] = useState(() => createDashboardSnapshot(language));
 
   useEffect(() => {
-    const refresh = () => setSnapshot(createDashboardSnapshot());
+    const refresh = () => setSnapshot(createDashboardSnapshot(language));
     refresh();
     window.addEventListener("focus", refresh);
     window.addEventListener("storage", refresh);
@@ -840,12 +902,13 @@ function useDashboardSnapshot() {
       window.removeEventListener("focus", refresh);
       window.removeEventListener("storage", refresh);
     };
-  }, []);
+  }, [language]);
 
   return snapshot;
 }
 
-function Hero({ data, onContinue, onOpenLanguage }) {
+function Hero({ data, onContinue, onOpenLanguage, language }) {
+  const t = (key, values) => appText(language, key, values);
   const started = data.doneTasks > 0;
   const next = data.next;
 
@@ -853,22 +916,21 @@ function Hero({ data, onContinue, onOpenLanguage }) {
     <section className="hero">
       <div className="hero-copy">
         <h1>
-          Willkommen im <br />
-          Hotel Alpenblick, <span>Maria!</span>
+          {t("hero.welcome")}
         </h1>
         <p>
           {next
-            ? `Als Nächstes: ${next.nextTitle} — ${next.title}, rund ${next.nextMinutes} Minuten. In deiner Sprache, Schritt für Schritt.`
-            : `Alle ${contentStats.tasks} Tätigkeiten sitzen. Wiederhole, was länger her ist, oder üb die Wörter dazu.`}
+            ? language === "en" ? `Next: ${next.nextTitle} — ${next.title}, about ${next.nextMinutes} minutes. Step by step in your language.` : `Als Nächstes: ${next.nextTitle} — ${next.title}, rund ${next.nextMinutes} Minuten. In deiner Sprache, Schritt für Schritt.`
+            : language === "en" ? `All ${contentStats.tasks} tasks are complete. Repeat something or practice the related words.` : `Alle ${contentStats.tasks} Tätigkeiten sitzen. Wiederhole, was länger her ist, oder üb die Wörter dazu.`}
         </p>
         <div className="hero-actions">
           <button className="primary-btn" onClick={onContinue}>
-            {next ? (started ? "Weiter lernen" : "Jetzt starten") : "Tätigkeit wiederholen"}
+            {next ? (started ? t("hero.continue") : t("hero.start")) : t("hero.repeat")}
             <span>→</span>
           </button>
           <button className="secondary-btn" onClick={onOpenLanguage}>
             <Play size={17} />
-            Wörter üben
+            {t("hero.words")}
           </button>
         </div>
       </div>
@@ -879,11 +941,12 @@ function Hero({ data, onContinue, onOpenLanguage }) {
   );
 }
 
-function ProgressSummary({ data }) {
+function ProgressSummary({ data, language }) {
+  const t = (key) => appText(language, key);
   return (
     <section className="summary-grid">
       <div className="progress-card">
-        <div className="card-title">Dein Onboarding-Fortschritt</div>
+        <div className="card-title">{t("progress.title")}</div>
         <div className="progress-row">
           <div className="progress-track">
             <span style={{ width: `${data.percent}%` }} />
@@ -891,12 +954,12 @@ function ProgressSummary({ data }) {
           <strong>{data.percent}%</strong>
         </div>
         <p>
-          {data.doneTasks} von {data.totalTasks} Tätigkeiten · Sprachhilfe {data.language.done}/{data.language.total} Lektionen
+          {data.doneTasks} {language === "en" ? "of" : "von"} {data.totalTasks} {t("modules.tasks")} · {language === "en" ? "Language help" : "Sprachhilfe"} {data.language.done}/{data.language.total} {t("modules.lessons")}
         </p>
       </div>
-      <Metric icon={<Flame size={22} />} value={data.streak} label="Tage in Folge" tone="orange" />
-      <Metric icon={<Star size={22} />} value={data.xp} label="XP Punkte" tone="gold" />
-      <Metric icon={<Trophy size={22} />} value={data.badges} label="Bereiche fertig" tone="orange" />
+      <Metric icon={<Flame size={22} />} value={data.streak} label={t("progress.days")} tone="orange" />
+      <Metric icon={<Star size={22} />} value={data.xp} label={t("progress.xp")} tone="gold" />
+      <Metric icon={<Trophy size={22} />} value={data.badges} label={t("progress.finished")} tone="orange" />
     </section>
   );
 }
@@ -1217,13 +1280,14 @@ function Metric({ icon, value, label, tone }) {
   );
 }
 
-function LearningModules({ data, onOpenRole, onOpenLanguage, onShowAll }) {
+function LearningModules({ data, onOpenRole, onOpenLanguage, onShowAll, language }) {
+  const t = (key, values) => appText(language, key, values);
   return (
     <section className="modules-section">
       <div className="section-heading">
-        <h2>Deine Lernmodule</h2>
+        <h2>{t("modules.title")}</h2>
         <button type="button" className="section-link" onClick={onShowAll}>
-          Alle Module anzeigen
+          {t("modules.all")}
           <span>→</span>
         </button>
       </div>
@@ -1248,13 +1312,13 @@ function LearningModules({ data, onOpenRole, onOpenLanguage, onShowAll }) {
                 )}
                 <span className="module-tag" style={{ background: role.accent }}>
                   <Icon size={13} />
-                  {role.total} Tätigkeiten
+                  {role.total} {t("modules.tasks")}
                 </span>
               </div>
               <h3>{role.title}</h3>
               <p>{role.text}</p>
               <span className="module-next">
-                {done ? "Alles geschafft — wiederholen" : `Als Nächstes: ${role.nextTitle}`}
+                {done ? t("modules.done") : t("modules.next", { title: role.nextTitle })}
               </span>
               <div className="module-progress">
                 <div>
@@ -1270,15 +1334,15 @@ function LearningModules({ data, onOpenRole, onOpenLanguage, onShowAll }) {
             <Globe2 size={30} />
             <span className="module-tag" style={{ background: "#0f9b8e" }}>
               <BookOpen size={13} />
-              {contentStats.lessons} Lektionen
+              {contentStats.lessons} {t("modules.lessons")}
             </span>
           </div>
-          <h3>Sprachhilfe</h3>
-          <p>{contentStats.words} Wörter aus dem Haus, {contentStats.languages} Sprachen</p>
+          <h3>{language === "en" ? "Language help" : "Sprachhilfe"}</h3>
+          <p>{contentStats.words} {language === "en" ? "words from the hotel, in" : "Wörter aus dem Haus,"} {contentStats.languages} {language === "en" ? "languages" : "Sprachen"}</p>
           <span className="module-next">
             {data.language.done === data.language.total && data.language.total
-              ? "Alles geschafft — wiederholen"
-              : "Wörter, Sätze und Karteikarten"}
+              ? t("modules.done")
+              : language === "en" ? "Words, sentences and flashcards" : "Wörter, Sätze und Karteikarten"}
           </span>
           <div className="module-progress">
             <div>
@@ -1292,17 +1356,18 @@ function LearningModules({ data, onOpenRole, onOpenLanguage, onShowAll }) {
   );
 }
 
-function QuickAccess({ onNavigate }) {
+function QuickAccess({ onNavigate, language }) {
+  const t = (key) => appText(language, key);
   const quickCards = [
-    ["quickhelp", "Quick Help fragen", `${contentStats.answers} Hausantworten, auch auf EN & TR`, MessageCircle],
-    ["sprachhilfe", "Wörter & Sätze üben", `${contentStats.words} Begriffe als Karteikarten`, Globe2],
-    ["fortschritt", "Mein Fortschritt", "Sterne, Serie und XP im Überblick", ChartNoAxesColumn],
-    ["team", "Team & Kontakte", "Hausdame, Rezeption, interne 100", Users]
+    ["quickhelp", t("quick.help"), language === "en" ? `${contentStats.answers} hotel answers, also in EN & TR` : `${contentStats.answers} Hausantworten, auch auf EN & TR`, MessageCircle],
+    ["sprachhilfe", t("quick.words"), language === "en" ? `${contentStats.words} terms as flashcards` : `${contentStats.words} Begriffe als Karteikarten`, Globe2],
+    ["fortschritt", t("quick.progress"), language === "en" ? "Stars, streak and XP at a glance" : "Sterne, Serie und XP im Überblick", ChartNoAxesColumn],
+    ["team", t("quick.team"), language === "en" ? "Housekeeping, reception, internal 100" : "Hausdame, Rezeption, interne 100", Users]
   ];
 
   return (
     <section className="quick-section">
-      <h2>Schnellzugriff</h2>
+      <h2>{t("quick.title")}</h2>
       <div className="quick-grid">
         {quickCards.map(([tab, title, text, Icon]) => (
           <button type="button" className="quick-card" key={tab} onClick={() => onNavigate(tab)}>
@@ -1320,7 +1385,8 @@ function QuickAccess({ onNavigate }) {
   );
 }
 
-function Encouragement({ data, onProgress }) {
+function Encouragement({ data, onProgress, language }) {
+  const t = (key) => appText(language, key);
   const open = data.totalTasks - data.doneTasks;
   return (
     <section className="encouragement">
@@ -1328,17 +1394,17 @@ function Encouragement({ data, onProgress }) {
         <Sparkles size={36} />
       </div>
       <div>
-        <h3>Kleine Schritte. Große Fortschritte.</h3>
+        <h3>{t("enc.title")}</h3>
         <p>
           {data.doneTasks === 0
-            ? `${data.totalTasks} Tätigkeiten warten auf dich. Die erste dauert nur wenige Minuten.`
+            ? language === "en" ? `${data.totalTasks} tasks are waiting for you. The first takes just a few minutes.` : `${data.totalTasks} Tätigkeiten warten auf dich. Die erste dauert nur wenige Minuten.`
             : open === 0
-              ? `Alle ${data.totalTasks} Tätigkeiten geschafft — ${data.stars} Sterne gesammelt.`
-              : `${data.doneTasks} geschafft, noch ${open} offen. ${data.stars} Sterne bisher.`}
+              ? language === "en" ? `All ${data.totalTasks} tasks done — ${data.stars} stars collected.` : `Alle ${data.totalTasks} Tätigkeiten geschafft — ${data.stars} Sterne gesammelt.`
+              : language === "en" ? `${data.doneTasks} done, ${open} still open. ${data.stars} stars so far.` : `${data.doneTasks} geschafft, noch ${open} offen. ${data.stars} Sterne bisher.`}
         </p>
       </div>
       <button className="secondary-btn" onClick={onProgress}>
-        Mein Fortschritt
+        {t("enc.progress")}
         <span>→</span>
       </button>
     </section>
@@ -1438,7 +1504,7 @@ function ChatPanel({ mode = "side", messages, setMessages, onOpenLanguageHelp })
     }
   }, [messages, isThinking]);
 
-  async function askQuickHelp(rawQuestion) {
+  async function askQuickHelp(rawQuestion, { requireAi = true } = {}) {
     const trimmed = rawQuestion.trim();
     if ((!trimmed && !attachment) || isThinking) return;
 
@@ -1592,7 +1658,7 @@ function ChatPanel({ mode = "side", messages, setMessages, onOpenLanguageHelp })
   );
 }
 
-function QuickHelpWorkspace({ threads, setThreads, activeThreadId, setActiveThreadId, onOpenLanguageHelp }) {
+function QuickHelpWorkspace({ threads, setThreads, activeThreadId, setActiveThreadId, onOpenLanguageHelp, searchCommand }) {
   const [question, setQuestion] = useState("");
   const [attachment, setAttachment] = useState(null);
   const [isThinking, setIsThinking] = useState(false);
@@ -1620,7 +1686,7 @@ function QuickHelpWorkspace({ threads, setThreads, activeThreadId, setActiveThre
     setActiveThreadId(null);
   }
 
-  async function askQuickHelp(rawQuestion) {
+  async function askQuickHelp(rawQuestion, { requireAi = true } = {}) {
     const trimmed = rawQuestion.trim();
     if ((!trimmed && !attachment) || isThinking) return;
 
@@ -1660,7 +1726,7 @@ function QuickHelpWorkspace({ threads, setThreads, activeThreadId, setActiveThre
         attachment: image,
         language: answerLanguage,
         history: messages,
-        requireAi: true
+        requireAi
       }),
       wait(image ? 0 : 900)
     ]);
@@ -1672,6 +1738,10 @@ function QuickHelpWorkspace({ threads, setThreads, activeThreadId, setActiveThre
     }));
     setIsThinking(false);
   }
+
+  useEffect(() => {
+    if (searchCommand?.question) askQuickHelp(searchCommand.question, { requireAi: false });
+  }, [searchCommand?.id]);
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -1818,18 +1888,29 @@ function QuickHelpWorkspace({ threads, setThreads, activeThreadId, setActiveThre
   );
 }
 
+function ProfilePopup({ onClose }) {
+  return <div className="profile-modal-backdrop" role="presentation" onMouseDown={onClose}>
+    <section className="profile-modal" role="dialog" aria-modal="true" aria-label="Profilvorschau" onMouseDown={(event) => event.stopPropagation()}>
+      <header><span>Profilvorschau</span><button type="button" aria-label="Profil schließen" onClick={onClose}><X size={18} /></button></header>
+      <div className="profile-modal-person"><div className="avatar">MY</div><div><h2>Maria Yılmaz</h2><p>Housekeeping · Hotel Alpenblick</p></div></div>
+      <dl><div><dt>Mitarbeiter-ID</dt><dd>MA-2048</dd></div><div><dt>E-Mail</dt><dd>maria.yilmaz@alpenblick.demo</dd></div><div><dt>Startdatum</dt><dd>03. September 2025</dd></div></dl>
+    </section>
+  </div>;
+}
+
 function SettingsPage({ theme, setTheme, language, setLanguage, reducedMotion, setReducedMotion }) {
+  const t = (key) => appText(language, key);
   const themeOptions = [
     ["light", "Hell", "Helle Oberfläche", Sun],
     ["dark", "Dunkel", "Dunkle Oberfläche", Moon],
     ["system", "System", "Geräteeinstellung", Monitor]
   ];
-  const languages = [["de", "Deutsch"], ["en", "English"], ["pl", "Polski"], ["hr", "Hrvatski"], ["sr", "Srpski"]];
+  const languages = APP_LANGUAGES;
 
   return (
     <div className="content-grid tab-grid settings-grid">
       <section className="tab-page settings-page">
-        <div className="tab-heading"><h1>Einstellungen</h1><p>Darstellung und Sprache für deinen Arbeitsplatz.</p></div>
+        <div className="tab-heading"><h1>{t("settings.title")}</h1><p>{t("settings.text")}</p></div>
         <section className="settings-card">
           <div className="settings-card-head"><div className="settings-icon"><Sun size={19} /></div><div><h2>Darstellung</h2><p>Wähle, wie WorkLingo aussehen soll.</p></div></div>
           <div className="theme-choice" role="radiogroup" aria-label="Darstellung auswählen">
@@ -1837,8 +1918,8 @@ function SettingsPage({ theme, setTheme, language, setLanguage, reducedMotion, s
           </div>
         </section>
         <section className="settings-card">
-          <div className="settings-card-head"><div className="settings-icon"><Globe2 size={19} /></div><div><h2>Sprache</h2><p>Für Menüs und Hinweise in WorkLingo.</p></div></div>
-          <label className="settings-select"><span>App-Sprache</span><select value={language} onChange={(event) => setLanguage(event.target.value)}>{languages.map(([code, label]) => <option key={code} value={code}>{label}</option>)}</select></label>
+          <div className="settings-card-head"><div className="settings-icon"><Globe2 size={19} /></div><div><h2>{t("settings.language")}</h2><p>{t("settings.languageText")}</p></div></div>
+          <label className="settings-select"><span>{t("settings.appLanguage")}</span><select value={language} onChange={(event) => setLanguage(event.target.value)}>{languages.map(([code, label]) => <option key={code} value={code}>{label}</option>)}</select></label>
         </section>
         <section className="settings-card settings-row"><div><h2>Weniger Bewegung</h2><p>Reduziert Animationen in der Oberfläche.</p></div><button type="button" className={`settings-switch ${reducedMotion ? "on" : ""}`} role="switch" aria-checked={reducedMotion} onClick={() => setReducedMotion(!reducedMotion)}><i /><span>{reducedMotion ? "An" : "Aus"}</span></button></section>
       </section>
@@ -1854,6 +1935,8 @@ function App() {
   const [quickHelpMessages, setQuickHelpMessages] = useState([]);
   const [quickHelpThreads, setQuickHelpThreads] = useState([]);
   const [activeQuickHelpThreadId, setActiveQuickHelpThreadId] = useState(null);
+  const [searchCommand, setSearchCommand] = useState(null);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-color-scheme: dark)");
@@ -1868,8 +1951,10 @@ function App() {
   }, [theme]);
 
   useEffect(() => {
-    document.documentElement.lang = language;
+    const lang = contentLanguage(language);
+    document.documentElement.lang = lang;
     localStorage.setItem("worklingo-language", language);
+    window.dispatchEvent(new CustomEvent(APP_LANGUAGE_EVENT, { detail: lang }));
   }, [language]);
 
   useEffect(() => {
@@ -1877,11 +1962,19 @@ function App() {
     localStorage.setItem("worklingo-reduced-motion", String(reducedMotion));
   }, [reducedMotion]);
 
+  function handleSearchSelect(result) {
+    setActiveTab(result.tab);
+    if (result.type === "quickhelp") setSearchCommand({ id: crypto.randomUUID(), question: result.question });
+  }
+
+  const languageValue = { language, contentLanguage: contentLanguage(language), t: (key, values) => appText(language, key, values) };
+
   return (
+    <AppLanguageContext.Provider value={languageValue}>
     <div className="app-shell">
-      <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
+      <Sidebar activeTab={activeTab} onTabChange={setActiveTab} language={language} />
       <main className="main">
-        <Topbar />
+        <Topbar onSearchSelect={handleSearchSelect} language={language} setLanguage={setLanguage} onOpenProfile={() => setProfileOpen(true)} />
         <TabContent
           activeTab={activeTab}
           setActiveTab={setActiveTab}
@@ -1891,6 +1984,7 @@ function App() {
           setQuickHelpThreads={setQuickHelpThreads}
           activeQuickHelpThreadId={activeQuickHelpThreadId}
           setActiveQuickHelpThreadId={setActiveQuickHelpThreadId}
+          searchCommand={searchCommand}
           theme={theme}
           setTheme={setTheme}
           language={language}
@@ -1899,7 +1993,9 @@ function App() {
           setReducedMotion={setReducedMotion}
         />
       </main>
+      {profileOpen && <ProfilePopup onClose={() => setProfileOpen(false)} />}
     </div>
+    </AppLanguageContext.Provider>
   );
 }
 
@@ -1912,6 +2008,7 @@ function TabContent({
   setQuickHelpThreads,
   activeQuickHelpThreadId,
   setActiveQuickHelpThreadId,
+  searchCommand,
   theme,
   setTheme,
   language,
@@ -1932,6 +2029,7 @@ function TabContent({
             activeThreadId={activeQuickHelpThreadId}
             setActiveThreadId={setActiveQuickHelpThreadId}
             onOpenLanguageHelp={() => setActiveTab("sprachhilfe")}
+            searchCommand={searchCommand}
           />
         </section>
       </div>
@@ -1955,8 +2053,8 @@ function TabContent({
       <div className="content-grid tab-grid">
         <section className="tab-page">
           <div className="tab-heading">
-            <h1>Mein Fortschritt</h1>
-            <p>Deine Übungen aus Lernen und Sprachhilfe auf einen Blick.</p>
+            <h1>{appText(language, "page.progress")}</h1>
+            <p>{appText(language, "page.progressText")}</p>
           </div>
           <ProgressDashboard />
         </section>
@@ -1973,8 +2071,8 @@ function TabContent({
       <div className="content-grid tab-grid">
         <section className="tab-page">
           <div className="tab-heading">
-            <h1>Team & Kontakte</h1>
-            <p>Die wichtigsten Ansprechpartner:innen für deine Schicht.</p>
+            <h1>{appText(language, "page.team")}</h1>
+            <p>{appText(language, "page.teamText")}</p>
           </div>
           <div className="team-grid">
             {[
@@ -1999,7 +2097,7 @@ function TabContent({
 
   return (
     <div className="content-grid">
-      <Dashboard setActiveTab={setActiveTab} />
+      <Dashboard setActiveTab={setActiveTab} language={language} />
       <ChatPanel
         messages={quickHelpMessages}
         setMessages={setQuickHelpMessages}
@@ -2009,8 +2107,8 @@ function TabContent({
   );
 }
 
-function Dashboard({ setActiveTab }) {
-  const data = useDashboardSnapshot();
+function Dashboard({ setActiveTab, language }) {
+  const data = useDashboardSnapshot(language);
 
   /* Ein Klick aufs Modul waehlt die Rolle im Lern-Reiter vor — derselbe
      Speicher, den LearnTab beim Oeffnen liest. */
@@ -2023,18 +2121,20 @@ function Dashboard({ setActiveTab }) {
     <div className="dashboard">
       <Hero
         data={data}
+        language={language}
         onContinue={() => (data.next ? openRole(data.next.id) : setActiveTab("lernen"))}
         onOpenLanguage={() => setActiveTab("sprachhilfe")}
       />
-      <ProgressSummary data={data} />
+      <ProgressSummary data={data} language={language} />
       <LearningModules
         data={data}
         onOpenRole={openRole}
         onOpenLanguage={() => setActiveTab("sprachhilfe")}
         onShowAll={() => setActiveTab("lernen")}
+        language={language}
       />
-      <QuickAccess onNavigate={setActiveTab} />
-      <Encouragement data={data} onProgress={() => setActiveTab("fortschritt")} />
+      <QuickAccess onNavigate={setActiveTab} language={language} />
+      <Encouragement data={data} onProgress={() => setActiveTab("fortschritt")} language={language} />
     </div>
   );
 }

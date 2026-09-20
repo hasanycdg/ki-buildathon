@@ -6,6 +6,7 @@ import { LANGS, t } from "./i18n.js";
 import * as store from "./store.js";
 import TaskPlayer, { Stars } from "./TaskPlayer.jsx";
 import { applyContentState, CONTENT_EVENT, loadContentState } from "../admin/contentStore.js";
+import { APP_LANGUAGE_EVENT, useAppLanguage } from "../appLanguage.js";
 import "./learn.css";
 
 const ICONS = { BedDouble, ConciergeBell, UtensilsCrossed, SprayCan };
@@ -135,6 +136,7 @@ function Done({ result, lang, onClose }) {
 }
 
 export default function LearnTab() {
+  const { contentLanguage } = useAppLanguage();
   const [state, setState] = useState(() => store.syncHearts(store.load()));
   const [contentState, setContentState] = useState(loadContentState);
   const [active, setActive] = useState(null);
@@ -145,6 +147,17 @@ export default function LearnTab() {
     const sync = (event) => setContentState(event.detail || loadContentState());
     window.addEventListener(CONTENT_EVENT, sync);
     return () => window.removeEventListener(CONTENT_EVENT, sync);
+  }, []);
+  useEffect(() => {
+    if (["de", "en", "pl", "hr", "sr"].includes(contentLanguage)) setState((current) => ({ ...current, lang: contentLanguage }));
+  }, [contentLanguage]);
+  useEffect(() => {
+    const syncLanguage = (event) => {
+      const language = event.detail;
+      if (["de", "en", "pl", "hr", "sr"].includes(language)) setState((current) => ({ ...current, lang: language }));
+    };
+    window.addEventListener(APP_LANGUAGE_EVENT, syncLanguage);
+    return () => window.removeEventListener(APP_LANGUAGE_EVENT, syncLanguage);
   }, []);
 
   const lang = state.lang || "de";

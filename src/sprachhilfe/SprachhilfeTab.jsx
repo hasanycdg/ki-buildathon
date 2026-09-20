@@ -15,6 +15,7 @@ import { load as loadLearnState } from "../learn/store.js";
 import LessonPlayer from "./LessonPlayer.jsx";
 import CardTrainer from "./CardTrainer.jsx";
 import { speak } from "./speech.js";
+import { APP_LANGUAGE_EVENT, useAppLanguage } from "../appLanguage.js";
 import "../learn/learn.css";
 import "./sprachhilfe.css";
 
@@ -341,6 +342,7 @@ const TABS = [
 ];
 
 export default function SprachhilfeTab() {
+  const { contentLanguage } = useAppLanguage();
   const [state, setState] = useState(() => {
     const own = store.syncHearts(store.load());
     // Beim allerersten Oeffnen die Rolle aus dem Lern-Tab uebernehmen:
@@ -356,6 +358,17 @@ export default function SprachhilfeTab() {
   const [result, setResult] = useState(null);
 
   useEffect(() => { store.save(state); }, [state]);
+  useEffect(() => {
+    const syncLanguage = (event) => {
+      const language = event.detail;
+      if (LANGS.some(([code]) => code === language)) setState((current) => ({ ...current, lang: language }));
+    };
+    window.addEventListener(APP_LANGUAGE_EVENT, syncLanguage);
+    return () => window.removeEventListener(APP_LANGUAGE_EVENT, syncLanguage);
+  }, []);
+  useEffect(() => {
+    if (LANGS.some(([code]) => code === contentLanguage)) setState((current) => ({ ...current, lang: contentLanguage }));
+  }, [contentLanguage]);
 
   const lang = state.lang || "en";
   const setLang = (l) => setState((s) => ({ ...s, lang: l }));
