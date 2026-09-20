@@ -30,6 +30,7 @@ import {
   Users,
   Zap
 } from "lucide-react";
+import LearnTab from "./learn/LearnTab.jsx";
 import "./styles.css";
 
 const modules = [
@@ -77,7 +78,7 @@ const quickCards = [
 ];
 
 const navItems = [
-  ["Dashboard", Home, true],
+  ["Dashboard", Home],
   ["Lernen", BookOpen],
   ["Mein Fortschritt", ChartNoAxesColumn],
   ["Quick Help (KI-Chat)", MessageCircle],
@@ -85,7 +86,7 @@ const navItems = [
   ["Team & Kontakte", Users]
 ];
 
-function Sidebar() {
+function Sidebar({ active, onNavigate }) {
   return (
     <aside className="sidebar">
       <div className="brand">
@@ -97,11 +98,16 @@ function Sidebar() {
       </div>
 
       <nav className="nav-list">
-        {navItems.map(([label, Icon, active]) => (
-          <a className={active ? "nav-item active" : "nav-item"} href="#" key={label}>
+        {navItems.map(([label, Icon]) => (
+          <button
+            type="button"
+            className={active === label ? "nav-item active" : "nav-item"}
+            key={label}
+            onClick={() => onNavigate(label)}
+          >
             <Icon size={20} />
             <span>{label}</span>
-          </a>
+          </button>
         ))}
       </nav>
 
@@ -408,21 +414,29 @@ function ChatPanel() {
 }
 
 function App() {
+  const [tab, setTab] = useState("Dashboard");
+
   return (
     <div className="app-shell">
-      <Sidebar />
+      <Sidebar active={tab} onNavigate={setTab} />
       <main className="main">
         <Topbar />
-        <div className="content-grid">
-          <div className="dashboard">
-            <Hero />
-            <ProgressSummary />
-            <LearningModules />
-            <QuickAccess />
-            <Encouragement />
+        {tab === "Lernen" ? (
+          <div className="content-single">
+            <LearnTab />
           </div>
-          <ChatPanel />
-        </div>
+        ) : (
+          <div className="content-grid">
+            <div className="dashboard">
+              <Hero />
+              <ProgressSummary />
+              <LearningModules />
+              <QuickAccess />
+              <Encouragement />
+            </div>
+            <ChatPanel />
+          </div>
+        )}
       </main>
     </div>
   );

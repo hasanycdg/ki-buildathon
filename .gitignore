@@ -2,3 +2,9 @@ node_modules/
 dist/
 *.local
 worklingo-*.png
+
+# Persoenliches Arbeits-Log (nur lokal, nie pushen)
+log.md
+
+# Persoenliche Claude-Code-Konfiguration
+.claude/
