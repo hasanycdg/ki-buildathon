@@ -168,6 +168,9 @@
 }
 .sh-direction button.active { border-color: var(--blue); background: var(--soft); color: var(--blue); }
 
+.sh-pick-lang > div { flex-wrap: wrap; gap: 6px; }
+.sh-pick-lang button { flex: 1 1 60px; padding: 9px 4px; font-size: 13px; letter-spacing: .03em; }
+
 .sh-card {
   position: relative; width: 100%; max-width: 480px; min-height: 230px;
   display: flex; flex-direction: column; align-items: center; justify-content: center;

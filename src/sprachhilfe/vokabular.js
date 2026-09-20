@@ -132,7 +132,7 @@ export function buildDeck(words, lang, direction, { id, title }) {
         target
       };
     });
-  return { id, title, direction: de2tr ? "de2tr" : "tr2de", cards };
+  return { id, title, lang, direction: de2tr ? "de2tr" : "tr2de", cards };
 }
 
 /** Die IDs beider Karten zu einem Wort — der Schluessel zu seinem Fortschritt. */

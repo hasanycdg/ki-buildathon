@@ -387,12 +387,16 @@ export default function SprachhilfeTab() {
     setDeckSource({ words: source, id, title });
   }
 
+  // Karten brauchen eine Gegensprache. Wer die Oberflaeche auf Deutsch stehen
+  // hat, bekommt Englisch als Vorgabe — eine Karte "Bett / Bett" ist keine.
+  const cardLang = lang === "de" ? "en" : lang;
+
   const deck = useMemo(() => {
     if (!deckSource) return null;
-    return buildDeck(deckSource.words, lang, direction, {
+    return buildDeck(deckSource.words, cardLang, direction, {
       id: deckSource.id, title: deckSource.title
     });
-  }, [deckSource, lang, direction]);
+  }, [deckSource, cardLang, direction]);
 
   const onBlock = (block) =>
     startDeck(block.words, block.id, `${t(UI.block, lang)} ${block.number}`);
@@ -413,6 +417,7 @@ export default function SprachhilfeTab() {
       <CardTrainer
         deck={deck}
         lang={lang}
+        onLang={setLang}
         onDirection={setDirection}
         onAnswered={(cardId, quality) => setState((s) => store.recordAnswer(s, cardId, quality))}
         onFinish={({ xp, perfect, total, retries }) => {

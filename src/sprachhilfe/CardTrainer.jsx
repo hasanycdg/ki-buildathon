@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ArrowRight, Check, RotateCcw, Volume2, X } from "lucide-react";
 import { createQueue, current, answer, isComplete, progress, qualityOf } from "../learn/queue.js";
 import { speak } from "./speech.js";
-import { UI, t } from "./ui.js";
+import { UI, LANGS, t } from "./ui.js";
 
 /**
  * Karteikarten-Training
@@ -20,7 +20,7 @@ import { UI, t } from "./ui.js";
  * wird, hat das Wort nicht gelesen. Der Block ist durch, wenn jede Karte
  * einmal gewusst wurde.
  */
-export default function CardTrainer({ deck, lang, onDirection, onAnswered, onFinish, onQuit }) {
+export default function CardTrainer({ deck, lang, onLang, onDirection, onAnswered, onFinish, onQuit }) {
   const [phase, setPhase] = useState("ready");      // ready | play
   const [queue, setQueue] = useState(() => createQueue(deck.cards));
   const [flipped, setFlipped] = useState(false);
@@ -31,15 +31,16 @@ export default function CardTrainer({ deck, lang, onDirection, onAnswered, onFin
   const entry = current(queue);
   const card = entry?.exercise;
   const de2tr = deck.direction === "de2tr";
+  const short = LANGS.find(([code]) => code === deck.lang)?.[2] || deck.lang.toUpperCase();
 
-  // Anderer Stapel oder andere Richtung -> von vorne
+  // Anderer Stapel, andere Sprache oder andere Richtung -> von vorne
   useEffect(() => {
     setQueue(createQueue(deck.cards));
     setFlipped(false);
     setHolding(false);
     setKnownFirstTry(0);
     setMissed(0);
-  }, [deck.id, deck.direction]);
+  }, [deck.id, deck.lang, deck.direction]);
 
   const head = (
     <header className="lp-head">
@@ -67,17 +68,32 @@ export default function CardTrainer({ deck, lang, onDirection, onAnswered, onFin
             <h2>{t(UI.ready, lang)}</h2>
             <p>{t(de2tr ? UI.readyHint : UI.readyHintR, lang)}</p>
 
-            {onDirection && lang !== "de" && (
+            {onLang && (
+              <div className="sh-direction sh-pick-lang">
+                <span>{t(UI.yourLang, lang)}</span>
+                <div>
+                  {LANGS.filter(([code]) => code !== "de").map(([code, name, abbr]) => (
+                    <button key={code} type="button" title={name}
+                      className={code === deck.lang ? "active" : ""}
+                      onClick={() => onLang(code)}>
+                      {abbr}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {onDirection && (
               <div className="sh-direction">
                 <span>{t(UI.direction, lang)}</span>
                 <div>
                   <button type="button" className={de2tr ? "active" : ""}
                     onClick={() => onDirection("de2tr")}>
-                    DE <ArrowRight size={13} /> {lang.toUpperCase()}
+                    DE <ArrowRight size={13} /> {short}
                   </button>
                   <button type="button" className={!de2tr ? "active" : ""}
                     onClick={() => onDirection("tr2de")}>
-                    {lang.toUpperCase()} <ArrowRight size={13} /> DE
+                    {short} <ArrowRight size={13} /> DE
                   </button>
                 </div>
               </div>

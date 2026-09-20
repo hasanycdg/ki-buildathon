@@ -8,7 +8,6 @@ import {
   ChartNoAxesColumn,
   Check,
   ChevronDown,
-  ExternalLink,
   FileText,
   Flame,
   Gauge,
@@ -32,9 +31,14 @@ import {
   X
 } from "lucide-react";
 import LearnTab from "./learn/LearnTab.jsx";
+import { ROLES as LEARN_ROLES } from "./learn/tasks/index.js";
+import * as learnStore from "./learn/store.js";
+import * as LearningScenes from "./learn/scenes/index.js";
 import SprachhilfeTab from "./sprachhilfe/SprachhilfeTab.jsx";
+import { ROLES as LANGUAGE_ROLES } from "./sprachhilfe-inhalte/index.js";
+import * as languageStore from "./sprachhilfe/store.js";
 import quickHelpKnowledge from "./data/quickHelpKnowledge.json";
-import { analyzeImage, isSupportedImage, readImageFile, visionEnabled } from "./imageAnalysis";
+import { isSupportedImage, readImageFile } from "./imageAnalysis";
 import "./styles.css";
 
 const modules = [
@@ -149,7 +153,8 @@ const imageThinkingLabels = {
 };
 
 const answerSourceLabels = {
-  vision: "KI-Bildanalyse",
+  openai: "WorkLingo AI",
+  setup: "WorkLingo AI Setup",
   catalog: "Bekanntes Hausbeispiel",
   fallback: "Allgemeine Hausregel"
 };
@@ -161,6 +166,140 @@ function thinkingLabel(mode, language) {
 
 function wait(milliseconds) {
   return new Promise((resolve) => window.setTimeout(resolve, milliseconds));
+}
+
+const learningAnimations = {
+  "bed-making": {
+    title: "Bett beziehen",
+    Scene: LearningScenes.BedScene,
+    captions: [
+      "Matratze prüfen",
+      "Leintuch auflegen",
+      "Ecken fest spannen",
+      "Decke glatt ziehen",
+      "Polster aufschütteln",
+      "Kontrollblick"
+    ],
+    keywords: [
+      "bett beziehen", "bett machen", "bettwaesche wechseln", "bettwasche wechseln",
+      "bett neu beziehen", "bettdecke beziehen", "leintuch spannen", "making the bed",
+      "make the bed", "change bed linen", "bed linen", "yatak yapmak", "nevresim",
+      "carsafi", "posteľ", "postel", "posteljina", "ścielić"
+    ]
+  },
+  "room-check": {
+    title: "Zimmer kontrollieren",
+    Scene: LearningScenes.RoomScene,
+    captions: [
+      "Tür und Überblick",
+      "Bett und Nachttisch",
+      "Fenster und Vorhänge",
+      "Schrank und Spiegel",
+      "Papierkorb und Minibar"
+    ],
+    keywords: [
+      "zimmer kontrollieren", "zimmer checken", "zimmer pruefen", "zimmer prüfen",
+      "zimmer reinigen", "reinige ich zimmer", "zimmer putzen", "abreisezimmer",
+      "kontrollblick", "zimmer freigeben", "zimmer fertig", "room check", "inspect room",
+      "check room", "minibar pruefen", "minibar prüfen", "unter dem bett", "hotelzimmer"
+    ]
+  },
+  "bath-cleaning": {
+    title: "Bad reinigen",
+    Scene: LearningScenes.BathScene,
+    captions: [
+      "Spiegel reinigen",
+      "Waschbecken reinigen",
+      "Dusche prüfen",
+      "WC zuletzt reinigen",
+      "Kontrollblick"
+    ],
+    keywords: [
+      "bad reinigen", "badezimmer reinigen", "wc reinigen", "toilette reinigen",
+      "reinige ich das bad", "das bad reinigen", "bad putzen", "badezimmer putzen",
+      "dusche reinigen", "waschbecken", "spiegel reinigen", "bathroom clean",
+      "clean bathroom", "clean toilet", "duş", "banyo", "lavabo", "tuvalet"
+    ]
+  },
+  "reception-checkin": {
+    title: "Check-in an der Rezeption",
+    Scene: LearningScenes.ReceptionScene,
+    captions: [
+      "Gast begrüßen",
+      "Buchung im System suchen",
+      "Daten prüfen",
+      "Besonderheiten notieren",
+      "Zimmerkarte ausgeben",
+      "Übergabe sichern"
+    ],
+    keywords: [
+      "check in", "check-in", "gast einchecken", "rezeption", "zimmerkarte",
+      "checkin machen", "gast aufnehmen", "gast empfangen", "an der rezeption",
+      "buchungssystem", "buchung suchen", "meldezettel", "ortstaxe", "reception",
+      "front office", "alpinres", "guest checkin"
+    ]
+  },
+  "breakfast-buffet": {
+    title: "Frühstücksbuffet",
+    Scene: LearningScenes.BuffetScene,
+    captions: [
+      "Niesschutz prüfen",
+      "Temperatur messen",
+      "Warmhalten sichern",
+      "Kühlung kontrollieren",
+      "Buffet freigeben"
+    ],
+    keywords: [
+      "fruehstueck", "frühstück", "buffet", "fruehstuecksbuffet", "frühstücksbuffet",
+      "buffet aufbauen", "fruehstueck aufbauen", "frühstück aufbauen",
+      "kaffeemaschine", "glutenfrei", "laktosefrei", "breakfast", "buffet setup",
+      "haccp", "temperatur messen", "milch kuehlen", "milch kühlen"
+    ]
+  },
+  "lobby-cleaning": {
+    title: "Lobby und Gang sichern",
+    Scene: LearningScenes.LobbyScene,
+    captions: [
+      "Bereich prüfen",
+      "Nasse Stelle erkennen",
+      "Warnschild aufstellen",
+      "Sicher fertig melden"
+    ],
+    keywords: [
+      "lobby reinigen", "gang reinigen", "aufzug reinigen", "nasser boden",
+      "lobby putzen", "gang putzen", "stiegenhaus reinigen", "boden nass",
+      "warnschild", "stiegenhaus", "oeffentliche bereiche", "öffentliche bereiche",
+      "public area", "wet floor", "corridor", "elevator", "glas tuer", "glastuer"
+    ]
+  }
+};
+
+function detectLearningAnimation(question = "") {
+  const normalized = normalizeText(question);
+  const match = Object.entries(learningAnimations).find(([, animation]) => (
+    animation.keywords.some((keyword) => normalized.includes(normalizeText(keyword)))
+  ));
+  return match?.[0];
+}
+
+function createOpenAiSetupMessage(language) {
+  return {
+    id: crypto.randomUUID(),
+    role: "assistant",
+    text: language === "en"
+      ? "WorkLingo AI is not configured yet. Add OPENAI_API_KEY to the local .env file and restart the dev server."
+      : language === "tr"
+        ? "WorkLingo AI henüz yapılandırılmadı. Yerel .env dosyasına OPENAI_API_KEY ekle ve dev server'ı yeniden başlat."
+        : "WorkLingo AI ist noch nicht konfiguriert. Trage OPENAI_API_KEY in die lokale .env ein und starte den Dev-Server neu.",
+    steps: language === "en"
+      ? ["Create or open .env", "Set OPENAI_API_KEY", "Restart npm run dev"]
+      : language === "tr"
+        ? [".env dosyasını aç veya oluştur", "OPENAI_API_KEY değerini ekle", "npm run dev komutunu yeniden başlat"]
+        : [".env öffnen oder erstellen", "OPENAI_API_KEY eintragen", "npm run dev neu starten"],
+    linkLabel: "WorkLingo AI Setup",
+    source: "setup",
+    time: "jetzt"
+  };
 }
 
 function detectQuestionLanguage(question) {
@@ -273,31 +412,73 @@ function createAssistantMessage(entry, language) {
     steps: localizedEntry.steps ?? [],
     linkLabel: localizedEntry.linkLabel,
     image: visualAnswerIds.has(localizedEntry.id) ? localizedEntry.image : undefined,
-    time: "jetzt"
+    time: "jetzt",
+    animation: detectLearningAnimation(localizedEntry.question)
   };
 }
 
-async function buildAnswerMessage({ question, attachment, language }) {
-  if (!attachment) {
-    return createAssistantMessage(findQuickHelpAnswer(question), language);
+async function buildAnswerMessage({ question, attachment, language, history = [], requireAi = false }) {
+  try {
+    const response = await fetch("/api/quick-help", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        question,
+        attachment,
+        language,
+        history: history.map((message) => ({
+          role: message.role,
+          text: message.text
+        }))
+      })
+    });
+
+    if (!response.ok) {
+      const errorPayload = await response.json().catch(() => ({}));
+      const error = new Error(errorPayload.error || `Quick Help API ${response.status}`);
+      error.status = response.status;
+      throw error;
+    }
+
+    const result = await response.json();
+    return {
+      id: crypto.randomUUID(),
+      role: "assistant",
+      text: result.answer,
+      steps: result.steps ?? [],
+      linkLabel: result.linkLabel,
+      source: result.source ?? "openai",
+      time: "jetzt",
+      animation: detectLearningAnimation(question)
+    };
+  } catch (error) {
+    if (requireAi) {
+      return createOpenAiSetupMessage(language);
+    }
+
+    if (!attachment) {
+      return createAssistantMessage(findQuickHelpAnswer(question), language);
+    }
+
+    return {
+      id: crypto.randomUUID(),
+      role: "assistant",
+      text: language === "en"
+        ? "I cannot check the image with AI right now. Please take a photo and ask the housekeeper or reception on internal 100."
+        : language === "tr"
+          ? "Görseli şu anda KI ile kontrol edemiyorum. Lütfen fotoğraf çek ve kat şefine veya dahili 100'den resepsiyona sor."
+          : "Ich kann das Bild gerade nicht per KI prüfen. Mach bitte ein Foto und frag die Hausdame oder die Rezeption intern 100.",
+      steps: language === "en"
+        ? ["Keep the photo", "Do not repair anything yourself", "Ask the housekeeper or call internal 100"]
+        : language === "tr"
+          ? ["Fotoğrafı sakla", "Kendin tamir etme", "Kat şefine sor veya dahili 100'ü ara"]
+          : ["Foto behalten", "Nichts selbst reparieren", "Hausdame fragen oder intern 100 anrufen"],
+      linkLabel: language === "en" ? "Report issue" : language === "tr" ? "Sorun bildir" : "Problem melden",
+      source: "fallback",
+      time: "jetzt",
+      animation: detectLearningAnimation(question)
+    };
   }
-
-  const result = await analyzeImage({
-    dataUrl: attachment.dataUrl,
-    fileName: attachment.name,
-    language,
-    question
-  });
-
-  return {
-    id: crypto.randomUUID(),
-    role: "assistant",
-    text: result.answer,
-    steps: result.steps ?? [],
-    linkLabel: result.linkLabel,
-    source: result.source,
-    time: "jetzt"
-  };
 }
 
 function createQuickHelpThread(question = "Neuer Chat") {
@@ -307,6 +488,52 @@ function createQuickHelpThread(question = "Neuer Chat") {
     updatedAt: "jetzt",
     messages: []
   };
+}
+
+function ChatLearningAnimation({ type }) {
+  const animation = learningAnimations[type];
+  const [frame, setFrame] = useState(0);
+  const lastFrame = (animation?.captions.length ?? 1) - 1;
+
+  useEffect(() => {
+    if (!animation || lastFrame <= 0) return undefined;
+    setFrame(0);
+    const timer = window.setInterval(() => {
+      setFrame((currentFrame) => (currentFrame >= lastFrame ? 0 : currentFrame + 1));
+    }, 1400);
+    return () => window.clearInterval(timer);
+  }, [animation, lastFrame, type]);
+
+  if (!animation) return null;
+
+  const { Scene, captions, title } = animation;
+
+  return (
+    <div className="chat-learning-card">
+      <div className="chat-learning-header">
+        <span>Lernanimation</span>
+        <strong>{title}</strong>
+      </div>
+      <div className="chat-learning-stage">
+        <Scene frame={frame} />
+      </div>
+      <div className="chat-learning-caption">
+        <span>Schritt {frame + 1} von {lastFrame + 1}</span>
+        <strong>{captions[frame]}</strong>
+      </div>
+      <div className="chat-learning-dots">
+        {captions.map((caption, index) => (
+          <button
+            type="button"
+            aria-label={caption}
+            className={index === frame ? "active" : ""}
+            key={caption}
+            onClick={() => setFrame(index)}
+          />
+        ))}
+      </div>
+    </div>
+  );
 }
 
 function Sidebar({ activeTab, onTabChange }) {
@@ -437,6 +664,312 @@ function ProgressSummary() {
   );
 }
 
+function getLessonsFromRoles(roles) {
+  return roles.flatMap((role) =>
+    role.tasks || (role.units || role.modules || []).flatMap((unit) => unit.lessons || unit.modules || [])
+  );
+}
+
+function dayKeyFromTimestamp(timestamp) {
+  if (!timestamp) return null;
+  return new Date(timestamp).toISOString().slice(0, 10);
+}
+
+function collectActivity(lessonMap = {}, type) {
+  return Object.values(lessonMap)
+    .filter((lesson) => lesson?.lastDone)
+    .map((lesson) => ({
+      type,
+      timestamp: lesson.lastDone,
+      day: dayKeyFromTimestamp(lesson.lastDone),
+      hour: new Date(lesson.lastDone).getHours(),
+      count: Math.max(1, lesson.timesDone || 1)
+    }))
+    .filter((entry) => entry.day);
+}
+
+function countCompleted(lessonMap = {}) {
+  return Object.values(lessonMap).filter((lesson) => lesson?.completed).length;
+}
+
+function countAttempts(lessonMap = {}) {
+  return Object.values(lessonMap).reduce((sum, lesson) => sum + (lesson?.timesDone || 0), 0);
+}
+
+function countAnswersInRange(items = {}, since) {
+  return Object.values(items).filter((item) => !since || (item?.lastReview && item.lastReview >= since)).length;
+}
+
+function percent(value, total) {
+  if (!total) return 0;
+  return Math.min(100, Math.round((value / total) * 100));
+}
+
+function createProgressSnapshot(range = "all", area = "all") {
+  const learnState = learnStore.load();
+  const languageState = languageStore.load();
+  const learnLessons = getLessonsFromRoles(LEARN_ROLES);
+  const languageLessons = getLessonsFromRoles(LANGUAGE_ROLES);
+  const learnCompleted = countCompleted(learnState.lessons);
+  const languageCompleted = countCompleted(languageState.lessons);
+  const activities = [
+    ...collectActivity(learnState.lessons, "Lernen"),
+    ...collectActivity(languageState.lessons, "Sprachhilfe")
+  ];
+  const now = Date.now();
+  const since = range === "all" ? null : now - Number(range) * 86400000;
+  const rangeLabel = range === "all" ? "Alle" : range === "30" ? "30 Tage" : "7 Tage";
+  const visibleActivities = activities.filter((entry) => {
+    const inRange = !since || entry.timestamp >= since;
+    const inArea = area === "all" || entry.type === area;
+    return inRange && inArea;
+  });
+  const days = [...new Set(visibleActivities.map((entry) => entry.day))];
+  const hours = visibleActivities.reduce((map, entry) => {
+    map[entry.hour] = (map[entry.hour] || 0) + entry.count;
+    return map;
+  }, {});
+  const peakHour = Object.entries(hours).sort((a, b) => b[1] - a[1])[0]?.[0];
+  const weekDays = Array.from({ length: 7 }, (_, index) => {
+    const date = new Date();
+    date.setDate(date.getDate() - (6 - index));
+    const day = date.toISOString().slice(0, 10);
+    const learning = visibleActivities
+      .filter((entry) => entry.day === day && entry.type === "Lernen")
+      .reduce((sum, entry) => sum + entry.count, 0);
+    const language = visibleActivities
+      .filter((entry) => entry.day === day && entry.type === "Sprachhilfe")
+      .reduce((sum, entry) => sum + entry.count, 0);
+    return {
+      label: date.toLocaleDateString("de-AT", { weekday: "short" }),
+      learning,
+      language,
+      total: learning + language
+    };
+  });
+  const heatmapLength = range === "7" ? 49 : range === "30" ? 70 : 175;
+  const heatmap = Array.from({ length: heatmapLength }, (_, index) => {
+    const date = new Date();
+    date.setDate(date.getDate() - (heatmapLength - 1 - index));
+    const day = date.toISOString().slice(0, 10);
+    const value = visibleActivities
+      .filter((entry) => entry.day === day)
+      .reduce((sum, entry) => sum + entry.count, 0);
+    return { day, value };
+  });
+  const totalCompleted = learnCompleted + languageCompleted;
+  const totalLessons = learnLessons.length + languageLessons.length;
+  const visibleLearnAttempts = area === "Sprachhilfe"
+    ? 0
+    : visibleActivities.filter((entry) => entry.type === "Lernen").reduce((sum, entry) => sum + entry.count, 0);
+  const visibleLanguageAttempts = area === "Lernen"
+    ? 0
+    : visibleActivities.filter((entry) => entry.type === "Sprachhilfe").reduce((sum, entry) => sum + entry.count, 0);
+  const totalAttempts = visibleLearnAttempts + visibleLanguageAttempts;
+  const totalAnswers = (area === "Sprachhilfe" ? 0 : countAnswersInRange(learnState.items, since))
+    + (area === "Lernen" ? 0 : countAnswersInRange(languageState.items, since));
+
+  return {
+    range,
+    area,
+    rangeLabel,
+    totalCompleted,
+    totalLessons,
+    totalAttempts,
+    totalAnswers,
+    totalXp: (learnState.xp || 0) + (languageState.xp || 0),
+    activeDays: days.length,
+    streak: Math.max(learnState.streak?.count || 0, languageState.streak?.count || 0),
+    peakHour: peakHour ? `${peakHour} Uhr` : "Noch offen",
+    strongestArea: visibleLearnAttempts >= visibleLanguageAttempts ? "Lernen" : "Sprachhilfe",
+    overallPercent: percent(totalCompleted, totalLessons),
+    learning: {
+      completed: learnCompleted,
+      total: learnLessons.length,
+      attempts: visibleLearnAttempts,
+      xp: learnState.xp || 0,
+      percent: percent(learnCompleted, learnLessons.length)
+    },
+    language: {
+      completed: languageCompleted,
+      total: languageLessons.length,
+      attempts: visibleLanguageAttempts,
+      xp: languageState.xp || 0,
+      percent: percent(languageCompleted, languageLessons.length)
+    },
+    weekDays,
+    heatmap
+  };
+}
+
+function useProgressSnapshot(range, area) {
+  const [snapshot, setSnapshot] = useState(() => createProgressSnapshot(range, area));
+
+  useEffect(() => {
+    const refresh = () => setSnapshot(createProgressSnapshot(range, area));
+    refresh();
+    window.addEventListener("focus", refresh);
+    window.addEventListener("storage", refresh);
+    return () => {
+      window.removeEventListener("focus", refresh);
+      window.removeEventListener("storage", refresh);
+    };
+  }, [range, area]);
+
+  return snapshot;
+}
+
+function ProgressDashboard() {
+  const [range, setRange] = useState("all");
+  const [area, setArea] = useState("all");
+  const data = useProgressSnapshot(range, area);
+  const maxWeek = Math.max(1, ...data.weekDays.map((day) => day.total));
+  const areaTabs = [
+    ["all", "Übersicht"],
+    ["Lernen", "Lernen"],
+    ["Sprachhilfe", "Sprachhilfe"]
+  ];
+  const rangeTabs = [
+    ["all", "Alle"],
+    ["30", "30T"],
+    ["7", "7T"]
+  ];
+
+  return (
+    <section className="progress-dashboard">
+      <div className="progress-board">
+        <div className="progress-board-top">
+          <div className="progress-tabs" aria-label="Fortschritt Bereiche">
+            {areaTabs.map(([id, label]) => (
+              <button
+                key={id}
+                className={area === id ? "active" : ""}
+                type="button"
+                aria-pressed={area === id}
+                onClick={() => setArea(id)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <div className="progress-range" aria-label="Zeitraum">
+            {rangeTabs.map(([id, label]) => (
+              <button
+                key={id}
+                className={range === id ? "active" : ""}
+                type="button"
+                aria-pressed={range === id}
+                onClick={() => setRange(id)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="progress-stat-grid">
+          <ProgressStat label="Übungen" value={data.totalAttempts} />
+          <ProgressStat label="Antworten" value={data.totalAnswers} />
+          <ProgressStat label="XP gesamt" value={data.totalXp} />
+          <ProgressStat label="Aktive Tage" value={data.activeDays} />
+          <ProgressStat label="Streak" value={`${data.streak} Tage`} />
+          <ProgressStat label="Spitzenstunde" value={data.peakHour} />
+        </div>
+
+        <div className="activity-heatmap" aria-label={`Aktivität: ${data.rangeLabel}`}>
+          {data.heatmap.map((cell) => (
+            <span
+              key={cell.day}
+              className={`heat-cell level-${Math.min(4, cell.value)}`}
+              title={`${cell.day}: ${cell.value} Übungen`}
+            />
+          ))}
+        </div>
+
+        <p className="progress-board-note">
+          Zeitraum: {data.rangeLabel}. Du hast {data.totalCompleted} von {data.totalLessons} Lektionen abgeschlossen.
+          Stärkster Bereich: {data.strongestArea}.
+        </p>
+      </div>
+
+      <div className="progress-analytics-grid">
+        <article className="progress-panel progress-panel-main">
+          <div className="panel-heading-row">
+            <div>
+              <span>Gesamtfortschritt</span>
+              <h2>{data.overallPercent}%</h2>
+            </div>
+            <Gauge size={28} />
+          </div>
+          <div className="large-progress-track">
+            <span style={{ width: `${data.overallPercent}%` }} />
+          </div>
+          <div className="area-bars">
+            <AreaProgress label="Lernen" done={data.learning.completed} total={data.learning.total} percent={data.learning.percent} />
+            <AreaProgress
+              label="Sprachhilfe"
+              done={data.language.completed}
+              total={data.language.total}
+              percent={data.language.percent}
+            />
+          </div>
+        </article>
+
+        <article className="progress-panel">
+          <div className="panel-heading-row compact">
+            <div>
+              <span>Letzte 7 Tage</span>
+              <h2>Übungsrhythmus</h2>
+            </div>
+            <ChartNoAxesColumn size={26} />
+          </div>
+          <div className="weekly-chart">
+            {data.weekDays.map((day) => (
+              <div className="week-column" key={day.label}>
+                <div className="week-stack">
+                  <span className="week-language" style={{ height: `${(day.language / maxWeek) * 100}%` }} />
+                  <span className="week-learning" style={{ height: `${(day.learning / maxWeek) * 100}%` }} />
+                </div>
+                <small>{day.label}</small>
+              </div>
+            ))}
+          </div>
+          <div className="chart-legend">
+            <span><i className="legend-learning" /> Lernen</span>
+            <span><i className="legend-language" /> Sprachhilfe</span>
+          </div>
+        </article>
+      </div>
+    </section>
+  );
+}
+
+function ProgressStat({ label, value }) {
+  return (
+    <div className="progress-stat">
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </div>
+  );
+}
+
+function AreaProgress({ label, done, total, percent }) {
+  return (
+    <div className="area-progress">
+      <div>
+        <strong>{label}</strong>
+        <span>
+          {done}/{total} Lektionen
+        </span>
+      </div>
+      <div className="area-track">
+        <span style={{ width: `${percent}%` }} />
+      </div>
+      <b>{percent}%</b>
+    </div>
+  );
+}
+
 function Metric({ icon, value, label, tone }) {
   return (
     <div className={`metric ${tone}`}>
@@ -563,7 +1096,7 @@ function ChatComposer({ className = "", question, setQuestion, attachment, setAt
           <img src={attachment.dataUrl} alt="" />
           <div>
             <strong>{attachment.name}</strong>
-            <span>{visionEnabled ? "Wird per KI-Bildanalyse geprüft" : "Wird mit dem Hauswissen abgeglichen"}</span>
+            <span>WorkLingo AI prüft Problem und nächste Schritte</span>
           </div>
           <button type="button" aria-label="Anhang entfernen" onClick={() => setAttachment(null)}>
             <X size={16} />
@@ -640,7 +1173,7 @@ function ChatPanel({ mode = "side", messages, setMessages, onOpenLanguageHelp })
     setIsThinking(true);
 
     const [answerMessage] = await Promise.all([
-      buildAnswerMessage({ question: trimmed, attachment: image, language: answerLanguage }),
+      buildAnswerMessage({ question: trimmed, attachment: image, language: answerLanguage, history: messages }),
       wait(image ? 0 : 900)
     ]);
 
@@ -713,13 +1246,7 @@ function ChatPanel({ mode = "side", messages, setMessages, onOpenLanguageHelp })
                   {message.image && (
                     <img className="answer-image" src={message.image} alt="" />
                   )}
-                  {message.linkLabel && (
-                    <a className="document-link" href="#">
-                      <FileText size={18} />
-                      {message.linkLabel}
-                      <ExternalLink size={15} />
-                    </a>
-                  )}
+                  <ChatLearningAnimation type={message.animation} />
                   <time>{message.time}</time>
                 </div>
               </div>
@@ -845,7 +1372,13 @@ function QuickHelpWorkspace({ threads, setThreads, activeThreadId, setActiveThre
     }
 
     const [answerMessage] = await Promise.all([
-      buildAnswerMessage({ question: trimmed, attachment: image, language: answerLanguage }),
+      buildAnswerMessage({
+        question: trimmed,
+        attachment: image,
+        language: answerLanguage,
+        history: messages,
+        requireAi: true
+      }),
       wait(image ? 0 : 900)
     ]);
 
@@ -960,13 +1493,7 @@ function QuickHelpWorkspace({ threads, setThreads, activeThreadId, setActiveThre
                   {message.image && (
                     <img className="answer-image" src={message.image} alt="" />
                   )}
-                  {message.linkLabel && (
-                    <a className="document-link" href="#">
-                      <FileText size={18} />
-                      {message.linkLabel}
-                      <ExternalLink size={15} />
-                    </a>
-                  )}
+                  <ChatLearningAnimation type={message.animation} />
                   <time>{message.time}</time>
                 </div>
               </div>
@@ -1050,7 +1577,6 @@ function TabContent({
         <section className="tab-page quickhelp-page">
           <div className="tab-heading">
             <h1>Quick Help</h1>
-            <p>30 gespeicherte Unternehmensantworten für Zimmer, Wäsche, Rezeption, Gäste und Notfälle.</p>
           </div>
           <QuickHelpWorkspace
             threads={quickHelpThreads}
@@ -1074,10 +1600,9 @@ function TabContent({
         <section className="tab-page">
           <div className="tab-heading">
             <h1>Mein Fortschritt</h1>
-            <p>Dein aktueller Stand im Onboarding und die nächsten Schritte.</p>
+            <p>Deine Übungen aus Lernen und Sprachhilfe auf einen Blick.</p>
           </div>
-          <ProgressSummary />
-          <Encouragement />
+          <ProgressDashboard />
         </section>
       </div>
     );
