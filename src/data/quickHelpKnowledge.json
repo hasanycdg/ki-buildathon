@@ -1,0 +1,1388 @@
+[
+  {
+    "id": "departure-room",
+    "question": "Wie bereite ich ein Zimmer nach Abreise vor?",
+    "keywords": [
+      "abreise",
+      "zimmer",
+      "checkliste",
+      "reinigen",
+      "housekeeping",
+      "departure",
+      "checkout room",
+      "clean room",
+      "housekeeping checklist",
+      "çıkış odası",
+      "oda hazırlama",
+      "temizlik listesi",
+      "kat hizmetleri",
+      "oda hazırla",
+      "çıkış yapılan",
+      "prepare a room",
+      "after check-out"
+    ],
+    "answer": "Nutze die Abreisezimmer-Checkliste: erst lüften, dann Bad prüfen, Bettwäsche wechseln, Oberflächen desinfizieren, Boden saugen/wischen und Minibar oder Schäden melden.",
+    "steps": [
+      "Fenster öffnen und Müll entfernen",
+      "Bad, Bett und Oberflächen nach Hausstandard reinigen",
+      "Zimmerstatus im System auf 'bereit zur Kontrolle' setzen"
+    ],
+    "linkLabel": "Abreisezimmer-Checkliste",
+    "image": "/assets/module-safety.png",
+    "translations": {
+      "en": {
+        "question": "How do I prepare a room after check-out?",
+        "answer": "Use the departure-room checklist: air the room, check the bathroom, change bed linen, disinfect surfaces, vacuum/mop the floor, and report minibar use or damages.",
+        "steps": [
+          "Open the windows and remove trash",
+          "Clean bathroom, bed, and surfaces according to house standard",
+          "Set the room status to 'ready for inspection'"
+        ],
+        "linkLabel": "Departure-room checklist"
+      },
+      "tr": {
+        "question": "Çıkış yapılan bir odayı nasıl hazırlarım?",
+        "answer": "Çıkış odası kontrol listesini kullan: önce havalandır, sonra banyoyu kontrol et, nevresimleri değiştir, yüzeyleri dezenfekte et, zemini süpür/sil ve minibar kullanımını veya hasarları bildir.",
+        "steps": [
+          "Pencereleri aç ve çöpleri topla",
+          "Banyoyu, yatağı ve yüzeyleri otel standardına göre temizle",
+          "Sistemde oda durumunu 'kontrole hazır' yap"
+        ],
+        "linkLabel": "Çıkış odası kontrol listesi"
+      }
+    }
+  },
+  {
+    "id": "room-203",
+    "question": "Wie reinige ich Zimmer 203?",
+    "keywords": [
+      "203",
+      "zimmer 203",
+      "reinige",
+      "putzen",
+      "room 203",
+      "clean room 203",
+      "cleaning",
+      "oda 203",
+      "203 temizlik",
+      "temizlerim"
+    ],
+    "answer": "Zimmer 203 ist ein Standard-Doppelzimmer. Folge der Abreisezimmer-Checkliste und prüfe besonders den Balkon, weil dort oft Gläser oder Handtücher liegen bleiben.",
+    "steps": [
+      "Balkon kontrollieren",
+      "Bad und Bett nach Standard reinigen",
+      "Bei Fundsachen Rezeption informieren"
+    ],
+    "linkLabel": "Standardzimmer Ablauf",
+    "image": "/assets/module-safety.png",
+    "translations": {
+      "en": {
+        "question": "How do I clean room 203?",
+        "answer": "Room 203 is a standard double room. Follow the departure-room checklist and check the balcony carefully, because glasses or towels are often left there.",
+        "steps": [
+          "Check the balcony",
+          "Clean bathroom and bed according to standard",
+          "Tell reception about lost property"
+        ],
+        "linkLabel": "Standard room process"
+      },
+      "tr": {
+        "question": "203 numaralı odayı nasıl temizlerim?",
+        "answer": "203 numaralı oda standart bir çift kişilik odadır. Çıkış odası kontrol listesini izle ve özellikle balkonu kontrol et, çünkü orada sık sık bardak veya havlu kalır.",
+        "steps": [
+          "Balkonu kontrol et",
+          "Banyoyu ve yatağı standarda göre temizle",
+          "Bulunan eşyalarda resepsiyonu bilgilendir"
+        ],
+        "linkLabel": "Standart oda akışı"
+      }
+    }
+  },
+  {
+    "id": "laundry-room",
+    "question": "Wo finde ich die Wäschekammer?",
+    "keywords": [
+      "wäsche",
+      "waesche",
+      "wäschekammer",
+      "waeschekammer",
+      "handtuecher",
+      "bettwäsche",
+      "laundry",
+      "laundry room",
+      "towels",
+      "bed linen",
+      "çamaşır",
+      "çamaşırhane",
+      "havlu",
+      "nevresim"
+    ],
+    "answer": "Die Wäschekammer ist im Untergeschoss neben dem Personalaufzug. Saubere Wäsche liegt links, Schmutzwäsche kommt in die markierten Wagen rechts.",
+    "steps": [
+      "Nur volle Wagen in die Wäscherei bringen",
+      "Handtücher und Bettwäsche getrennt sammeln",
+      "Leere Fächernotiz an die Hausdame geben"
+    ],
+    "linkLabel": "Plan Untergeschoss",
+    "image": "/assets/module-machine.png",
+    "translations": {
+      "en": {
+        "question": "Where is the laundry room?",
+        "answer": "The laundry room is in the basement next to the staff elevator. Clean laundry is on the left; dirty laundry goes into the marked carts on the right.",
+        "steps": [
+          "Only take full carts to the laundry",
+          "Separate towels and bed linen",
+          "Tell the housekeeper if a shelf is empty"
+        ],
+        "linkLabel": "Basement map"
+      },
+      "tr": {
+        "question": "Çamaşırhaneyi nerede bulurum?",
+        "answer": "Çamaşır odası, personel asansörünün yanında bodrum kattadır. Temiz çamaşırlar solda durur, kirli çamaşırlar sağdaki işaretli arabalara konur.",
+        "steps": [
+          "Çamaşırhaneye sadece dolu arabaları götür",
+          "Havluları ve nevresimleri ayrı topla",
+          "Boş rafları kat şefine bildir"
+        ],
+        "linkLabel": "Bodrum kat planı"
+      }
+    }
+  },
+  {
+    "id": "guest-complaint",
+    "question": "Was mache ich bei einer Gastbeschwerde?",
+    "keywords": [
+      "gastbeschwerde",
+      "beschwerde",
+      "gast",
+      "unzufrieden",
+      "reklamation",
+      "complaint",
+      "guest complaint",
+      "unhappy guest",
+      "şikayet",
+      "misafir şikayeti",
+      "memnuniyetsiz"
+    ],
+    "answer": "Bleib ruhig, höre zu und entschuldige dich für die Situation. Löse größere Probleme nicht allein, sondern informiere sofort Rezeption oder Schichtleitung.",
+    "steps": [
+      "Zuhören und freundlich bleiben",
+      "Name/Zimmernummer merken",
+      "Rezeption oder Schichtleitung informieren"
+    ],
+    "linkLabel": "Gastbeschwerde Ablauf",
+    "image": "/assets/module-team.png",
+    "translations": {
+      "en": {
+        "question": "What should I do if a guest complains?",
+        "answer": "Stay calm, listen, and apologize for the situation. Do not solve major issues alone; inform reception or the shift lead immediately.",
+        "steps": [
+          "Listen and stay friendly",
+          "Remember name/room number",
+          "Inform reception or shift lead"
+        ],
+        "linkLabel": "Guest complaint process"
+      },
+      "tr": {
+        "question": "Misafir şikayetinde ne yapmalıyım?",
+        "answer": "Sakin kal, dinle ve durum için özür dile. Büyük sorunları tek başına çözme; hemen resepsiyonu veya vardiya sorumlusunu bilgilendir.",
+        "steps": [
+          "Dinle ve nazik kal",
+          "Adını ve oda numarasını not et",
+          "Resepsiyonu veya vardiya sorumlusunu bilgilendir"
+        ],
+        "linkLabel": "Misafir şikayeti akışı"
+      }
+    }
+  },
+  {
+    "id": "reception-today",
+    "question": "Wer ist heute an der Rezeption?",
+    "keywords": [
+      "rezeption",
+      "heute",
+      "dienst",
+      "kontakt",
+      "reception today",
+      "who is at reception",
+      "contact",
+      "resepsiyonda kim",
+      "bugün",
+      "resepsiyon"
+    ],
+    "answer": "Heute ist Lena im Frühdienst an der Rezeption, danach übernimmt Markus ab 15:00 Uhr. Bei dringenden Gästeanliegen ruf intern die 100 an.",
+    "steps": [
+      "Frühdienst: Lena bis 15:00",
+      "Spätdienst: Markus ab 15:00",
+      "Interne Nummer: 100"
+    ],
+    "linkLabel": "Dienstplan Rezeption",
+    "image": "/assets/module-process.png",
+    "translations": {
+      "en": {
+        "question": "Who is at reception today?",
+        "answer": "Lena is on early reception duty today, then Markus takes over at 15:00. For urgent guest issues, call internal 100.",
+        "steps": [
+          "Early shift: Lena until 15:00",
+          "Late shift: Markus from 15:00",
+          "Internal number: 100"
+        ],
+        "linkLabel": "Reception duty roster"
+      },
+      "tr": {
+        "question": "Bugün resepsiyonda kim var?",
+        "answer": "Bugün sabah vardiyasında resepsiyonda Lena var, saat 15:00'ten sonra Markus devralıyor. Acil misafir konularında dahili 100'ü ara.",
+        "steps": [
+          "Sabah vardiyası: Lena, 15:00'e kadar",
+          "Akşam vardiyası: Markus, 15:00'ten itibaren",
+          "Dahili numara: 100"
+        ],
+        "linkLabel": "Resepsiyon vardiya planı"
+      }
+    }
+  },
+  {
+    "id": "sick-leave",
+    "question": "Wie melde ich mich krank?",
+    "keywords": [
+      "krank",
+      "krankmeldung",
+      "krank melden",
+      "arbeitsunfähig",
+      "sick",
+      "sick leave",
+      "call in sick",
+      "hasta",
+      "hastalık",
+      "rapor",
+      "hasta bildirimi"
+    ],
+    "answer": "Melde dich vor Schichtbeginn telefonisch bei der Schichtleitung und zusätzlich per Nachricht im Mitarbeiterportal. Eine Bestätigung oder Krankmeldung lädst du dort hoch.",
+    "steps": [
+      "Vor Schichtbeginn anrufen",
+      "Nachricht im Mitarbeiterportal senden",
+      "Dokument hochladen, sobald vorhanden"
+    ],
+    "linkLabel": "Krankmeldung Formular",
+    "translations": {
+      "en": {
+        "question": "How do I call in sick?",
+        "answer": "Call the shift lead before your shift starts and also send a message in the employee portal. Upload a confirmation or sick note there when available.",
+        "steps": [
+          "Call before your shift starts",
+          "Send a message in the employee portal",
+          "Upload the document when available"
+        ],
+        "linkLabel": "Sick leave form"
+      },
+      "tr": {
+        "question": "Hastalığımı nasıl bildiririm?",
+        "answer": "Vardiya başlamadan önce vardiya sorumlusunu telefonla ara ve ayrıca personel portalından mesaj gönder. Raporu veya belgeyi oraya yükle.",
+        "steps": [
+          "Vardiya başlamadan önce ara",
+          "Personel portalından mesaj gönder",
+          "Belge hazır olunca yükle"
+        ],
+        "linkLabel": "Hastalık bildirim formu"
+      }
+    }
+  },
+  {
+    "id": "work-clothes",
+    "question": "Wo finde ich meine Arbeitskleidung?",
+    "keywords": [
+      "arbeitskleidung",
+      "uniform",
+      "kleidung",
+      "schürze",
+      "work clothes",
+      "apron",
+      "iş kıyafeti",
+      "üniforma",
+      "önlük",
+      "kıyafet",
+      "iş kıyafet"
+    ],
+    "answer": "Arbeitskleidung findest du im Personalraum neben den Spinden. Neue Größen oder Ersatzteile bestellst du bei der Hausdame.",
+    "steps": [
+      "Spindnummer prüfen",
+      "Saubere Kleidung aus deinem Fach nehmen",
+      "Fehlende Größe bei der Hausdame melden"
+    ],
+    "linkLabel": "Kleidungsregeln",
+    "translations": {
+      "en": {
+        "question": "Where do I find my work clothes?",
+        "answer": "You can find work clothes in the staff room next to the lockers. Ask the housekeeper for new sizes or replacements.",
+        "steps": [
+          "Check your locker number",
+          "Take clean clothes from your compartment",
+          "Tell the housekeeper if a size is missing"
+        ],
+        "linkLabel": "Clothing rules"
+      },
+      "tr": {
+        "question": "İş kıyafetimi nerede bulurum?",
+        "answer": "İş kıyafetini personel odasında dolapların yanında bulursun. Yeni beden veya yedek parça için kat şefine başvur.",
+        "steps": [
+          "Dolap numaranı kontrol et",
+          "Temiz kıyafeti kendi gözünden al",
+          "Eksik bedeni kat şefine bildir"
+        ],
+        "linkLabel": "Kıyafet kuralları"
+      }
+    }
+  },
+  {
+    "id": "supervisor",
+    "question": "Wer ist meine Vorgesetzte?",
+    "keywords": [
+      "vorgesetzte",
+      "chef",
+      "chefin",
+      "hausdame",
+      "leitung",
+      "supervisor",
+      "manager",
+      "housekeeper",
+      "amir",
+      "amirim",
+      "kat şefi",
+      "yönetici"
+    ],
+    "answer": "Für Housekeeping ist die Hausdame Anna Berger deine direkte Ansprechpartnerin. Bei Abwesenheit übernimmt die Schichtleitung an der Rezeption.",
+    "steps": [
+      "Housekeeping: Anna Berger",
+      "Vertretung: aktuelle Schichtleitung",
+      "Dringend: interne Nummer 100"
+    ],
+    "linkLabel": "Teamkontakte",
+    "image": "/assets/module-team.png",
+    "translations": {
+      "en": {
+        "question": "Who is my supervisor?",
+        "answer": "For housekeeping, Anna Berger is your direct contact. If she is absent, the reception shift lead takes over.",
+        "steps": [
+          "Housekeeping: Anna Berger",
+          "Backup: current shift lead",
+          "Urgent: internal number 100"
+        ],
+        "linkLabel": "Team contacts"
+      },
+      "tr": {
+        "question": "Amirim kim?",
+        "answer": "Kat hizmetlerinde doğrudan muhatabın kat şefi Anna Berger'dir. Yokluğunda resepsiyondaki vardiya sorumlusu devralır.",
+        "steps": [
+          "Kat hizmetleri: Anna Berger",
+          "Vekalet: güncel vardiya sorumlusu",
+          "Acil: dahili 100"
+        ],
+        "linkLabel": "Ekip iletişim listesi"
+      }
+    }
+  },
+  {
+    "id": "lost-found",
+    "question": "Was mache ich mit Fundsachen?",
+    "keywords": [
+      "fundsache",
+      "gefunden",
+      "liegen geblieben",
+      "vergessen",
+      "lost property",
+      "found item",
+      "forgotten item",
+      "kayıp eşya",
+      "bulunan eşya",
+      "unutulmuş"
+    ],
+    "answer": "Lege Fundsachen nie selbst zurück ins Zimmer. Packe sie in einen Fundbeutel, notiere Zimmernummer, Datum und deinen Namen und gib sie an der Rezeption ab.",
+    "steps": [
+      "Fundbeutel nehmen",
+      "Zimmernummer und Datum notieren",
+      "An Rezeption übergeben"
+    ],
+    "linkLabel": "Fundsachen-Prozess",
+    "translations": {
+      "en": {
+        "question": "What do I do with lost property?",
+        "answer": "Never put lost property back into the room yourself. Put it into a lost-property bag, note room number, date, and your name, then hand it to reception.",
+        "steps": [
+          "Take a lost-property bag",
+          "Write room number and date",
+          "Hand it to reception"
+        ],
+        "linkLabel": "Lost property process"
+      },
+      "tr": {
+        "question": "Bulunan eşyalarla ne yapmalıyım?",
+        "answer": "Bulunan eşyaları asla kendin odaya geri koyma. Bir kayıp eşya poşetine koy; oda numarasını, tarihi ve adını yaz ve resepsiyona teslim et.",
+        "steps": [
+          "Kayıp eşya poşeti al",
+          "Oda numarasını ve tarihi not et",
+          "Resepsiyona teslim et"
+        ],
+        "linkLabel": "Kayıp eşya süreci"
+      }
+    }
+  },
+  {
+    "id": "damage-room",
+    "question": "Was mache ich bei einem Schaden im Zimmer?",
+    "keywords": [
+      "schaden",
+      "kaputt",
+      "defekt",
+      "zimmer",
+      "reparatur",
+      "damage",
+      "broken",
+      "maintenance",
+      "hasar",
+      "bozuk",
+      "arızalı",
+      "tamir",
+      "bozul",
+      "damaged",
+      "damaged in a room"
+    ],
+    "answer": "Fotografiere den Schaden, sichere die Stelle wenn nötig und melde ihn im System als Technik-Ticket. Informiere die Rezeption, wenn der Gast betroffen ist.",
+    "steps": [
+      "Schaden nicht verdecken",
+      "Technik-Ticket anlegen",
+      "Rezeption informieren"
+    ],
+    "linkLabel": "Technik-Ticket erstellen",
+    "translations": {
+      "en": {
+        "question": "What do I do if something is damaged in a room?",
+        "answer": "Take a photo of the damage, secure the area if needed, and create a maintenance ticket in the system. Inform reception if the guest is affected.",
+        "steps": [
+          "Do not cover the damage",
+          "Create a maintenance ticket",
+          "Inform reception"
+        ],
+        "linkLabel": "Create maintenance ticket"
+      },
+      "tr": {
+        "question": "Odada bir hasar olursa ne yapmalıyım?",
+        "answer": "Hasarın fotoğrafını çek, gerekirse alanı güvene al ve sistemde teknik talep olarak bildir. Misafir etkileniyorsa resepsiyonu bilgilendir.",
+        "steps": [
+          "Hasarı gizleme",
+          "Teknik talep oluştur",
+          "Resepsiyonu bilgilendir"
+        ],
+        "linkLabel": "Teknik talep oluştur"
+      }
+    }
+  },
+  {
+    "id": "minibar",
+    "question": "Wie melde ich die Minibar?",
+    "keywords": [
+      "minibar",
+      "verbrauch",
+      "getraenke",
+      "snacks",
+      "drinks",
+      "tüketim",
+      "içecek"
+    ],
+    "answer": "Prüfe die Minibar beim Abreisezimmer und trage fehlende Artikel direkt im Zimmerstatus ein. Wenn das System nicht geht, gib die Liste an der Rezeption ab.",
+    "steps": [
+      "Artikel prüfen",
+      "Verbrauch im System eintragen",
+      "Bei Störung Rezeption informieren"
+    ],
+    "linkLabel": "Minibar-Liste",
+    "translations": {
+      "en": {
+        "question": "How do I report minibar use?",
+        "answer": "Check the minibar in departure rooms and enter missing items directly in the room status. If the system is down, give the list to reception.",
+        "steps": [
+          "Check items",
+          "Enter consumption in the system",
+          "Inform reception if there is a system issue"
+        ],
+        "linkLabel": "Minibar list"
+      },
+      "tr": {
+        "question": "Minibarı nasıl bildiririm?",
+        "answer": "Çıkış odasında minibarı kontrol et ve eksik ürünleri doğrudan oda durumuna gir. Sistem çalışmıyorsa listeyi resepsiyona ver.",
+        "steps": [
+          "Ürünleri kontrol et",
+          "Tüketimi sisteme gir",
+          "Arıza durumunda resepsiyonu bilgilendir"
+        ],
+        "linkLabel": "Minibar listesi"
+      }
+    }
+  },
+  {
+    "id": "do-not-disturb",
+    "question": "Was mache ich bei Bitte nicht stören?",
+    "keywords": [
+      "bitte nicht stören",
+      "stören",
+      "do not disturb",
+      "dnd",
+      "rahatsız etmeyin",
+      "rahatsız",
+      "rahatsız etme"
+    ],
+    "answer": "Klopfe nicht und öffne die Tür nicht. Notiere das Zimmer und informiere die Hausdame, damit die Reinigung später neu eingeplant wird.",
+    "steps": [
+      "Nicht eintreten",
+      "Zimmernummer notieren",
+      "Hausdame informieren"
+    ],
+    "linkLabel": "Zimmerstatus Regeln",
+    "translations": {
+      "en": {
+        "question": "What do I do with a Do Not Disturb sign?",
+        "answer": "Do not knock and do not open the door. Note the room number and inform the housekeeper so cleaning can be rescheduled.",
+        "steps": [
+          "Do not enter",
+          "Note the room number",
+          "Inform the housekeeper"
+        ],
+        "linkLabel": "Room status rules"
+      },
+      "tr": {
+        "question": "Rahatsız etmeyin tabelası varsa ne yapmalıyım?",
+        "answer": "Kapıyı çalma ve açma. Odayı not et ve temizliğin sonraya planlanması için kat şefini bilgilendir.",
+        "steps": [
+          "İçeri girme",
+          "Oda numarasını not et",
+          "Kat şefini bilgilendir"
+        ],
+        "linkLabel": "Oda durumu kuralları"
+      }
+    }
+  },
+  {
+    "id": "late-checkout",
+    "question": "Was ist bei Late Check-out zu tun?",
+    "keywords": [
+      "late checkout",
+      "spät",
+      "late check-out",
+      "geç çıkış",
+      "geç checkout"
+    ],
+    "answer": "Late Check-out steht im Zimmerplan. Reinige diese Zimmer erst nach Freigabe durch die Rezeption und markiere sie nicht vorher als fehlend.",
+    "steps": [
+      "Zimmerplan prüfen",
+      "Auf Freigabe warten",
+      "Nach Reinigung Status setzen"
+    ],
+    "linkLabel": "Tageszimmerplan",
+    "image": "/assets/module-process.png",
+    "translations": {
+      "en": {
+        "question": "What should I do with late check-out?",
+        "answer": "Late check-out is shown in the room plan. Clean these rooms only after reception releases them and do not mark them as missing before that.",
+        "steps": [
+          "Check the room plan",
+          "Wait for release",
+          "Set status after cleaning"
+        ],
+        "linkLabel": "Daily room plan"
+      },
+      "tr": {
+        "question": "Geç çıkışta ne yapmalıyım?",
+        "answer": "Geç çıkış oda planında yazılıdır. Bu odaları ancak resepsiyonun onayından sonra temizle ve öncesinde eksik olarak işaretleme.",
+        "steps": [
+          "Oda planını kontrol et",
+          "Onayı bekle",
+          "Temizlikten sonra durumu güncelle"
+        ],
+        "linkLabel": "Günlük oda planı"
+      }
+    }
+  },
+  {
+    "id": "break",
+    "question": "Wann mache ich Pause?",
+    "keywords": [
+      "pause",
+      "mittag",
+      "essen",
+      "pausenraum",
+      "break",
+      "lunch",
+      "mola",
+      "öğle yemeği",
+      "mola odası"
+    ],
+    "answer": "Die Pause wird mit der Hausdame abgestimmt, damit Etagen besetzt bleiben. Standard ist eine Pause zwischen 11:30 und 13:30 Uhr.",
+    "steps": [
+      "Vor Pause kurz Bescheid geben",
+      "Pausenraum im Erdgeschoss nutzen",
+      "Nach Pause Wagen wieder auffüllen"
+    ],
+    "linkLabel": "Pausenregelung",
+    "translations": {
+      "en": {
+        "question": "When do I take a break?",
+        "answer": "Breaks are coordinated with the housekeeper so floors remain covered. The standard break window is between 11:30 and 13:30.",
+        "steps": [
+          "Tell someone before you go on break",
+          "Use the staff break room on the ground floor",
+          "Refill the cart after your break"
+        ],
+        "linkLabel": "Break rules"
+      },
+      "tr": {
+        "question": "Molamı ne zaman yapabilirim?",
+        "answer": "Mola, katların boş kalmaması için kat şefiyle birlikte planlanır. Standart mola 11:30 ile 13:30 arasındadır.",
+        "steps": [
+          "Moladan önce kısa haber ver",
+          "Zemin kattaki mola odasını kullan",
+          "Moladan sonra arabayı yeniden doldur"
+        ],
+        "linkLabel": "Mola kuralları"
+      }
+    }
+  },
+  {
+    "id": "breakfast-time",
+    "question": "Wann ist Frühstück?",
+    "keywords": [
+      "frühstück",
+      "fruehstueck",
+      "breakfast",
+      "buffet",
+      "kahvaltı",
+      "açık büfe"
+    ],
+    "answer": "Frühstück ist von 07:00 bis 10:00 Uhr, am Wochenende bis 10:30 Uhr. Gäste mit Fragen schickst du freundlich zum Service-Team.",
+    "steps": [
+      "Wochentag: 07:00-10:00",
+      "Wochenende: 07:00-10:30",
+      "Service-Team ansprechen"
+    ],
+    "linkLabel": "Gästezeiten",
+    "translations": {
+      "en": {
+        "question": "When is breakfast?",
+        "answer": "Breakfast is from 07:00 to 10:00, and until 10:30 on weekends. If guests have questions, kindly direct them to the service team.",
+        "steps": [
+          "Weekdays: 07:00-10:00",
+          "Weekend: 07:00-10:30",
+          "Ask the service team"
+        ],
+        "linkLabel": "Guest times"
+      },
+      "tr": {
+        "question": "Kahvaltı saat kaçta?",
+        "answer": "Kahvaltı 07:00 ile 10:00 arasında, hafta sonu 10:30'a kadar. Soru soran misafirleri nazikçe servis ekibine yönlendir.",
+        "steps": [
+          "Hafta içi: 07:00-10:00",
+          "Hafta sonu: 07:00-10:30",
+          "Servis ekibine yönlendir"
+        ],
+        "linkLabel": "Misafir saatleri"
+      }
+    }
+  },
+  {
+    "id": "key-card",
+    "question": "Was mache ich mit einer verlorenen Zimmerkarte?",
+    "keywords": [
+      "zimmerkarte",
+      "karte",
+      "schluessel",
+      "verloren",
+      "room card",
+      "key card",
+      "lost card",
+      "oda kartı",
+      "anahtar",
+      "kart kayıp",
+      "oda kart",
+      "kart kayb"
+    ],
+    "answer": "Nimm keine Ersatzkarte selbst heraus. Schicke den Gast zur Rezeption oder rufe intern die 100 an, damit die Identität geprüft wird.",
+    "steps": [
+      "Gast freundlich zur Rezeption begleiten",
+      "Keine Karte selbst ausgeben",
+      "Rezeption informiert Sicherheit falls nötig"
+    ],
+    "linkLabel": "Schlüsselregel",
+    "translations": {
+      "en": {
+        "question": "What do I do with a lost room card?",
+        "answer": "Do not issue a replacement card yourself. Send the guest to reception or call internal 100 so identity can be checked.",
+        "steps": [
+          "Walk the guest to reception",
+          "Do not issue a card yourself",
+          "Reception informs security if needed"
+        ],
+        "linkLabel": "Key card rule"
+      },
+      "tr": {
+        "question": "Kaybolan oda kartında ne yapmalıyım?",
+        "answer": "Kendi başına yedek kart verme. Misafiri resepsiyona yönlendir veya kimlik kontrolü için dahili 100'ü ara.",
+        "steps": [
+          "Misafiri nazikçe resepsiyona yönlendir",
+          "Kendin kart verme",
+          "Gerekirse resepsiyon güvenliği bilgilendirir"
+        ],
+        "linkLabel": "Anahtar kuralı"
+      }
+    }
+  },
+  {
+    "id": "cleaning-products",
+    "question": "Welche Reinigungsmittel darf ich verwenden?",
+    "keywords": [
+      "reinigungsmittel",
+      "mittel",
+      "chemie",
+      "desinfektion",
+      "cleaning products",
+      "chemicals",
+      "disinfectant",
+      "temizlik ürünü",
+      "deterjan",
+      "dezenfektan",
+      "kimyasal",
+      "temizlik ürün",
+      "dezenfekt",
+      "hangi ürün"
+    ],
+    "answer": "Nutze nur die beschrifteten Mittel vom Housekeeping-Wagen. Badreiniger, Glasreiniger und Flächendesinfektion dürfen nicht gemischt werden.",
+    "steps": [
+      "Etikett prüfen",
+      "Handschuhe tragen",
+      "Nie Mittel mischen"
+    ],
+    "linkLabel": "Hygieneplan",
+    "image": "/assets/module-safety.png",
+    "translations": {
+      "en": {
+        "question": "Which cleaning products may I use?",
+        "answer": "Use only the labeled products from the housekeeping cart. Bathroom cleaner, glass cleaner, and surface disinfectant must not be mixed.",
+        "steps": [
+          "Check the label",
+          "Wear gloves",
+          "Never mix products"
+        ],
+        "linkLabel": "Hygiene plan"
+      },
+      "tr": {
+        "question": "Hangi temizlik ürünlerini kullanabilirim?",
+        "answer": "Sadece kat hizmetleri arabasındaki etiketli ürünleri kullan. Banyo temizleyici, cam temizleyici ve yüzey dezenfektanı karıştırılmamalıdır.",
+        "steps": [
+          "Etiketi kontrol et",
+          "Eldiven tak",
+          "Ürünleri asla karıştırma"
+        ],
+        "linkLabel": "Hijyen planı"
+      }
+    }
+  },
+  {
+    "id": "cart-refill",
+    "question": "Wie fülle ich den Housekeeping-Wagen auf?",
+    "keywords": [
+      "wagen",
+      "housekeeping-wagen",
+      "auffüllen",
+      "auffuellen",
+      "cart",
+      "housekeeping cart",
+      "refill",
+      "araba doldurma",
+      "kat arabası",
+      "doldurmak",
+      "araba",
+      "doldur"
+    ],
+    "answer": "Fülle den Wagen vor Schichtstart und nach der Pause auf. Oben liegen Gästeartikel, mittig Handtücher, unten Bettwäsche und Müllsäcke.",
+    "steps": [
+      "Gästeartikel zählen",
+      "Handtücher und Bettwäsche auffüllen",
+      "Müllsäcke und Handschuhe prüfen"
+    ],
+    "linkLabel": "Wagen-Standard",
+    "image": "/assets/module-safety.png",
+    "translations": {
+      "en": {
+        "question": "How do I refill the housekeeping cart?",
+        "answer": "Refill the cart before the shift starts and after your break. Guest items go on top, towels in the middle, bed linen and trash bags at the bottom.",
+        "steps": [
+          "Count guest items",
+          "Refill towels and bed linen",
+          "Check trash bags and gloves"
+        ],
+        "linkLabel": "Cart standard"
+      },
+      "tr": {
+        "question": "Kat hizmetleri arabasını nasıl doldururum?",
+        "answer": "Arabayı vardiya başlamadan önce ve moladan sonra doldur. Üstte misafir ürünleri, ortada havlular, altta nevresimler ve çöp poşetleri bulunur.",
+        "steps": [
+          "Misafir ürünlerini say",
+          "Havlu ve nevresimleri tamamla",
+          "Çöp poşetlerini ve eldivenleri kontrol et"
+        ],
+        "linkLabel": "Araba standardı"
+      }
+    }
+  },
+  {
+    "id": "emergency",
+    "question": "Was mache ich im Notfall?",
+    "keywords": [
+      "notfall",
+      "unfall",
+      "feuer",
+      "medizin",
+      "alarm",
+      "emergency",
+      "fire",
+      "accident",
+      "acil",
+      "acil durum",
+      "yangın",
+      "kaza"
+    ],
+    "answer": "Bei Gefahr zuerst dich und Gäste in Sicherheit bringen. Rufe intern die 100 und bei Feuer oder medizinischem Notfall die 112.",
+    "steps": [
+      "Ruhe bewahren",
+      "Interne 100 rufen",
+      "Bei akuter Gefahr 112 rufen"
+    ],
+    "linkLabel": "Notfallplan",
+    "translations": {
+      "en": {
+        "question": "What do I do in an emergency?",
+        "answer": "In danger, first bring yourself and guests to safety. Call internal 100 and call 112 for fire or medical emergencies.",
+        "steps": [
+          "Stay calm",
+          "Call internal 100",
+          "Call 112 in acute danger"
+        ],
+        "linkLabel": "Emergency plan"
+      },
+      "tr": {
+        "question": "Acil durumda ne yapmalıyım?",
+        "answer": "Tehlike varsa önce kendini ve misafirleri güvene al. Dahili 100'ü ara; yangın veya tıbbi acil durumda 112'yi ara.",
+        "steps": [
+          "Sakin kal",
+          "Dahili 100'ü ara",
+          "Akut tehlikede 112'yi ara"
+        ],
+        "linkLabel": "Acil durum planı"
+      }
+    }
+  },
+  {
+    "id": "language-help",
+    "question": "Kann ich die Anleitung in meiner Sprache bekommen?",
+    "keywords": [
+      "sprache",
+      "slowakisch",
+      "türkisch",
+      "englisch",
+      "uebersetzen",
+      "language",
+      "translate",
+      "english",
+      "dil",
+      "türkçe",
+      "çeviri",
+      "tercüme",
+      "kendi dilim"
+    ],
+    "answer": "Ja. Öffne Sprachhilfe oder frage hier nach einem Begriff. Wichtige Schritte können auf Deutsch, Slowakisch, Türkisch und Englisch angezeigt werden.",
+    "steps": [
+      "Sprachhilfe öffnen",
+      "Begriff oder Ablauf suchen",
+      "Bei Unsicherheit Teamkontakt fragen"
+    ],
+    "linkLabel": "Sprachhilfe",
+    "translations": {
+      "en": {
+        "question": "Can I get instructions in my language?",
+        "answer": "Yes. Open Language Help or ask here for a term. Important steps can be shown in German, Slovak, Turkish, and English.",
+        "steps": [
+          "Open Language Help",
+          "Search for a term or process",
+          "Ask a team contact if unsure"
+        ],
+        "linkLabel": "Language Help"
+      },
+      "tr": {
+        "question": "Talimatları kendi dilimde alabilir miyim?",
+        "answer": "Evet. Dil yardımını aç veya burada bir terim sor. Önemli adımlar Almanca, Slovakça, Türkçe ve İngilizce gösterilebilir.",
+        "steps": [
+          "Dil yardımını aç",
+          "Terimi veya akışı ara",
+          "Emin değilsen ekip iletişimine sor"
+        ],
+        "linkLabel": "Dil yardımı"
+      }
+    }
+  },
+  {
+    "id": "old-booking-system",
+    "question": "Wie funktioniert das alte Buchungssystem?",
+    "keywords": [
+      "buchungssystem",
+      "altes system",
+      "rezeption",
+      "reservierung",
+      "booking system",
+      "old system",
+      "reservation",
+      "rezervasyon sistemi",
+      "eski sistem",
+      "rezervasyon",
+      "rezervasyon sistem"
+    ],
+    "answer": "Im Modul 'Rezeption & Systeme' gibt es einen Schritt-für-Schritt-Ablauf. Für neue Buchungen: Gast suchen, Reservierung öffnen, Leistung prüfen, speichern.",
+    "steps": [
+      "Gast oder Buchungsnummer suchen",
+      "Reservierung öffnen",
+      "Änderung speichern und Rezeption informieren"
+    ],
+    "linkLabel": "Buchungssystem Kurzanleitung",
+    "image": "/assets/module-process.png",
+    "translations": {
+      "en": {
+        "question": "How does the old booking system work?",
+        "answer": "The 'Reception & Systems' module has a step-by-step guide. For new bookings: search guest, open reservation, check service, save.",
+        "steps": [
+          "Search guest or booking number",
+          "Open reservation",
+          "Save the change and inform reception"
+        ],
+        "linkLabel": "Booking system quick guide"
+      },
+      "tr": {
+        "question": "Eski rezervasyon sistemi nasıl çalışıyor?",
+        "answer": "'Resepsiyon ve Sistemler' modülünde adım adım bir akış var. Yeni rezervasyonlar için: misafiri ara, rezervasyonu aç, hizmeti kontrol et, kaydet.",
+        "steps": [
+          "Misafiri veya rezervasyon numarasını ara",
+          "Rezervasyonu aç",
+          "Değişikliği kaydet ve resepsiyonu bilgilendir"
+        ],
+        "linkLabel": "Rezervasyon sistemi kısa kılavuzu"
+      }
+    }
+  },
+  {
+    "id": "handover",
+    "question": "Wie mache ich eine Schichtübergabe?",
+    "keywords": [
+      "übergabe",
+      "uebergabe",
+      "schicht",
+      "handover",
+      "shift handover",
+      "vardiya devri",
+      "devir teslim",
+      "vardiya",
+      "devir"
+    ],
+    "answer": "Notiere offene Zimmer, besondere Gästewünsche, Fundsachen und Technik-Tickets. Gib die Liste persönlich an die nächste Schicht oder Hausdame weiter.",
+    "steps": [
+      "Offene Zimmer notieren",
+      "Besondere Hinweise ergänzen",
+      "Persönlich übergeben"
+    ],
+    "linkLabel": "Übergabeformular",
+    "image": "/assets/module-team.png",
+    "translations": {
+      "en": {
+        "question": "How do I do a shift handover?",
+        "answer": "Note open rooms, special guest requests, lost property, and maintenance tickets. Hand the list personally to the next shift or housekeeper.",
+        "steps": [
+          "Note open rooms",
+          "Add special notes",
+          "Hand over personally"
+        ],
+        "linkLabel": "Handover form"
+      },
+      "tr": {
+        "question": "Vardiya devrini nasıl yaparım?",
+        "answer": "Açık kalan odaları, özel misafir isteklerini, bulunan eşyaları ve teknik talepleri not et. Listeyi bizzat bir sonraki vardiyaya veya kat şefine ver.",
+        "steps": [
+          "Açık odaları not et",
+          "Özel notları ekle",
+          "Bizzat teslim et"
+        ],
+        "linkLabel": "Devir teslim formu"
+      }
+    }
+  },
+  {
+    "id": "guest-request",
+    "question": "Was mache ich bei einem Extra-Wunsch vom Gast?",
+    "keywords": [
+      "extra",
+      "wunsch",
+      "gastwunsch",
+      "kissen",
+      "decke",
+      "guest request",
+      "extra towel",
+      "pillow",
+      "ekstra",
+      "istek",
+      "yastık",
+      "battaniye",
+      "ekstra havlu",
+      "misafir istek"
+    ],
+    "answer": "Kleine Wünsche wie extra Handtuch oder Kissen kannst du direkt erfüllen. Bei Kosten, Zimmerwechsel oder Beschwerden informierst du die Rezeption.",
+    "steps": [
+      "Wunsch freundlich bestätigen",
+      "Direkt erfüllen, wenn erlaubt",
+      "Sonst Rezeption informieren"
+    ],
+    "linkLabel": "Gästewunsch Regeln",
+    "translations": {
+      "en": {
+        "question": "What do I do with an extra guest request?",
+        "answer": "Small requests such as an extra towel or pillow can be handled directly. For costs, room changes, or complaints, inform reception.",
+        "steps": [
+          "Confirm the request politely",
+          "Handle directly if allowed",
+          "Otherwise inform reception"
+        ],
+        "linkLabel": "Guest request rules"
+      },
+      "tr": {
+        "question": "Misafirin ekstra isteğinde ne yapmalıyım?",
+        "answer": "Ekstra havlu veya yastık gibi küçük istekleri doğrudan yerine getirebilirsin. Ücret, oda değişikliği veya şikayet söz konusuysa resepsiyonu bilgilendir.",
+        "steps": [
+          "İsteği nazikçe onayla",
+          "İzin varsa hemen yerine getir",
+          "Aksi halde resepsiyonu bilgilendir"
+        ],
+        "linkLabel": "Misafir isteği kuralları"
+      }
+    }
+  },
+  {
+    "id": "checkout-time",
+    "question": "Wann ist Check-out?",
+    "keywords": [
+      "checkout",
+      "check-out",
+      "abreisezeit",
+      "abreise",
+      "departure time",
+      "çıkış saati",
+      "çıkış zamanı",
+      "çıkış saat"
+    ],
+    "answer": "Standard Check-out ist 11:00 Uhr. Late Check-out wird im Tagesplan markiert und von der Rezeption freigegeben.",
+    "steps": [
+      "Standard: 11:00",
+      "Late Check-out im Plan prüfen",
+      "Rezeption bei Unklarheit fragen"
+    ],
+    "linkLabel": "Gästezeiten",
+    "translations": {
+      "en": {
+        "question": "When is check-out?",
+        "answer": "Standard check-out is 11:00. Late check-out is marked in the daily plan and released by reception.",
+        "steps": [
+          "Standard: 11:00",
+          "Check late check-out in the plan",
+          "Ask reception if unsure"
+        ],
+        "linkLabel": "Guest times"
+      },
+      "tr": {
+        "question": "Çıkış saati ne zaman?",
+        "answer": "Standart çıkış saati 11:00'dir. Geç çıkış günlük planda işaretlenir ve resepsiyon tarafından onaylanır.",
+        "steps": [
+          "Standart: 11:00",
+          "Geç çıkışı planda kontrol et",
+          "Belirsizlikte resepsiyona sor"
+        ],
+        "linkLabel": "Misafir saatleri"
+      }
+    }
+  },
+  {
+    "id": "room-ready",
+    "question": "Wie markiere ich ein Zimmer als fertig?",
+    "keywords": [
+      "fertig",
+      "status",
+      "bereit",
+      "zimmerstatus",
+      "room ready",
+      "finished",
+      "oda durumu",
+      "bitti",
+      "hazır olarak",
+      "kontrole hazır",
+      "hazır işaretle",
+      "hazır olarak işaretle"
+    ],
+    "answer": "Nach Reinigung setzt du den Status auf 'bereit zur Kontrolle'. Erst nach Kontrolle durch die Hausdame wird das Zimmer als gastbereit markiert.",
+    "steps": [
+      "Reinigung abschließen",
+      "Status 'bereit zur Kontrolle' setzen",
+      "Bei Mangel Notiz ergänzen"
+    ],
+    "linkLabel": "Zimmerstatus",
+    "translations": {
+      "en": {
+        "question": "How do I mark a room as finished?",
+        "answer": "After cleaning, set the status to 'ready for inspection'. Only after the housekeeper checks it is the room marked guest-ready.",
+        "steps": [
+          "Finish cleaning",
+          "Set status to 'ready for inspection'",
+          "Add a note if something is missing"
+        ],
+        "linkLabel": "Room status"
+      },
+      "tr": {
+        "question": "Bir odayı nasıl hazır olarak işaretlerim?",
+        "answer": "Temizlikten sonra durumu 'kontrole hazır' yap. Oda ancak kat şefinin kontrolünden sonra misafire hazır olarak işaretlenir.",
+        "steps": [
+          "Temizliği tamamla",
+          "Durumu 'kontrole hazır' yap",
+          "Eksik varsa not ekle"
+        ],
+        "linkLabel": "Oda durumu"
+      }
+    }
+  },
+  {
+    "id": "where-to-park-cart",
+    "question": "Wo stelle ich den Wagen ab?",
+    "keywords": [
+      "wagen abstellen",
+      "housekeeping wagen",
+      "flur",
+      "parken",
+      "cart parking",
+      "where to park cart",
+      "araba bırakma",
+      "koridor",
+      "park",
+      "arabayı nereye",
+      "araba bırak"
+    ],
+    "answer": "Stelle den Wagen immer an die Wandseite, damit Fluchtwege frei bleiben. Vor Gästetüren nur kurz halten und leise arbeiten.",
+    "steps": [
+      "Fluchtweg frei halten",
+      "Wagen sichern",
+      "Nach Etage in Servicenische stellen"
+    ],
+    "linkLabel": "Sicherheitsregeln",
+    "translations": {
+      "en": {
+        "question": "Where do I park the cart?",
+        "answer": "Always place the cart on the wall side so escape routes stay clear. Stop in front of guest doors only briefly and work quietly.",
+        "steps": [
+          "Keep escape routes clear",
+          "Secure the cart",
+          "After the floor, park it in the service niche"
+        ],
+        "linkLabel": "Safety rules"
+      },
+      "tr": {
+        "question": "Arabayı nereye bırakmalıyım?",
+        "answer": "Arabayı her zaman duvar tarafına bırak ki kaçış yolları açık kalsın. Misafir kapılarının önünde sadece kısa süre dur ve sessiz çalış.",
+        "steps": [
+          "Kaçış yolunu açık tut",
+          "Arabayı sabitle",
+          "Kat sonunda servis nişine bırak"
+        ],
+        "linkLabel": "Güvenlik kuralları"
+      }
+    }
+  },
+  {
+    "id": "no-german",
+    "question": "Ich spreche kein Deutsch. Was soll ich tun?",
+    "keywords": [
+      "kein deutsch",
+      "deutsch",
+      "verstehen",
+      "sprache",
+      "no german",
+      "do not speak german",
+      "almanca bilmiyorum",
+      "almanca",
+      "anlamıyorum"
+    ],
+    "answer": "Nutze die Sprachhilfe und die Bild-Checklisten. Für wichtige Rückfragen kannst du Quick Help in einfacher Sprache fragen oder Anna aus Housekeeping ansprechen.",
+    "steps": [
+      "Bild-Checkliste öffnen",
+      "Sprachhilfe nutzen",
+      "Bei Unsicherheit Teamkontakt fragen"
+    ],
+    "linkLabel": "Start ohne Deutsch",
+    "image": "/assets/module-welcome.png",
+    "translations": {
+      "en": {
+        "question": "I do not speak German. What should I do?",
+        "answer": "Use Language Help and the visual checklists. For important questions, ask Quick Help in simple language or speak to Anna from housekeeping.",
+        "steps": [
+          "Open the visual checklist",
+          "Use Language Help",
+          "Ask a team contact if unsure"
+        ],
+        "linkLabel": "Start without German"
+      },
+      "tr": {
+        "question": "Almanca bilmiyorum. Ne yapmalıyım?",
+        "answer": "Dil yardımını ve resimli kontrol listelerini kullan. Önemli sorular için Quick Help'e basit dilde sorabilir veya kat hizmetlerinden Anna'ya danışabilirsin.",
+        "steps": [
+          "Resimli kontrol listesini aç",
+          "Dil yardımını kullan",
+          "Emin değilsen ekip iletişimine sor"
+        ],
+        "linkLabel": "Almanca olmadan başlangıç"
+      }
+    }
+  },
+  {
+    "id": "training-time",
+    "question": "Wie lange dauert meine Einarbeitung?",
+    "keywords": [
+      "einarbeitung",
+      "onboarding",
+      "dauer",
+      "lernen",
+      "training",
+      "how long",
+      "eğitim",
+      "oryantasyon",
+      "ne kadar sürer",
+      "eğitim ne kadar"
+    ],
+    "answer": "Das Ziel ist: die wichtigsten Standards in den ersten Stunden verstehen. Dein Dashboard zeigt Fortschritt, offene Module und nächste Schritte.",
+    "steps": [
+      "Willkommen abschliessen",
+      "Zimmer & Hygiene lernen",
+      "Erste Schicht mit Checkliste arbeiten"
+    ],
+    "linkLabel": "Onboarding-Plan",
+    "translations": {
+      "en": {
+        "question": "How long does onboarding take?",
+        "answer": "The goal is to understand the most important standards in the first few hours. Your dashboard shows progress, open modules, and next steps.",
+        "steps": [
+          "Complete Welcome",
+          "Learn Room & Hygiene",
+          "Work the first shift with a checklist"
+        ],
+        "linkLabel": "Onboarding plan"
+      },
+      "tr": {
+        "question": "Eğitimim ne kadar sürer?",
+        "answer": "Hedef: en önemli standartları ilk saatlerde anlamak. Panelin ilerlemeni, açık modülleri ve sonraki adımları gösterir.",
+        "steps": [
+          "Karşılama bölümünü tamamla",
+          "Oda ve hijyen modülünü öğren",
+          "İlk vardiyada kontrol listesiyle çalış"
+        ],
+        "linkLabel": "Onboarding planı"
+      }
+    }
+  },
+  {
+    "id": "who-knows-process",
+    "question": "Wo bleibt das Wissen, wenn jemand geht?",
+    "keywords": [
+      "wissen",
+      "geht",
+      "kuendigt",
+      "prozess",
+      "standards",
+      "knowledge",
+      "process",
+      "someone leaves",
+      "bilgi",
+      "ayrılırsa",
+      "süreç",
+      "işten ayrıl",
+      "bilgi kal"
+    ],
+    "answer": "Alle wichtigen Hausstandards, Systemabläufe und Teamkontakte werden in WorkLingo als Module, Checklisten und Quick-Help-Antworten gespeichert.",
+    "steps": [
+      "Wissen als Modul dokumentieren",
+      "Antwort in Quick Help ergänzen",
+      "Teamkontakt aktuell halten"
+    ],
+    "linkLabel": "Wissen im Haus",
+    "translations": {
+      "en": {
+        "question": "Where does knowledge stay when someone leaves?",
+        "answer": "All important house standards, system processes, and team contacts are stored in WorkLingo as modules, checklists, and Quick Help answers.",
+        "steps": [
+          "Document knowledge as a module",
+          "Add an answer to Quick Help",
+          "Keep team contacts updated"
+        ],
+        "linkLabel": "Knowledge stays in-house"
+      },
+      "tr": {
+        "question": "Biri işten ayrılınca bilgi nerede kalıyor?",
+        "answer": "Tüm önemli otel standartları, sistem akışları ve ekip iletişim bilgileri WorkLingo'da modüller, kontrol listeleri ve Quick Help cevapları olarak saklanır.",
+        "steps": [
+          "Bilgiyi modül olarak belgele",
+          "Cevabı Quick Help'e ekle",
+          "Ekip iletişimini güncel tut"
+        ],
+        "linkLabel": "Bilgi otelde kalır"
+      }
+    }
+  },
+  {
+    "id": "feedback",
+    "question": "Wie gebe ich Feedback zu einer Anleitung?",
+    "keywords": [
+      "feedback",
+      "anleitung falsch",
+      "verbessern",
+      "fehler",
+      "wrong instruction",
+      "improve",
+      "geri bildirim",
+      "yanlış talimat",
+      "hata"
+    ],
+    "answer": "Nutze 'Feedback geben' im Schnellzugriff. Beschreibe kurz, welcher Schritt unklar ist und was im echten Ablauf anders ist.",
+    "steps": [
+      "Feedback geben öffnen",
+      "Modul oder Schritt nennen",
+      "Änderung kurz beschreiben"
+    ],
+    "linkLabel": "Feedback geben",
+    "translations": {
+      "en": {
+        "question": "How do I give feedback on an instruction?",
+        "answer": "Use 'Give feedback' in quick access. Briefly describe which step is unclear and what is different in the real process.",
+        "steps": [
+          "Open Give feedback",
+          "Name the module or step",
+          "Describe the change briefly"
+        ],
+        "linkLabel": "Give feedback"
+      },
+      "tr": {
+        "question": "Bir talimat için nasıl geri bildirim veririm?",
+        "answer": "Hızlı erişimdeki 'Geri bildirim ver' seçeneğini kullan. Hangi adımın belirsiz olduğunu ve gerçek akışta neyin farklı olduğunu kısaca yaz.",
+        "steps": [
+          "'Geri bildirim ver'i aç",
+          "Modülü veya adımı belirt",
+          "Değişikliği kısaca anlat"
+        ],
+        "linkLabel": "Geri bildirim ver"
+      }
+    }
+  }
+]

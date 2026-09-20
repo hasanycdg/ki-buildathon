@@ -1,0 +1,45 @@
+[
+  {
+    "id": "shower-hose-gasket",
+    "fingerprints": [
+      "fcffe7c21e1f0e15fefef1718b8a010a",
+      "fcffe7c21e1f0e15fefef1718b8a0108"
+    ],
+    "fileNameKeywords": ["dusche", "duschkopf", "brause", "shower", "dichtung", "schlauch", "gasket"],
+    "questionKeywords": [
+      "dusche", "duschkopf", "brause", "handbrause", "dichtung", "gummi", "schlauch", "tropft",
+      "shower", "shower head", "hose", "seal", "dripping",
+      "duş", "duş başlığı", "hortum", "conta", "lastik", "damlıyor"
+    ],
+    "de": {
+      "title": "Handbrause: Dichtung kaputt",
+      "answer": "Die Gummidichtung zwischen Schlauch und Handbrause ist kaputt. Repariere das nicht selbst. Mach ein Foto und zeig es deiner Vorgesetzten.",
+      "steps": [
+        "Foto vom Schaden machen",
+        "Hausdame Anna Berger fragen oder Rezeption intern 100 anrufen",
+        "Zimmer normal weiter reinigen"
+      ],
+      "linkLabel": "Schaden melden"
+    },
+    "en": {
+      "title": "Hand shower: seal broken",
+      "answer": "The rubber seal between the hose and the hand shower is broken. Do not repair it yourself. Take a photo and show it to your supervisor.",
+      "steps": [
+        "Take a photo of the damage",
+        "Ask housekeeper Anna Berger or call reception on internal 100",
+        "Continue cleaning the room as usual"
+      ],
+      "linkLabel": "Report damage"
+    },
+    "tr": {
+      "title": "El duşu: conta kırık",
+      "answer": "Hortum ile el duşu arasındaki lastik conta kırılmış. Kendin tamir etme. Fotoğraf çek ve amirine göster.",
+      "steps": [
+        "Hasarın fotoğrafını çek",
+        "Kat şefi Anna Berger'e sor veya resepsiyonu dahili 100'den ara",
+        "Odayı normal şekilde temizlemeye devam et"
+      ],
+      "linkLabel": "Hasar bildir"
+    }
+  }
+]
