@@ -46,6 +46,8 @@ function Choice({ ex, value, setValue, locked }) {
 }
 
 function Vocab({ ex, value, setValue, locked, lang }) {
+  // Die Uebersetzung in die Muttersprache erscheint ERST nach der Antwort.
+  // Vorher wuerde sie die Loesung verraten und die Aufgabe wertlos machen.
   return (
     <>
       <div className="lp-term">
@@ -54,7 +56,9 @@ function Vocab({ ex, value, setValue, locked, lang }) {
           <Volume2 size={20} />
         </button>
       </div>
-      {ex.tr?.[lang] && <p className="lp-bridge">{ex.tr[lang]}</p>}
+      <p className={"lp-bridge" + (locked ? " shown" : "")}>
+        {locked && ex.tr?.[lang] ? "In deiner Sprache: " + ex.tr[lang] : "\u00a0"}
+      </p>
       <Choice ex={ex} value={value} setValue={setValue} locked={locked} />
     </>
   );
@@ -126,10 +130,23 @@ function Order({ ex, value, setValue, locked }) {
 
 function Match({ ex, value, setValue, locked }) {
   const left = ex.pairs.map((p) => p[0]);
-  const right = useMemo(() => shuffle(ex.pairs.map((p) => p[1]), ex.id.length * 71), [ex.id]);
+
+  // Ein Zielwert darf mehrfach vorkommen ("Badetuch -> Bad", "Föhn -> Bad").
+  // Er wird deshalb nur EINMAL angezeigt und ist so oft waehlbar,
+  // wie er in den Paaren steht.
+  const capacity = useMemo(() => {
+    const map = new Map();
+    ex.pairs.forEach(([, r]) => map.set(r, (map.get(r) || 0) + 1));
+    return map;
+  }, [ex.id]);
+  const right = useMemo(() => shuffle([...capacity.keys()], ex.id.length * 71), [ex.id]);
+
   const made = value || {};
   const [active, setActive] = useState(null);
-  const takenRight = new Set(Object.values(made));
+
+  const used = new Map();
+  Object.values(made).forEach((r) => used.set(r, (used.get(r) || 0) + 1));
+  const isFull = (r) => (used.get(r) || 0) >= capacity.get(r);
 
   function pickLeft(l) {
     if (locked) return;
@@ -137,7 +154,7 @@ function Match({ ex, value, setValue, locked }) {
     setActive(active === l ? null : l);
   }
   function pickRight(r) {
-    if (locked || !active || takenRight.has(r)) return;
+    if (locked || !active || isFull(r)) return;
     setValue({ ...made, [active]: r });
     setActive(null);
   }
@@ -155,13 +172,18 @@ function Match({ ex, value, setValue, locked }) {
         ))}
       </div>
       <div className="lp-match-col">
-        {right.map((r) => (
-          <button key={r} type="button" disabled={locked || takenRight.has(r)}
-            className={"lp-match-item" + (takenRight.has(r) ? " taken" : "")}
-            onClick={() => pickRight(r)}>
-            {r}
-          </button>
-        ))}
+        {right.map((r) => {
+          const slots = capacity.get(r);
+          const left_ = slots - (used.get(r) || 0);
+          return (
+            <button key={r} type="button" disabled={locked || isFull(r)}
+              className={"lp-match-item" + (isFull(r) ? " taken" : "")}
+              onClick={() => pickRight(r)}>
+              {r}
+              {slots > 1 && <span className="lp-match-slots">{left_} von {slots} frei</span>}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

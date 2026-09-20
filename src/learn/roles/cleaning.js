@@ -1,6 +1,6 @@
 /**
  * Rolle: Reinigung öffentliche Bereiche
- * Alles auÃerhalb der Gästezimmer — Aufbau siehe ../types.js
+ * Alles außerhalb der Gästezimmer — Aufbau siehe ../types.js
  */
 export const cleaning = {
   id: "cleaning",
@@ -8,7 +8,7 @@ export const cleaning = {
   tagline: "Lobby, Gänge, Wellness und WC sauber halten",
   icon: "SprayCan",
   accent: "#0f9b8e",
-  blurb: "Du machst alles auÃerhalb der Zimmer. Du arbeitest oft vor Gästen. Du lernst die Bereiche, die Regeln und die wichtigsten Wörter — auch ohne Deutsch.",
+  blurb: "Du machst alles außerhalb der Zimmer. Du arbeitest oft vor Gästen. Du lernst die Bereiche, die Regeln und die wichtigsten Wörter — auch ohne Deutsch.",
   units: [
     {
       id: "cl-u1",
@@ -25,11 +25,11 @@ export const cleaning = {
               explain: "Die Lobby ist der erste Raum, den der Gast sieht. Sie wird mehrmals am Tag kontrolliert, nicht nur einmal." },
             { id: "cl-2", type: "vocab", term: "das Stiegenhaus", options: ["the lift", "the stairwell", "the balcony", "the roof"], answer: 1,
               tr: { en: "stairwell", tr: "merdiven boşluğu", sk: "schodisko" },
-              explain: "Stiegenhaus heiÃt Treppenhaus. In Österreich sagt man Stiege, in Deutschland Treppe. Beides ist richtig." },
+              explain: "Stiegenhaus heißt Treppenhaus. In Österreich sagt man Stiege, in Deutschland Treppe. Beides ist richtig." },
             { id: "cl-3", type: "vocab", term: "der Aufzug", options: ["the corridor", "the door", "the lift", "the window"], answer: 2,
               tr: { en: "lift, elevator", tr: "asansör", sk: "výťah" },
               explain: "Man sagt auch Lift. Im Aufzug siehst du jeden Fingerabdruck — deshalb gehört er zur täglichen Runde." },
-            { id: "cl-4", type: "match", prompt: "Bereich und typische Aufgabe", pairs: [["Lobby", "Glastür putzen"], ["Gang", "Boden saugen"], ["Aufzug", "Spiegel und Knöpfe"], ["Wellness", "BarfuÃboden desinfizieren"]],
+            { id: "cl-4", type: "match", prompt: "Bereich und typische Aufgabe", pairs: [["Lobby", "Glastür putzen"], ["Gang", "Boden saugen"], ["Aufzug", "Spiegel und Knöpfe"], ["Wellness", "Barfußboden desinfizieren"]],
               explain: "Jeder Bereich hat eine Hauptaufgabe. Wenn du sie kennst, brauchst du keine Liste mehr in der Hand." },
             { id: "cl-5", type: "choice", prompt: "Womit fängst du am Morgen an?", options: ["Personalraum", "Lobby und Eingang", "Lager", "Stiegenhaus"], answer: 1,
               explain: "Der Eingangsbereich zuerst: Dort kommen die ersten Gäste durch. Personalräume macht man, wenn keiner drin ist." },
@@ -66,7 +66,7 @@ export const cleaning = {
             { id: "cl-13", type: "vocab", term: "die Glastür", options: ["glass door", "back door", "fire door", "room door"], answer: 0,
               tr: { en: "glass door", tr: "cam kapı", sk: "sklenené dvere" },
               explain: "Glastüren zeigen jeden Handabdruck. Sie werden mehrmals täglich nachgeputzt, besonders beim Eingang." },
-            { id: "cl-14", type: "choice", prompt: "Wie putzt du eine groÃe Glasfläche streifenfrei?", options: ["Viel Mittel und trocken reiben", "Wenig Mittel und mit dem Abzieher von oben nach unten", "Nur mit Wasser", "Mit dem Bodentuch"], answer: 1,
+            { id: "cl-14", type: "choice", prompt: "Wie putzt du eine große Glasfläche streifenfrei?", options: ["Viel Mittel und trocken reiben", "Wenig Mittel und mit dem Abzieher von oben nach unten", "Nur mit Wasser", "Mit dem Bodentuch"], answer: 1,
               explain: "Wenig Mittel, Abzieher von oben nach unten, Kante nach jedem Zug abwischen. Zu viel Mittel macht die Streifen." },
             { id: "cl-15", type: "truefalse", statement: "Im Aufzug reicht es, den Boden zu machen.", answer: false,
               explain: "Im Aufzug zählen Spiegel, Knöpfe und Handlauf am meisten. Die Knöpfe fasst jeder Gast an." },
@@ -99,7 +99,7 @@ export const cleaning = {
               explain: "Ein Sturz passiert in einer Sekunde. Das Schild steht, sobald der erste Tropfen auf dem Boden ist." },
             { id: "cl-22", type: "choice", prompt: "Ein Gast geht trotz Schild über den nassen Boden. Was tust du?", options: ["Nichts sagen", "Freundlich warnen und die trockene Seite zeigen", "Laut rufen", "Schild wegnehmen"], answer: 1,
               explain: "Freundlich hinweisen und den trockenen Weg zeigen. Ein Handzeichen reicht, wenn die Sprache fehlt." },
-            { id: "cl-23", type: "match", prompt: "Situation und MaÃnahme", pairs: [["Nasser Boden", "Warnschild"], ["Kabel im Gang", "Kabel an der Wand führen"], ["Leiter im Einsatz", "Bereich absperren"], ["Scherben", "Sofort absichern"]],
+            { id: "cl-23", type: "match", prompt: "Situation und Maßnahme", pairs: [["Nasser Boden", "Warnschild"], ["Kabel im Gang", "Kabel an der Wand führen"], ["Leiter im Einsatz", "Bereich absperren"], ["Scherben", "Sofort absichern"]],
               explain: "Jede Gefahr wird sichtbar gemacht, bevor du weiterarbeitest. Absichern kommt immer vor Aufräumen." },
             { id: "cl-24", type: "build", prompt: "Warne einen Gast vor dem nassen Boden.", answer: ["Achtung", "der", "Boden", "ist", "nass"], distractors: ["trocken", "morgen", "fertig"],
               explain: "Fünf Wörter, die einen Sturz verhindern. Sag sie freundlich und zeig dabei auf den Boden." }
@@ -157,15 +157,15 @@ export const cleaning = {
           title: "Wellness und Fitness",
           kind: "lesson",
           exercises: [
-            { id: "cl-37", type: "vocab", term: "der BarfuÃbereich", options: ["barefoot area", "car park", "storage room", "smoking area"], answer: 0,
+            { id: "cl-37", type: "vocab", term: "der Barfußbereich", options: ["barefoot area", "car park", "storage room", "smoking area"], answer: 0,
               tr: { en: "barefoot area", tr: "çıplak ayak alanı", sk: "priestor pre bosé nohy" },
-              explain: "Im Wellness gehen alle ohne Schuhe. Dort wird der Boden desinfiziert, nicht nur gewischt — sonst wandern FuÃpilze weiter." },
+              explain: "Im Wellness gehen alle ohne Schuhe. Dort wird der Boden desinfiziert, nicht nur gewischt — sonst wandern Fußpilze weiter." },
             { id: "cl-38", type: "order", prompt: "Sauna reinigen nach dem Betrieb", steps: ["Sauna abkühlen lassen", "Handtücher und Müll rausholen", "Bänke mit Saunareiniger wischen", "Boden desinfizieren", "Lüften und trocknen lassen"],
-              explain: "Nie in die heiÃe Sauna. Erst abkühlen lassen, sonst verdampft das Mittel und du atmest es ein." },
+              explain: "Nie in die heiße Sauna. Erst abkühlen lassen, sonst verdampft das Mittel und du atmest es ein." },
             { id: "cl-39", type: "truefalse", statement: "Saunabänke aus Holz putzt du mit viel Wasser und starkem Reiniger.", answer: false,
               explain: "Holz nur feucht und mit dem dafür vorgesehenen Mittel. Zu viel Wasser lässt das Holz aufquellen und splittern." },
             { id: "cl-40", type: "choice", prompt: "Was kontrollierst du im Fitnessraum mehrmals täglich?", options: ["Die Fenster", "Griffe, Matten und Desinfektionsspender", "Die Decke", "Die Steckdosen"], answer: 1,
-              explain: "SchweiÃ bleibt an Griffen und Matten. Ein leerer Desinfektionsspender ist im Fitnessraum ein sofortiger Reklamationsgrund." },
+              explain: "Schweiß bleibt an Griffen und Matten. Ein leerer Desinfektionsspender ist im Fitnessraum ein sofortiger Reklamationsgrund." },
             { id: "cl-41", type: "match", prompt: "Wellness-Bereich und Hauptaufgabe", pairs: [["Sauna", "Bänke und Boden"], ["Dusche", "Kalk und Abfluss"], ["Ruheraum", "Frische Tücher auflegen"], ["Pool-Rand", "Rutschgefahr prüfen"]],
               explain: "Jeder Bereich hat einen typischen Schwachpunkt. Wer den kennt, sieht in fünf Sekunden, ob alles passt." },
             { id: "cl-42", type: "build", prompt: "Melde, dass die Sauna noch benutzt wird.", answer: ["In", "der", "Sauna", "ist", "noch", "ein", "Gast"], distractors: ["leer", "kaputt"],
@@ -202,14 +202,14 @@ export const cleaning = {
               explain: "Fluchtwege bleiben immer frei. Dein Wagen, Müllsäcke oder eine Leiter dürfen nie dort stehen." },
             { id: "cl-50", type: "truefalse", statement: "Eine Brandschutztür im Stiegenhaus darfst du beim Arbeiten mit einem Keil offen halten.", answer: false,
               explain: "Brandschutztüren müssen zufallen können. Offen gekeilt lassen sie im Ernstfall Rauch ins ganze Stiegenhaus." },
-            { id: "cl-51", type: "order", prompt: "Ein Glas ist in der Lobby zerbrochen", steps: ["Bereich sichern und Gäste fernhalten", "Handschuhe anziehen", "GroÃe Scherben aufheben", "Kleine Splitter aufsaugen", "Boden nachwischen"],
+            { id: "cl-51", type: "order", prompt: "Ein Glas ist in der Lobby zerbrochen", steps: ["Bereich sichern und Gäste fernhalten", "Handschuhe anziehen", "Große Scherben aufheben", "Kleine Splitter aufsaugen", "Boden nachwischen"],
               explain: "Zuerst sichern, dann aufräumen. Kleine Splitter sieht man nicht — deshalb immer saugen und nachwischen." },
             { id: "cl-52", type: "choice", prompt: "Du entdeckst am Abend eine kaputte Lampe im dunklen Stiegenhaus. Was tust du?", options: ["Bis morgen warten", "Sofort der Rezeption melden", "Selbst reparieren", "Aufschreiben und am Monatsende melden"], answer: 1,
               explain: "Ein dunkles Stiegenhaus ist eine Sturzgefahr. Sofort melden, damit noch am selben Abend Licht gemacht wird." },
             { id: "cl-53", type: "match", prompt: "Gefahr und richtige Reaktion", pairs: [["Wasser am Boden", "Absichern und melden"], ["Scherben", "Handschuhe und aufsaugen"], ["Blockierter Fluchtweg", "Sofort frei machen"], ["Fremde Person im Personalraum", "Rezeption rufen"]],
               explain: "Vier Standardsituationen im öffentlichen Bereich. Wer sie kennt, muss nie improvisieren." },
             { id: "cl-54", type: "build", prompt: "Melde eine Gefahr am Gang.", answer: ["Im", "Gang", "ist", "Wasser"], distractors: ["trocken", "fertig", "morgen"],
-              explain: "Kurz und klar. Damit weiÃ die Rezeption sofort, wo etwas passiert ist, auch ohne viel Deutsch." }
+              explain: "Kurz und klar. Damit weiß die Rezeption sofort, wo etwas passiert ist, auch ohne viel Deutsch." }
           ]
         }
       ]
