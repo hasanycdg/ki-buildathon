@@ -11,7 +11,8 @@ import * as Scenes from "../learn/scenes/index.js";
 import { buildCustomTask, loadContentState, localized, saveContentState } from "./contentStore.js";
 import { automaticTranslationEnabled, translateAdminDraft } from "./translationService.js";
 import { aiGenerationEnabled, generateLessonDraft } from "./generationService.js";
-import { getAsset, getAssetVisual, LEARNING_ASSETS } from "./assetLibrary.js";
+import { getAsset, LEARNING_ASSETS } from "./assetLibrary.js";
+import GeneratedScene from "../learn/scenes/GeneratedScene.jsx";
 
 const SCENES = [
   { id: "room", name: "Hotelzimmer", icon: BedDouble, color: "blue" },
@@ -54,7 +55,7 @@ const normalizeObjects = (objects = []) => objects.map((object, index) => typeof
 const emptyDraft = () => ({
   id: null, kind: "custom", title: "", goal: "", roleId: "housekeeping", minutes: 4,
   active: true, translationMode: "auto", translations: {}, scene: "room", objects: [],
-  animation: ["Ausgangssituation", "Handgriff zeigen", "Ergebnis prüfen"], taskType: "decision",
+  animation: ["Ausgangssituation", "Handgriff zeigen", "Ergebnis prüfen"], customScene: null, taskType: "decision",
   storyboard: [], question: "", correctAnswer: "", wrongAnswerOne: "", wrongAnswerTwo: "", explanation: "", media: []
 });
 
@@ -70,8 +71,6 @@ function AdminToggle({ active, onClick, label }) {
 function LessonPreview({ draft, onClose }) {
   const Scene = SCENE_COMPONENTS[draft.scene] || Scenes.RoomScene;
   const objects = normalizeObjects(draft.objects);
-  const firstFrame = draft.storyboard?.[0];
-  const generatedVisual = firstFrame && getAssetVisual(firstFrame.assetId, firstFrame.state);
   return (
     <>
       <button type="button" className="preview-scrim" onClick={onClose} aria-label="Vorschau schließen" />
@@ -86,9 +85,9 @@ function LessonPreview({ draft, onClose }) {
             <div className="preview-scene">
               {draft.media?.[0] ? (draft.media[0].type.startsWith("video/")
                 ? <video src={draft.media[0].url} controls muted playsInline />
-                : <img src={draft.media[0].url} alt={draft.media[0].name} />) : generatedVisual
-                  ? <img src={generatedVisual} alt={getAsset(firstFrame.assetId)?.name || "Lernobjekt"} />
-                  : <Scene dim />}
+                : <img src={draft.media[0].url} alt={draft.media[0].name} />) : draft.customScene
+                  ? <GeneratedScene scene={draft.customScene} frame={Math.min(2, Math.max(0, (draft.storyboard?.length || 1) - 1))} dim />
+                  : <Scene frame={Math.min(2, Math.max(0, (draft.storyboard?.length || 1) - 1))} dim />}
               {objects.map((object) => {
                 const meta = OBJECTS.find(([id]) => id === object.id);
                 return <span key={object.id} style={{ left: `${object.x}%`, top: `${object.y}%` }}>{meta?.[2]}</span>;
@@ -111,13 +110,13 @@ function AutoLessonCreator({ draft, setDraft, aiBrief, setAiBrief, messages, gen
   const [frame, setFrame] = useState(0);
   const activeFrame = frames[Math.min(frame, Math.max(0, frames.length - 1))];
   const activeAsset = activeFrame && getAsset(activeFrame.assetId);
-  const activeVisual = activeFrame && getAssetVisual(activeFrame.assetId, activeFrame.state);
+  const Scene = SCENE_COMPONENTS[draft.scene] || Scenes.RoomScene;
   return (
     <section className="auto-creator">
       <header className="auto-creator-head">
         <button type="button" className="content-back" onClick={onBack}><ArrowLeft size={18} /> Lerninhalte</button>
-        <div><span><Sparkles size={14} /> Mistral Lesson Creator</span><h2>Beschreiben. Fertig.</h2><p>Du sagst, was geschult werden soll. Szene, Animation, Aufgabe und Übersetzungen entstehen automatisch.</p></div>
-        <em className={aiGenerationEnabled ? "connected" : ""}>{aiGenerationEnabled ? "Mistral verbunden" : "Demo-Modus"}</em>
+        <div><span><Sparkles size={14} /> WorkLingo AI Lesson Creator</span><h2>Beschreiben. Fertig.</h2><p>Du sagst, was geschult werden soll. Szene, Animation, Aufgabe und Übersetzungen entstehen automatisch.</p></div>
+        <em className={aiGenerationEnabled ? "connected" : ""}>{aiGenerationEnabled ? "KI verbunden" : "Demo-Modus"}</em>
       </header>
 
       <div className="auto-creator-grid">
@@ -129,8 +128,8 @@ function AutoLessonCreator({ draft, setDraft, aiBrief, setAiBrief, messages, gen
 
           <div className="auto-prompt-title"><span><Sparkles size={19} /></span><div><h3>Was sollen Mitarbeitende lernen?</h3><p>Schreib einfach drauflos – ohne Formularsprache.</p></div></div>
           <div className="auto-conversation">
-            {messages.slice(-3).map((message, index) => <div key={index} className={message.role}><b>{message.role === "assistant" ? "Mistral" : "Du"}</b><p>{message.text}</p></div>)}
-            {generating && <div className="assistant auto-thinking"><b>Mistral</b><p><i /> <i /> <i /> Szene und Animation werden gebaut …</p></div>}
+            {messages.slice(-3).map((message, index) => <div key={index} className={message.role}><b>{message.role === "assistant" ? "WorkLingo AI" : "Du"}</b><p>{message.text}</p></div>)}
+            {generating && <div className="assistant auto-thinking"><b>WorkLingo AI</b><p><i /> <i /> <i /> Szene und Animation werden gebaut …</p></div>}
           </div>
           <textarea className="auto-main-input" value={aiBrief} onChange={(event) => setAiBrief(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); onGenerate(); } }} placeholder="Zum Beispiel: Zeige neuen Mitarbeitenden, wie sie die Kaffeemaschine ausschalten, die Fächer öffnen, alle Teile reinigen und am Ende kontrollieren …" />
           {draft.media?.length > 0 && <div className="auto-attachments">{draft.media.map((item) => <span key={item.id}>{item.type.startsWith("video/") ? <Film size={14} /> : <ImageIcon size={14} />}{item.name}<button type="button" onClick={() => setDraft({ ...draft, media: draft.media.filter((media) => media.id !== item.id) })}><X size={12} /></button></span>)}</div>}
@@ -148,7 +147,7 @@ function AutoLessonCreator({ draft, setDraft, aiBrief, setAiBrief, messages, gen
             <div className="auto-result-head"><span><Check size={15} /> Entwurf fertig</span><button type="button" onClick={onPreview}><Eye size={15} /> Lernansicht</button></div>
             <h3>{draft.title}</h3><p>{draft.goal}</p>
             <div className="auto-scene-stage">
-              {draft.media?.[0] ? (draft.media[0].type.startsWith("video/") ? <video src={draft.media[0].url} controls muted /> : <img src={draft.media[0].url} alt="Eigene Referenz" />) : activeVisual ? <img key={`${activeFrame.assetId}-${activeFrame.state}`} src={activeVisual} alt={activeAsset?.name || "Lernobjekt"} /> : <div className="auto-scene-fallback"><Box size={44} /></div>}
+              {draft.media?.[0] ? (draft.media[0].type.startsWith("video/") ? <video src={draft.media[0].url} controls muted /> : <img src={draft.media[0].url} alt="Eigene Referenz" />) : draft.customScene ? <GeneratedScene scene={draft.customScene} frame={frame} /> : <Scene frame={frame} />}
               <span>{activeAsset?.name || "Automatische Szene"}</span>
             </div>
             <div className="auto-storyboard">{frames.map((item, index) => <button type="button" key={`${item.caption}-${index}`} className={index === frame ? "active" : ""} onClick={() => setFrame(index)}><b>{index + 1}</b><span>{item.caption}</span></button>)}</div>
@@ -233,6 +232,7 @@ export default function AdminContentStudio({ onNotice }) {
             correctAnswer: firstStep?.options?.[1], wrongAnswerOne: firstStep?.options?.[0],
             wrongAnswerTwo: firstStep?.options?.[2], explanation: firstStep?.explain },
       scene: item.builder?.scene || "room", objects: normalizeObjects(item.builder?.objects || []), animation: item.builder?.animation || emptyDraft().animation,
+      customScene: item.builder?.customScene || firstStep?.customScene || null,
       storyboard: item.builder?.storyboard || [],
       media: item.builder?.media || firstStep?.media || [],
       taskType: firstStep?.type === "sequence" ? "order" : firstStep?.type === "decide" ? "decision" : firstStep?.type || "decision",
@@ -254,7 +254,7 @@ export default function AdminContentStudio({ onNotice }) {
     setAiMessages((messages) => [...messages, { role: "user", text: request, media: draft.media }]);
     setAiBrief("");
     const mediaContext = draft.media?.length ? ` Referenzmedien: ${draft.media.map((item) => item.name).join(", ")}.` : "";
-    const existingContext = draft.goal ? ` Bestehender Entwurf: ${JSON.stringify({ title: draft.title, goal: draft.goal, scene: draft.scene, objects: draft.objects.map((item) => item.id || item), animation: draft.animation, taskType: draft.taskType, question: draft.question, correctAnswer: draft.correctAnswer, wrongAnswerOne: draft.wrongAnswerOne, wrongAnswerTwo: draft.wrongAnswerTwo, explanation: draft.explanation })}. Änderungswunsch: ` : "";
+    const existingContext = draft.goal ? ` Bestehender Entwurf: ${JSON.stringify({ title: draft.title, goal: draft.goal, scene: draft.scene, customScene: draft.customScene, objects: draft.objects.map((item) => item.id || item), animation: draft.animation, taskType: draft.taskType, question: draft.question, correctAnswer: draft.correctAnswer, wrongAnswerOne: draft.wrongAnswerOne, wrongAnswerTwo: draft.wrongAnswerTwo, explanation: draft.explanation })}. Änderungswunsch: ` : "";
     const result = await generateLessonDraft(existingContext + request + mediaContext);
     setDraft((current) => ({ ...current, ...result.draft, title: current.title.trim() || result.draft.title, objects: normalizeObjects(result.draft.objects), translationMode: "auto" }));
     setAiMessages((messages) => [...messages, { role: "assistant", text: `Fertig – ich habe „${result.draft.title}“ mit ${result.draft.animation?.length || 3} Animationsschritten und einer ${TASK_TYPES.find(([id]) => id === result.draft.taskType)?.[1] || "Aufgabe"} vorbereitet. Du kannst mir weitere Änderungen schreiben oder direkt die Vorschau öffnen.` }]);
