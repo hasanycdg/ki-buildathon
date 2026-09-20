@@ -4,14 +4,7 @@ import imageKnowledge from "./data/imageKnowledge.json";
 // bzw. 9x8 rechnen. Das macht den Hash unabhaengig davon, wie der Browser skaliert.
 const FINGERPRINT_EDGE = 512;
 const FINGERPRINT_TOLERANCE = 12; // von 128 Bit
-const VISION_EDGE = 1280;
 const MAX_FILE_BYTES = 12 * 1024 * 1024;
-
-const visionKey = import.meta.env.VITE_ANTHROPIC_API_KEY;
-export const visionModel = import.meta.env.VITE_ANTHROPIC_MODEL || "claude-opus-5";
-export const visionEnabled = Boolean(visionKey);
-
-const languageNames = { de: "Deutsch", en: "English", tr: "Türkçe" };
 
 const fallbackAnswer = {
   de: {
@@ -173,84 +166,7 @@ export function matchKnownImage({ fingerprint, fileName = "", question = "" }) {
   return byText ? { entry: byText, distance: null, reason: "keyword" } : null;
 }
 
-function canvasToJpeg(image) {
-  const canvas = drawScaled(image, VISION_EDGE);
-  const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
-  return { mediaType: "image/jpeg", base64: dataUrl.slice(dataUrl.indexOf(",") + 1) };
-}
-
-function visionSystemPrompt(language) {
-  return [
-    "Du bist Quick Help in der Onboarding-App WorkLingo eines kleinen Hotels.",
-    "Die Nutzer sind neue Housekeeping- und Rezeptionskräfte, oft ohne Deutschkenntnisse.",
-    "Wichtigste Hausregel: Neue Mitarbeitende reparieren nie selbst etwas und bestellen kein Material.",
-    "Sie machen ein Foto und fragen die Vorgesetzte: Hausdame Anna Berger oder Rezeption intern 100.",
-    "Bei Feuer oder medizinischem Notfall 112. Fundsachen gehen an die Rezeption.",
-    "Sage in einem Satz, was auf dem Bild zu sehen ist, und dann, wen die Person fragen soll.",
-    "Keine Reparaturanleitung, keine Ersatzteile, keine Werkzeuge nennen.",
-    `Antworte in ${languageNames[language] ?? languageNames.de}, in einfacher Sprache (Niveau A2).`,
-    "Antworte ausschließlich mit JSON in genau dieser Form, ohne Codeblock:",
-    '{"answer": "höchstens 2 kurze Sätze", "steps": ["2-3 Schritte, immer inklusive Foto und Vorgesetzte fragen"], "linkLabel": "Schaden melden"}'
-  ].join(" ");
-}
-
-function parseVisionJson(text) {
-  const start = text.indexOf("{");
-  const end = text.lastIndexOf("}");
-  if (start === -1 || end <= start) return null;
-  try {
-    const parsed = JSON.parse(text.slice(start, end + 1));
-    if (!parsed.answer) return null;
-    return {
-      answer: String(parsed.answer),
-      steps: Array.isArray(parsed.steps) ? parsed.steps.map(String).slice(0, 6) : [],
-      linkLabel: parsed.linkLabel ? String(parsed.linkLabel) : undefined
-    };
-  } catch (error) {
-    return null;
-  }
-}
-
-async function askVision({ dataUrl, language, question }) {
-  const { default: Anthropic } = await import("@anthropic-ai/sdk");
-  const client = new Anthropic({ apiKey: visionKey, dangerouslyAllowBrowser: true });
-  const image = await loadImage(dataUrl);
-  const { mediaType, base64 } = canvasToJpeg(image);
-
-  const response = await client.messages.create({
-    model: visionModel,
-    max_tokens: 4000,
-    output_config: { effort: "low" },
-    system: visionSystemPrompt(language),
-    messages: [
-      {
-        role: "user",
-        content: [
-          { type: "image", source: { type: "base64", media_type: mediaType, data: base64 } },
-          { type: "text", text: question || "Was soll ich mit dem hier machen?" }
-        ]
-      }
-    ]
-  });
-
-  const text = response.content
-    .filter((block) => block.type === "text")
-    .map((block) => block.text)
-    .join("\n");
-
-  return parseVisionJson(text);
-}
-
 export async function analyzeImage({ dataUrl, fileName, language = "de", question = "" }) {
-  if (visionEnabled) {
-    try {
-      const result = await askVision({ dataUrl, language, question });
-      if (result) return { ...result, source: "vision" };
-    } catch (error) {
-      console.warn("Vision-Analyse fehlgeschlagen, nutze Hauswissen", error);
-    }
-  }
-
   let fingerprint = "";
   try {
     fingerprint = await computeImageFingerprint(dataUrl);

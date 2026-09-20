@@ -4,20 +4,34 @@
  */
 export const housekeeping = {
   id: "housekeeping",
-  name: "Housekeeping",
-  tagline: "Zimmer reinigen nach Hausstandard",
+  name: { de: "Housekeeping", en: "Housekeeping", tr: "Kat Hizmetleri", sk: "Housekeeping", pl: "Housekeeping", hr: "Housekeeping", sr: "Housekeeping", sl: "Housekeeping" },
+  tagline: { de: "Zimmer reinigen nach Hausstandard", en: "Cleaning rooms to the house standard", tr: "Odaları ev standardına göre temizlemek", sk: "Upratovanie izieb podľa štandardu domu", pl: "Sprzątanie pokoi według standardu hotelu", hr: "Čišćenje soba prema standardu kuće", sr: "Čišćenje soba prema standardu kuće", sl: "Čiščenje sob po standardu hiše" },
   icon: "BedDouble",
   accent: "#2468f2",
-  blurb: "Du machst die Zimmer. Du lernst den Hausstandard, die Reihenfolge und die wichtigsten Wörter — auch ohne Deutsch.",
+  blurb: { de: "Du machst die Zimmer. Du lernst den Hausstandard, die Reihenfolge und die wichtigsten Wörter — auch ohne Deutsch.",
+           en: "You do the rooms. You learn the house standard, the order of work and the most important words — even without German.",
+           tr: "Odaları sen yaparsın. Ev standardını, iş sırasını ve en önemli kelimeleri öğrenirsin — Almanca bilmeden de.",
+           sk: "Robíš izby. Naučíš sa štandard domu, poradie prác a najdôležitejšie slová — aj bez nemčiny.",
+           pl: "Ty robisz pokoje. Nauczysz się standardu hotelu, kolejności pracy i najważniejszych słów — nawet bez niemieckiego.",
+           hr: "Ti radiš sobe. Naučit ćeš standard kuće, redoslijed rada i najvažnije riječi — i bez njemačkog.",
+           sr: "Ti radiš sobe. Naučićeš standard kuće, redosled rada i najvažnije reči — i bez nemačkog.",
+           sl: "Ti delaš sobe. Naučiš se standard hiše, vrstni red dela in najpomembnejše besede — tudi brez nemščine." },
   units: [
     {
       id: "hk-u1",
-      title: "Einheit 1 — Das Zimmer",
-      subtitle: "Du kennst die Dinge im Zimmer und kannst sie benennen.",
+      title: { de: "Einheit 1 — Das Zimmer", en: "Unit 1 — The room", tr: "Ünite 1 — Oda", sk: "Jednotka 1 — Izba", pl: "Jednostka 1 — Pokój", hr: "Cjelina 1 — Soba", sr: "Celina 1 — Soba", sl: "Enota 1 — Soba" },
+      subtitle: { de: "Du kennst die Dinge im Zimmer und kannst sie benennen.",
+                  en: "You know the things in the room and can name them.",
+                  tr: "Odadaki eşyaları tanırsın ve adlarını söyleyebilirsin.",
+                  sk: "Poznáš veci v izbe a vieš ich pomenovať.",
+                  pl: "Znasz rzeczy w pokoju i potrafisz je nazwać.",
+                  hr: "Poznaješ stvari u sobi i znaš ih imenovati.",
+                  sr: "Poznaješ stvari u sobi i znaš da ih imenuješ.",
+                  sl: "Poznaš stvari v sobi in jih znaš poimenovati." },
       lessons: [
         {
           id: "hk-u1-l1",
-          title: "Wörter fürs Zimmer",
+          title: { de: "Wörter fürs Zimmer", en: "Words for the room", tr: "Oda için kelimeler", sk: "Slová pre izbu", pl: "Słowa do pokoju", hr: "Riječi za sobu", sr: "Reči za sobu", sl: "Besede za sobo" },
           kind: "lesson",
           exercises: [
             { id: "hk-1", type: "vocab", term: "die Bettwäsche", options: ["bed linen", "the towel", "the window", "the door"], answer: 0,
@@ -39,7 +53,7 @@ export const housekeeping = {
         },
         {
           id: "hk-u1-l2",
-          title: "Zimmerstatus verstehen",
+          title: { de: "Zimmerstatus verstehen", en: "Understanding room status", tr: "Oda durumunu anlamak", sk: "Rozumieť stavu izby", pl: "Rozumieć status pokoju", hr: "Razumjeti status sobe", sr: "Razumeti status sobe", sl: "Razumeti status sobe" },
           kind: "lesson",
           exercises: [
             { id: "hk-7", type: "vocab", term: "die Abreise", options: ["arrival", "departure", "cleaning", "booking"], answer: 1,
@@ -60,7 +74,7 @@ export const housekeeping = {
         },
         {
           id: "hk-u1-l3",
-          title: "Prüfung — Das Zimmer",
+          title: { de: "Prüfung — Das Zimmer", en: "Test — The room", tr: "Sınav — Oda", sk: "Test — Izba", pl: "Test — Pokój", hr: "Provjera — Soba", sr: "Provera — Soba", sl: "Preverjanje — Soba" },
           kind: "checkpoint",
           exercises: [
             { id: "hk-13", type: "vocab", term: "das Badetuch", options: ["hand towel", "bath towel", "bed sheet", "curtain"], answer: 1,
@@ -82,12 +96,19 @@ export const housekeeping = {
     },
     {
       id: "hk-u2",
-      title: "Einheit 2 — Der Hausstandard",
-      subtitle: "Du reinigst ein Zimmer in der richtigen Reihenfolge.",
+      title: { de: "Einheit 2 — Der Hausstandard", en: "Unit 2 — The house standard", tr: "Ünite 2 — Ev standardı", sk: "Jednotka 2 — Štandard domu", pl: "Jednostka 2 — Standard hotelu", hr: "Cjelina 2 — Standard kuće", sr: "Celina 2 — Standard kuće", sl: "Enota 2 — Standard hiše" },
+      subtitle: { de: "Du reinigst ein Zimmer in der richtigen Reihenfolge.",
+                  en: "You clean a room in the right order.",
+                  tr: "Bir odayı doğru sırayla temizlersin.",
+                  sk: "Upratuješ izbu v správnom poradí.",
+                  pl: "Sprzątasz pokój we właściwej kolejności.",
+                  hr: "Čistiš sobu ispravnim redoslijedom.",
+                  sr: "Čistiš sobu ispravnim redosledom.",
+                  sl: "Sobo počistiš v pravilnem vrstnem redu." },
       lessons: [
         {
           id: "hk-u2-l1",
-          title: "Die Reihenfolge",
+          title: { de: "Die Reihenfolge", en: "The order of work", tr: "İş sırası", sk: "Poradie prác", pl: "Kolejność pracy", hr: "Redoslijed rada", sr: "Redosled rada", sl: "Vrstni red dela" },
           kind: "lesson",
           exercises: [
             { id: "hk-19", type: "order", prompt: "Reihenfolge der Zimmerreinigung", steps: ["Lüften und ausräumen", "Betten machen", "Staub wischen von oben nach unten", "Bad reinigen", "Boden saugen und wischen", "Kontrollblick"],
@@ -107,7 +128,7 @@ export const housekeeping = {
         },
         {
           id: "hk-u2-l2",
-          title: "Bett und Bad",
+          title: { de: "Bett und Bad", en: "Bed and bathroom", tr: "Yatak ve banyo", sk: "Posteľ a kúpeľňa", pl: "Łóżko i łazienka", hr: "Krevet i kupaonica", sr: "Krevet i kupatilo", sl: "Postelja in kopalnica" },
           kind: "lesson",
           exercises: [
             { id: "hk-25", type: "order", prompt: "Bett beziehen", steps: ["Alte Wäsche abziehen", "Matratze prüfen", "Leintuch spannen", "Bezug aufziehen", "Polster aufschütteln"],
@@ -127,7 +148,7 @@ export const housekeeping = {
         },
         {
           id: "hk-u2-l3",
-          title: "Prüfung — Hausstandard",
+          title: { de: "Prüfung — Hausstandard", en: "Test — House standard", tr: "Sınav — Ev standardı", sk: "Test — Štandard domu", pl: "Test — Standard hotelu", hr: "Provjera — Standard kuće", sr: "Provera — Standard kuće", sl: "Preverjanje — Standard hiše" },
           kind: "checkpoint",
           exercises: [
             { id: "hk-31", type: "order", prompt: "Komplette Zimmerreinigung von vorne", steps: ["Anklopfen und melden", "Lüften", "Müll und Wäsche raus", "Betten machen", "Staub von oben nach unten", "Bad", "Boden", "Kontrollblick"],
@@ -149,12 +170,19 @@ export const housekeeping = {
     },
     {
       id: "hk-u3",
-      title: "Einheit 3 — Chemie & Sicherheit",
-      subtitle: "Du arbeitest sicher mit Reinigungsmitteln und kennst die Regeln.",
+      title: { de: "Einheit 3 — Chemie & Sicherheit", en: "Unit 3 — Chemicals & safety", tr: "Ünite 3 — Kimyasallar ve güvenlik", sk: "Jednotka 3 — Chémia a bezpečnosť", pl: "Jednostka 3 — Chemia i bezpieczeństwo", hr: "Cjelina 3 — Kemija i sigurnost", sr: "Celina 3 — Hemija i bezbednost", sl: "Enota 3 — Kemija in varnost" },
+      subtitle: { de: "Du arbeitest sicher mit Reinigungsmitteln und kennst die Regeln.",
+                  en: "You work safely with cleaning agents and know the rules.",
+                  tr: "Temizlik maddeleriyle güvenli çalışırsın ve kuralları bilirsin.",
+                  sk: "Pracuješ bezpečne s čistiacimi prostriedkami a poznáš pravidlá.",
+                  pl: "Pracujesz bezpiecznie ze środkami czyszczącymi i znasz zasady.",
+                  hr: "Radiš sigurno sa sredstvima za čišćenje i znaš pravila.",
+                  sr: "Radiš bezbedno sa sredstvima za čišćenje i znaš pravila.",
+                  sl: "Varno delaš s čistili in poznaš pravila." },
       lessons: [
         {
           id: "hk-u3-l1",
-          title: "Reinigungsmittel",
+          title: { de: "Reinigungsmittel", en: "Cleaning agents", tr: "Temizlik maddeleri", sk: "Čistiace prostriedky", pl: "Środki czyszczące", hr: "Sredstva za čišćenje", sr: "Sredstva za čišćenje", sl: "Čistila" },
           kind: "lesson",
           exercises: [
             { id: "hk-37", type: "match", prompt: "Mittel und Einsatzort", pairs: [["Sanitärreiniger", "Bad"], ["Glasreiniger", "Spiegel"], ["Allzweckreiniger", "Möbel"], ["Desinfektion", "WC-Griff"]],
@@ -174,7 +202,7 @@ export const housekeeping = {
         },
         {
           id: "hk-u3-l2",
-          title: "Sicherheit & Gäste",
+          title: { de: "Sicherheit & Gäste", en: "Safety & guests", tr: "Güvenlik ve misafirler", sk: "Bezpečnosť a hostia", pl: "Bezpieczeństwo i goście", hr: "Sigurnost i gosti", sr: "Bezbednost i gosti", sl: "Varnost in gostje" },
           kind: "lesson",
           exercises: [
             { id: "hk-43", type: "choice", prompt: "Ein Gast spricht dich an und du verstehst nichts. Was tust du?", options: ["Weggehen", "Freundlich lächeln und zur Rezeption verweisen", "Nicken und weitermachen", "Laut wiederholen"], answer: 1,
@@ -194,7 +222,7 @@ export const housekeeping = {
         },
         {
           id: "hk-u3-l3",
-          title: "Prüfung — Sicher arbeiten",
+          title: { de: "Prüfung — Sicher arbeiten", en: "Test — Working safely", tr: "Sınav — Güvenli çalışma", sk: "Test — Bezpečná práca", pl: "Test — Bezpieczna praca", hr: "Provjera — Siguran rad", sr: "Provera — Bezbedan rad", sl: "Preverjanje — Varno delo" },
           kind: "checkpoint",
           exercises: [
             { id: "hk-49", type: "truefalse", statement: "Chlor und Essigreiniger darf man zusammen verwenden.", answer: false,

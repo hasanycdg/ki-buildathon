@@ -14,24 +14,30 @@
  *   de = Zielsprache (das, was im Haus gesprochen wird)
  *   en/tr/sk = Bruecken-Sprachen fuer Mitarbeiter:innen ohne Deutsch
  *
+ * @typedef {{de:string, en:string, tr:string, sk:string}} Label
+ *   Jede NAVIGATION (Rolle, Einheit, Lektion) liegt viersprachig vor. Die
+ *   AUFGABEN selbst bleiben deutsch — sie sind der Lernstoff; nur die
+ *   Uebersetzung eines Begriffs steht in 'tr'. Wer sich nicht zurechtfindet,
+ *   lernt nichts, also muss wenigstens der Weg dorthin verstaendlich sein.
+ *
  * @typedef {Object} Role
  * @property {string} id          - stabile ID, z.B. 'housekeeping'
- * @property {string} name        - "Housekeeping"
- * @property {string} tagline     - eine Zeile, was die Rolle im Haus macht
+ * @property {Label}  name        - "Housekeeping"
+ * @property {Label}  tagline     - eine Zeile, was die Rolle im Haus macht
  * @property {string} icon        - Name eines lucide-react Icons
  * @property {string} accent      - CSS-Farbe fuer den Pfad dieser Rolle
- * @property {string} blurb       - 1-2 Saetze fuer die Rollenauswahl
+ * @property {Label}  blurb       - 1-2 Saetze fuer die Rollenauswahl
  * @property {Unit[]} units
  *
  * @typedef {Object} Unit
  * @property {string} id
- * @property {string} title       - "Einheit 1 — Das Zimmer"
- * @property {string} subtitle    - was man danach kann
+ * @property {Label}  title       - "Einheit 1 — Das Zimmer"
+ * @property {Label}  subtitle    - was man danach kann
  * @property {Lesson[]} lessons
  *
  * @typedef {Object} Lesson
  * @property {string} id
- * @property {string} title
+ * @property {Label}  title
  * @property {'lesson'|'checkpoint'} kind - checkpoint = Abschlusspruefung der Unit
  * @property {Exercise[]} exercises       - 6-9 Stueck
  *
@@ -79,6 +85,8 @@
 
 export const EXERCISE_TYPES = ["choice", "vocab", "build", "order", "match", "truefalse"];
 export const BRIDGE_LANGS = ["en", "tr", "sk"];
+/** Sprachen, in denen JEDES Navigations-Label vorliegen muss. */
+export const LABEL_LANGS = ["de", "en", "tr", "sk"];
 
 /** Zaehlt alle Aufgaben einer Rolle — fuer Fortschrittsanzeigen. */
 export function countExercises(role) {

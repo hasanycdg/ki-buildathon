@@ -4,20 +4,34 @@
  */
 export const breakfast = {
   id: "breakfast",
-  name: "Frühstück & Buffet",
-  tagline: "Buffet aufbauen, nachfüllen, sauber halten",
+  name: { de: "Frühstück & Buffet", en: "Breakfast & buffet", tr: "Kahvaltı ve açık büfe", sk: "Raňajky a bufet", pl: "Śniadanie i bufet", hr: "Doručak i buffet", sr: "Doručak i bife", sl: "Zajtrk in bife" },
+  tagline: { de: "Buffet aufbauen, nachfüllen, sauber halten", en: "Setting up, refilling and keeping the buffet clean", tr: "Büfeyi kurmak, doldurmak, temiz tutmak", sk: "Pripraviť bufet, dopĺňať ho, udržiavať čistý", pl: "Przygotować bufet, uzupełniać, utrzymywać czystość", hr: "Postaviti buffet, nadopunjavati, održavati čistim", sr: "Postaviti bife, dopunjavati, održavati čistim", sl: "Postaviti bife, dopolnjevati, ohranjati čist" },
   icon: "UtensilsCrossed",
   accent: "#e8833a",
-  blurb: "Du stehst am Buffet. Du lernst den Ablauf am Morgen, die Hygiene-Regeln und die 14 Allergene — auch ohne Deutsch.",
+  blurb: { de: "Du stehst am Buffet. Du lernst den Ablauf am Morgen, die Hygiene-Regeln und die 14 Allergene — auch ohne Deutsch.",
+           en: "You work the buffet. You learn the morning routine, the hygiene rules and the 14 allergens — even without German.",
+           tr: "Büfede çalışırsın. Sabah akışını, hijyen kurallarını ve 14 alerjeni öğrenirsin — Almanca bilmeden de.",
+           sk: "Stojíš pri bufete. Naučíš sa ranný postup, hygienické pravidlá a 14 alergénov — aj bez nemčiny.",
+           pl: "Stoisz przy bufecie. Nauczysz się porannego przebiegu, zasad higieny i 14 alergenów — nawet bez niemieckiego.",
+           hr: "Stojiš za buffetom. Naučit ćeš jutarnji tijek, pravila higijene i 14 alergena — i bez njemačkog.",
+           sr: "Stojiš za bifeom. Naučićeš jutarnji tok, pravila higijene i 14 alergena — i bez nemačkog.",
+           sl: "Stojiš pri bifeju. Naučiš se jutranji potek, higienska pravila in 14 alergenov — tudi brez nemščine." },
   units: [
     {
       id: "bf-u1",
-      title: "Einheit 1 — Das Buffet",
-      subtitle: "Du kennst das Buffet, die Wörter dafür und die Reihenfolge am Morgen.",
+      title: { de: "Einheit 1 — Das Buffet", en: "Unit 1 — The buffet", tr: "Ünite 1 — Büfe", sk: "Jednotka 1 — Bufet", pl: "Jednostka 1 — Bufet", hr: "Cjelina 1 — Buffet", sr: "Celina 1 — Bife", sl: "Enota 1 — Bife" },
+      subtitle: { de: "Du kennst das Buffet, die Wörter dafür und die Reihenfolge am Morgen.",
+                  en: "You know the buffet, the words for it and the order of work in the morning.",
+                  tr: "Büfeyi, kelimelerini ve sabahki iş sırasını bilirsin.",
+                  sk: "Poznáš bufet, slová preň a poradie prác ráno.",
+                  pl: "Znasz bufet, słowa do niego i kolejność pracy rano.",
+                  hr: "Poznaješ buffet, riječi za njega i redoslijed rada ujutro.",
+                  sr: "Poznaješ bife, reči za njega i redosled rada ujutru.",
+                  sl: "Poznaš bife, besede zanj in vrstni red dela zjutraj." },
       lessons: [
         {
           id: "bf-u1-l1",
-          title: "Wörter am Buffet",
+          title: { de: "Wörter am Buffet", en: "Words at the buffet", tr: "Büfede kelimeler", sk: "Slová pri bufete", pl: "Słowa przy bufecie", hr: "Riječi za buffetom", sr: "Reči za bifeom", sl: "Besede pri bifeju" },
           kind: "lesson",
           exercises: [
             { id: "bf-1", type: "vocab", term: "das Buffet", options: ["the buffet", "the kitchen", "the bill", "the key"], answer: 0,
@@ -39,7 +53,7 @@ export const breakfast = {
         },
         {
           id: "bf-u1-l2",
-          title: "Der Morgen",
+          title: { de: "Der Morgen", en: "The morning", tr: "Sabah", sk: "Ráno", pl: "Poranek", hr: "Jutro", sr: "Jutro", sl: "Jutro" },
           kind: "lesson",
           exercises: [
             { id: "bf-7", type: "order", prompt: "Was machst du vor dem ersten Gast?", steps: ["Hände waschen und Schürze anziehen", "Temperaturen prüfen und eintragen", "Kalte Speisen aufbauen", "Warme Speisen einsetzen", "Geschirr, Besteck und Zangen bereitlegen", "Kontrollblick über das ganze Buffet"],
@@ -59,7 +73,7 @@ export const breakfast = {
         },
         {
           id: "bf-u1-l3",
-          title: "Prüfung — Das Buffet",
+          title: { de: "Prüfung — Das Buffet", en: "Test — The buffet", tr: "Sınav — Büfe", sk: "Test — Bufet", pl: "Test — Bufet", hr: "Provjera — Buffet", sr: "Provera — Bife", sl: "Preverjanje — Bife" },
           kind: "checkpoint",
           exercises: [
             { id: "bf-13", type: "order", prompt: "Das Buffet läuft. Was machst du immer wieder?", steps: ["Rundgang machen und schauen", "Leere Schüsseln tauschen", "Verschüttetes sofort wegwischen", "Zangen richtig zurücklegen", "Benutztes Geschirr abservieren"],
@@ -81,12 +95,19 @@ export const breakfast = {
     },
     {
       id: "bf-u2",
-      title: "Einheit 2 — Hygiene & HACCP",
-      subtitle: "Du hältst die Kühlkette ein, arbeitest sauber und weißt, wann etwas weg muss.",
+      title: { de: "Einheit 2 — Hygiene & HACCP", en: "Unit 2 — Hygiene & HACCP", tr: "Ünite 2 — Hijyen ve HACCP", sk: "Jednotka 2 — Hygiena a HACCP", pl: "Jednostka 2 — Higiena i HACCP", hr: "Cjelina 2 — Higijena i HACCP", sr: "Celina 2 — Higijena i HACCP", sl: "Enota 2 — Higiena in HACCP" },
+      subtitle: { de: "Du hältst die Kühlkette ein, arbeitest sauber und weißt, wann etwas weg muss.",
+                  en: "You keep the cold chain, work cleanly and know when something has to go.",
+                  tr: "Soğuk zinciri korursun, temiz çalışırsın ve bir şeyin ne zaman atılacağını bilirsin.",
+                  sk: "Dodržiavaš chladiaci reťazec, pracuješ čisto a vieš, kedy musí ísť niečo preč.",
+                  pl: "Utrzymujesz łańcuch chłodniczy, pracujesz czysto i wiesz, kiedy coś trzeba wyrzucić.",
+                  hr: "Držiš hladni lanac, radiš čisto i znaš kad nešto mora van.",
+                  sr: "Držiš hladni lanac, radiš čisto i znaš kad nešto mora napolje.",
+                  sl: "Držiš hladno verigo, delaš čisto in veš, kdaj mora kaj stran." },
       lessons: [
         {
           id: "bf-u2-l1",
-          title: "Kalt und heiß",
+          title: { de: "Kalt und heiß", en: "Cold and hot", tr: "Soğuk ve sıcak", sk: "Studené a horúce", pl: "Zimne i gorące", hr: "Hladno i vruće", sr: "Hladno i vruće", sl: "Hladno in vroče" },
           kind: "lesson",
           exercises: [
             { id: "bf-19", type: "vocab", term: "die Kühlkette", options: ["cold chain", "cooking time", "cash register", "night shift"], answer: 0,
@@ -106,7 +127,7 @@ export const breakfast = {
         },
         {
           id: "bf-u2-l2",
-          title: "Hände & Sauberkeit",
+          title: { de: "Hände & Sauberkeit", en: "Hands & cleanliness", tr: "Eller ve temizlik", sk: "Ruky a čistota", pl: "Ręce i czystość", hr: "Ruke i čistoća", sr: "Ruke i čistoća", sl: "Roke in čistoča" },
           kind: "lesson",
           exercises: [
             { id: "bf-25", type: "order", prompt: "Hände richtig waschen", steps: ["Hände nass machen", "Seife nehmen und gründlich einreiben", "Gut abspülen", "Mit Einmalhandtuch abtrocknen"],
@@ -126,7 +147,7 @@ export const breakfast = {
         },
         {
           id: "bf-u2-l3",
-          title: "Prüfung — Hygiene",
+          title: { de: "Prüfung — Hygiene", en: "Test — Hygiene", tr: "Sınav — Hijyen", sk: "Test — Hygiena", pl: "Test — Higiena", hr: "Provjera — Higijena", sr: "Provera — Higijena", sl: "Preverjanje — Higiena" },
           kind: "checkpoint",
           exercises: [
             { id: "bf-31", type: "truefalse", statement: "Speisen, die am Buffet standen, dürfen am nächsten Tag wieder hinausgestellt werden.", answer: false,
@@ -148,12 +169,19 @@ export const breakfast = {
     },
     {
       id: "bf-u3",
-      title: "Einheit 3 — Allergene & Gast",
-      subtitle: "Du kennst die 14 Allergene, gibst sichere Auskunft und betreust den Gast.",
+      title: { de: "Einheit 3 — Allergene & Gast", en: "Unit 3 — Allergens & guest", tr: "Ünite 3 — Alerjenler ve misafir", sk: "Jednotka 3 — Alergény a hosť", pl: "Jednostka 3 — Alergeny i gość", hr: "Cjelina 3 — Alergeni i gost", sr: "Celina 3 — Alergeni i gost", sl: "Enota 3 — Alergeni in gost" },
+      subtitle: { de: "Du kennst die 14 Allergene, gibst sichere Auskunft und betreust den Gast.",
+                  en: "You know the 14 allergens, give reliable information and look after the guest.",
+                  tr: "14 alerjeni bilirsin, güvenilir bilgi verirsin ve misafirle ilgilenirsin.",
+                  sk: "Poznáš 14 alergénov, podáš spoľahlivú informáciu a postaráš sa o hosťa.",
+                  pl: "Znasz 14 alergenów, udzielasz pewnej informacji i obsługujesz gościa.",
+                  hr: "Poznaješ 14 alergena, daješ sigurnu informaciju i brineš o gostu.",
+                  sr: "Poznaješ 14 alergena, daješ sigurnu informaciju i brineš o gostu.",
+                  sl: "Poznaš 14 alergenov, daš zanesljivo informacijo in poskrbiš za gosta." },
       lessons: [
         {
           id: "bf-u3-l1",
-          title: "Die 14 Allergene",
+          title: { de: "Die 14 Allergene", en: "The 14 allergens", tr: "14 alerjen", sk: "14 alergénov", pl: "14 alergenów", hr: "14 alergena", sr: "14 alergena", sl: "14 alergenov" },
           kind: "lesson",
           exercises: [
             { id: "bf-37", type: "choice", prompt: "Wie viele Allergene müssen in der EU gekennzeichnet werden?", options: ["7", "10", "14", "20"], answer: 2,
@@ -173,7 +201,7 @@ export const breakfast = {
         },
         {
           id: "bf-u3-l2",
-          title: "Auskunft & Sonderwünsche",
+          title: { de: "Auskunft & Sonderwünsche", en: "Information & special requests", tr: "Bilgi ve özel istekler", sk: "Informácie a osobitné želania", pl: "Informacja i życzenia specjalne", hr: "Informacija i posebne želje", sr: "Informacija i posebne želje", sl: "Informacija in posebne želje" },
           kind: "lesson",
           exercises: [
             { id: "bf-43", type: "choice", prompt: "Ein Gast sagt: 'Ich habe Zöliakie.' Was bedeutet das?", options: ["Er verträgt kein Gluten", "Er isst kein Fleisch", "Er verträgt keine Milch", "Er isst kein Ei"], answer: 0,
@@ -193,7 +221,7 @@ export const breakfast = {
         },
         {
           id: "bf-u3-l3",
-          title: "Prüfung — Allergene & Gast",
+          title: { de: "Prüfung — Allergene & Gast", en: "Test — Allergens & guest", tr: "Sınav — Alerjenler ve misafir", sk: "Test — Alergény a hosť", pl: "Test — Alergeny i gość", hr: "Provjera — Alergeni i gost", sr: "Provera — Alergeni i gost", sl: "Preverjanje — Alergeni in gost" },
           kind: "checkpoint",
           exercises: [
             { id: "bf-49", type: "order", prompt: "Der Frühstücksservice ist vorbei", steps: ["Warme Speisen entnehmen und der Küche geben", "Verderbliche Reste aussortieren", "Buffet abbauen und reinigen", "Tische abservieren und abwischen", "Temperaturliste abschließen"],
