@@ -22,6 +22,14 @@ const UI = {
   tasks:     { de: "Tätigkeiten", en: "tasks", pl: "zadania", hr: "zadaci", sr: "zadaci" },
   yourTasks: { de: "Deine Tätigkeiten", en: "Your tasks", pl: "Twoje zadania",
                hr: "Tvoji zadaci", sr: "Tvoji zadaci" },
+  learningPath: { de: "Dein Lernpfad", en: "Your learning path", pl: "Twoja ścieżka nauki",
+                  hr: "Tvoj put učenja", sr: "Tvoj put učenja" },
+  pathHint: { de: "Eine Tätigkeit nach der anderen – in deinem Tempo.", en: "One task at a time — at your pace.",
+              pl: "Jedno zadanie po drugim — we własnym tempie.", hr: "Jedan zadatak za drugim — tvojim tempom.",
+              sr: "Jedan zadatak za drugim — tvojim tempom." },
+  completed: { de: "abgeschlossen", en: "completed", pl: "ukończono", hr: "završeno", sr: "završeno" },
+  startTask: { de: "Starten", en: "Start", pl: "Zacznij", hr: "Pokreni", sr: "Pokreni" },
+  repeatTask: { de: "Wiederholen", en: "Practice again", pl: "Powtórz", hr: "Ponovi", sr: "Ponovi" },
   switch:    { de: "Rolle wechseln", en: "Switch role", pl: "Zmień rolę", hr: "Promijeni ulogu", sr: "Promeni ulogu" },
   days:      { de: "Tage", en: "days", pl: "dni", hr: "dana", sr: "dana" },
   min:       { de: "Min", en: "min", pl: "min", hr: "min", sr: "min" },
@@ -132,6 +140,12 @@ export default function LearnTab() {
   const lang = state.lang || "de";
   const setLang = (l) => setState((s) => ({ ...s, lang: l }));
   const role = getRole(state.roleId);
+  const startTask = (task) => {
+    // Nach einem kompletten Rueckwurf darf sofort weitergeuebt werden.
+    // Gleichzeitig bleiben Kopfzeile und Player auf demselben Herzestand.
+    setState((s) => (s.hearts?.count > 0 ? s : store.refillHearts(s)));
+    setActive(task);
+  };
 
   if (!role) {
     return (
@@ -146,6 +160,11 @@ export default function LearnTab() {
       <TaskPlayer
         task={active}
         lang={lang}
+        initialHearts={state.hearts?.count ?? 5}
+        onHeartsChange={(count) => setState((s) => ({
+          ...s,
+          hearts: { count, updatedAt: Date.now() }
+        }))}
         onFinish={({ stars, mistakes, resets, ms, steps }) => {
           const xp = 10 + stars * 8;
           setState((s) => store.completeLesson(s, active.id, { xp, stars, ms }));
@@ -157,32 +176,59 @@ export default function LearnTab() {
     );
   }
 
+  const doneCount = role.tasks.filter((task) => state.lessons[task.id]?.completed).length;
+  const pathPercent = Math.round((doneCount / role.tasks.length) * 100);
+  const nextTaskId = role.tasks.find((task) => !state.lessons[task.id]?.completed)?.id;
+
   return (
     <div className="content-single">
       <div className="lt">
         <StatBar state={state} role={role} lang={lang} setLang={setLang}
           onSwitch={() => setState((s) => ({ ...s, roleId: null }))} />
-        <h2 className="lt-section">{t(UI.yourTasks, lang)}</h2>
-        {role.tasks.map((task, i) => {
+        <section className="lt-unit">
+          <div className="lt-unit-head" style={{ background: role.accent }}>
+            <div>
+              <span>{t(UI.learningPath, lang)}</span>
+              <strong>{t(role.name, lang)}</strong>
+              <p>{t(UI.pathHint, lang)}</p>
+            </div>
+            <div className="lt-unit-progress">
+              <b>{doneCount}/{role.tasks.length}</b>
+              <span>{t(UI.completed, lang)}</span>
+            </div>
+            <div className="lt-unit-bar" aria-label={`${pathPercent}%`}><span style={{ width: pathPercent + "%" }} /></div>
+          </div>
+          <div className="lt-path">
+          {role.tasks.map((task, i) => {
           const rec = state.lessons[task.id];
           const done = Boolean(rec?.completed);
+          const current = task.id === nextTaskId;
           const nStages = stagesOf(task).length;
           return (
-            <button key={task.id} type="button" className={"lt-task" + (done ? " done" : "")}
-              onClick={() => setActive(task)}>
-              <span className="lt-task-no">{done ? <Check size={22} /> : i + 1}</span>
-              <span className="lt-task-main">
-                <strong>{t(task.title, lang)}</strong>
-                <span>{t(task.goal, lang)}</span>
-                {done && <Stars n={rec.stars} size={15} />}
-              </span>
-              <span className="lt-task-meta">
-                <span><Flag size={13} /> {nStages} {t(UI.stagesN, lang)}</span>
-                <span><Clock size={13} /> {done && rec.bestMs ? formatTime(rec.bestMs) : task.minutes + " " + t(UI.min, lang)}</span>
-              </span>
-            </button>
+            <div key={task.id} className={"lt-path-step " + (i % 2 ? "right" : "left") + (current ? " current" : "") }>
+              {i > 0 && <span className="lt-path-line" />}
+              <button type="button" className={"lt-path-node" + (done ? " done" : "") + (current ? " current" : "")}
+                onClick={() => startTask(task)} aria-label={t(task.title, lang)}>
+                {done ? <Check size={25} strokeWidth={3} /> : i + 1}
+              </button>
+              <button type="button" className={"lt-task" + (done ? " done" : "") + (current ? " current" : "")}
+                onClick={() => startTask(task)}>
+                <span className="lt-task-main">
+                  <strong>{t(task.title, lang)}</strong>
+                  <span>{t(task.goal, lang)}</span>
+                  {done && <Stars n={rec.stars} size={15} />}
+                </span>
+                <span className="lt-task-meta">
+                  <span><Flag size={13} /> {nStages} {t(UI.stagesN, lang)}</span>
+                  <span><Clock size={13} /> {done && rec.bestMs ? formatTime(rec.bestMs) : task.minutes + " " + t(UI.min, lang)}</span>
+                  <b>{t(done ? UI.repeatTask : UI.startTask, lang)} →</b>
+                </span>
+              </button>
+            </div>
           );
         })}
+          </div>
+        </section>
         {result && <Done result={result} lang={lang} onClose={() => setResult(null)} />}
       </div>
     </div>

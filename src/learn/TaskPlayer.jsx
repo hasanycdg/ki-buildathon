@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Check, ChevronLeft, ChevronRight, Clock, Flag, Heart, Play, Pause, RotateCcw, Star, Target, X } from "lucide-react";
 import * as Scenes from "./scenes/index.js";
-import { createQueue, current, answer, isComplete, progress, qualityOf } from "./queue.js";
+import { createQueue, current, answer, isComplete, progress } from "./queue.js";
 import { t, tList } from "./i18n.js";
 import { stagesOf, starsFor, formatTime, STAR_TEXT } from "./stages.js";
 
@@ -12,8 +12,14 @@ const RETRY   = { de: "Nochmal — das war noch nicht richtig", en: "Again — t
                   sr: "Ponovo — to još nije bilo tačno" };
 const CHECK   = { de: "Prüfen", en: "Check", pl: "Sprawdź", hr: "Provjeri", sr: "Proveri" };
 const NEXT    = { de: "Weiter", en: "Continue", pl: "Dalej", hr: "Dalje", sr: "Dalje" };
+const UNDERSTOOD = { de: "Verstanden", en: "Got it", pl: "Rozumiem", hr: "Razumijem", sr: "Razumem" };
 const RIGHT   = { de: "Richtig", en: "Correct", pl: "Poprawnie", hr: "Točno", sr: "Tačno" };
 const WRONG   = { de: "Noch nicht", en: "Not yet", pl: "Jeszcze nie", hr: "Još ne", sr: "Još ne" };
+const CORRECT_ANSWER = { de: "Richtige Antwort", en: "Correct answer", pl: "Poprawna odpowiedź",
+                         hr: "Točan odgovor", sr: "Tačan odgovor" };
+const COMES_BACK = { de: "Diese Aufgabe kommt gleich noch einmal.", en: "This question will come back shortly.",
+                     pl: "To zadanie pojawi się za chwilę ponownie.", hr: "Ovaj zadatak će se uskoro ponoviti.",
+                     sr: "Ovaj zadatak će se uskoro ponoviti." };
 const WATCH   = { de: "Schau dir alle Schritte an", en: "Watch all the steps",
                   pl: "Obejrzyj wszystkie kroki", hr: "Pogledaj sve korake", sr: "Pogledaj sve korake" };
 const GOT_IT  = { de: "Verstanden — jetzt selbst", en: "Got it — now your turn",
@@ -195,7 +201,7 @@ function Hotspot({ step, found, setFound, miss, setMiss, locked, lang }) {
 
 /* ================================================= Reihenfolge */
 
-function Sequence({ step, value, setValue, locked, lang }) {
+function Sequence({ step, value, setValue, locked, lang, feedback }) {
   const labels = useMemo(() => tList(step.steps, lang), [step, lang]);
   const pool = useMemo(() => shuffle(labels, labels.join("").length * 53), [labels]);
   const picked = Array.isArray(value) ? value : [];
@@ -203,14 +209,17 @@ function Sequence({ step, value, setValue, locked, lang }) {
     <>
       <ol className="tp-seq-line">
         {picked.length === 0 && <span className="tp-placeholder">{t(ORDER_H, lang)}</span>}
-        {picked.map((s, i) => (
+        {picked.map((s, i) => {
+          const expected = labels[i];
+          const verdict = feedback ? (s === expected ? " correct" : " wrong") : "";
+          return (
           <li key={s}>
-            <button type="button" disabled={locked} className="tp-chip picked"
+            <button type="button" disabled={locked} className={"tp-chip picked" + verdict}
               onClick={() => setValue(picked.filter((x) => x !== s))}>
               <span className="tp-chip-no">{i + 1}</span>{s}
             </button>
           </li>
-        ))}
+        )})}
       </ol>
       <div className="tp-seq-pool">
         {pool.filter((s) => !picked.includes(s)).map((s) => (
@@ -224,13 +233,15 @@ function Sequence({ step, value, setValue, locked, lang }) {
 
 /* ================================================= Entscheidung */
 
-function Decide({ step, value, setValue, locked, lang }) {
+function Decide({ step, value, setValue, locked, lang, feedback }) {
   const chosen = typeof value === "number" ? value : null;
   return (
     <div className="tp-options">
       {tList(step.options, lang).map((opt, i) => (
         <button key={i} type="button" disabled={locked}
-          className={"tp-option" + (chosen === i ? " selected" : "")}
+          className={"tp-option" + (chosen === i ? " selected" : "") +
+            (feedback && i === step.answer ? " correct" : "") +
+            (feedback && chosen === i && i !== step.answer ? " wrong" : "")}
           onClick={() => setValue(i)}>{opt}</button>
       ))}
     </div>
@@ -239,7 +250,7 @@ function Decide({ step, value, setValue, locked, lang }) {
 
 /* ================================================= Checkliste */
 
-function Checklist({ step, value, setValue, locked, lang }) {
+function Checklist({ step, value, setValue, locked, lang, feedback }) {
   const picked = Array.isArray(value) ? value : [];
   return (
     <div className="tp-options">
@@ -247,7 +258,9 @@ function Checklist({ step, value, setValue, locked, lang }) {
         const on = picked.includes(i);
         return (
           <button key={i} type="button" disabled={locked}
-            className={"tp-option tp-check" + (on ? " selected" : "")}
+            className={"tp-option tp-check" + (on ? " selected" : "") +
+              (feedback && item.correct ? " correct" : "") +
+              (feedback && on && !item.correct ? " wrong" : "")}
             onClick={() => setValue(on ? picked.filter((x) => x !== i) : [...picked, i])}>
             <span className="tp-box">{on && <Check size={14} />}</span>
             {t(item.label, lang)}
@@ -284,9 +297,19 @@ function promptOf(step, lang) {
   return t(step.prompt, lang) || t(step.title, lang) || "";
 }
 
+/** Menschlich lesbare Loesung fuer die Fehlerkarte. */
+export function correctAnswerOf(step, lang = "de") {
+  if (step.type === "sequence") return tList(step.steps, lang);
+  if (step.type === "decide") return [tList(step.options, lang)[step.answer]];
+  if (step.type === "checklist") {
+    return step.items.filter((item) => item.correct).map((item) => t(item.label, lang));
+  }
+  return [];
+}
+
 /* ================================================= Der Player */
 
-export default function TaskPlayer({ task, lang, onFinish, onQuit }) {
+export default function TaskPlayer({ task, lang, initialHearts = 5, onHeartsChange, onFinish, onQuit }) {
   const stages = useMemo(() => stagesOf(task), [task]);
 
   const [stageIndex, setStageIndex] = useState(0);
@@ -298,7 +321,7 @@ export default function TaskPlayer({ task, lang, onFinish, onQuit }) {
   const [miss, setMiss] = useState(0);
   const [feedback, setFeedback] = useState(null);
 
-  const [hearts, setHearts] = useState(5);
+  const [hearts, setHearts] = useState(() => Math.max(1, Math.min(5, initialHearts)));
   const [mistakes, setMistakes] = useState(0);
   const [resets, setResets] = useState(0);
 
@@ -330,16 +353,11 @@ export default function TaskPlayer({ task, lang, onFinish, onQuit }) {
   }
 
   function loseHeart() {
+    const nextHearts = Math.max(0, hearts - 1);
     setMistakes((m) => m + 1);
-    setHearts((h) => Math.max(0, h - 1));
+    setHearts(nextHearts);
+    onHeartsChange?.(nextHearts);
   }
-
-  // Der Rueckwurf gehoert in einen Effekt, nicht in den State-Updater:
-  // Updater muessen frei von Seiteneffekten sein, sonst geht der Wechsel
-  // unter Umstaenden verloren.
-  useEffect(() => {
-    if (hearts === 0 && phase === "play") setPhase("lost");
-  }, [hearts, phase]);
 
   /* ---------------------------------------------------------- Kopfzeile */
   const stageProgress = (stageIndex + progress(queue)) / stages.length;
@@ -402,7 +420,12 @@ export default function TaskPlayer({ task, lang, onFinish, onQuit }) {
               </div>
             </div>
             <button type="button" className="tp-action bad"
-              onClick={() => { setResets((r) => r + 1); setHearts(5); beginStage(stageIndex); }}>
+              onClick={() => {
+                setResets((r) => r + 1);
+                setHearts(5);
+                onHeartsChange?.(5);
+                beginStage(stageIndex);
+              }}>
               {t(RETRY_ST, lang)}
             </button>
           </div>
@@ -466,10 +489,21 @@ export default function TaskPlayer({ task, lang, onFinish, onQuit }) {
     if (!stepAnswered(step, value, found) || locked) return;
     const correct = stepCorrect(step, value, found, lang);
     if (!correct) loseHeart();
-    setFeedback({ correct, explain: t(step.explain, lang) });
+    setFeedback({
+      correct,
+      explain: t(step.explain, lang),
+      correctAnswers: correct ? [] : correctAnswerOf(step, lang)
+    });
   }
 
   function next() {
+    // Die Korrektur bleibt sichtbar, bis der Lernende sie bewusst bestaetigt.
+    // Erst danach greift bei null Herzen der Rueckwurf zur Etappe.
+    if (!feedback.correct && hearts === 0) {
+      setFeedback(null);
+      setPhase("lost");
+      return;
+    }
     const result = answer(queue, feedback.correct);
     setFeedback(null);
     // Antwortzustand sofort leeren: sonst sieht die naechste Aufgabe fuer
@@ -491,9 +525,9 @@ export default function TaskPlayer({ task, lang, onFinish, onQuit }) {
         <h2 className="tp-prompt">{promptOf(step, lang)}</h2>
 
         {step.type === "hotspot" && <Hotspot step={step} found={found} setFound={setFound} miss={miss} setMiss={setMiss} locked={locked} lang={lang} />}
-        {step.type === "sequence" && <Sequence step={step} value={value} setValue={setValue} locked={locked} lang={lang} />}
-        {step.type === "decide" && <Decide step={step} value={value} setValue={setValue} locked={locked} lang={lang} />}
-        {step.type === "checklist" && <Checklist step={step} value={value} setValue={setValue} locked={locked} lang={lang} />}
+        {step.type === "sequence" && <Sequence step={step} value={value} setValue={setValue} locked={locked} lang={lang} feedback={feedback} />}
+        {step.type === "decide" && <Decide step={step} value={value} setValue={setValue} locked={locked} lang={lang} feedback={feedback} />}
+        {step.type === "checklist" && <Checklist step={step} value={value} setValue={setValue} locked={locked} lang={lang} feedback={feedback} />}
       </div>
 
       <footer className={"tp-foot" + (feedback ? (feedback.correct ? " ok" : " bad") : "")}>
@@ -501,13 +535,22 @@ export default function TaskPlayer({ task, lang, onFinish, onQuit }) {
           <div className="tp-feedback">
             <strong>{feedback.correct ? <><Check size={18} /> {t(RIGHT, lang)}</> : <><X size={18} /> {t(WRONG, lang)}</>}</strong>
             <p>{feedback.explain}</p>
+            {!feedback.correct && feedback.correctAnswers.length > 0 && (
+              <div className="tp-correction">
+                <span>{t(CORRECT_ANSWER, lang)}</span>
+                {feedback.correctAnswers.map((item, i) => (
+                  <div key={item}><b>{feedback.correctAnswers.length > 1 ? (i + 1) + "." : "✓"}</b>{item}</div>
+                ))}
+              </div>
+            )}
+            {!feedback.correct && <small className="tp-returns"><RotateCcw size={14} /> {t(COMES_BACK, lang)}</small>}
           </div>
         )}
         <button type="button"
           className={"tp-action" + (feedback ? (feedback.correct ? " ok" : " bad") : " ok")}
           disabled={!feedback && !stepAnswered(step, value, found)}
           onClick={feedback ? next : check}>
-          {feedback ? t(NEXT, lang) : t(CHECK, lang)}
+          {feedback ? t(feedback.correct ? NEXT : UNDERSTOOD, lang) : t(CHECK, lang)}
         </button>
       </footer>
     </div>

@@ -295,6 +295,14 @@
   display: flex; align-items: center; gap: 11px; }
 .tp-option:hover:not(:disabled) { background: var(--soft); }
 .tp-option.selected { border-color: var(--blue); background: var(--soft); }
+.tp-option.correct, .tp-chip.correct {
+  border-color: #58b86d; background: #edf9f0; color: #23753a;
+}
+.tp-option.wrong, .tp-chip.wrong {
+  border-color: #e45b70; background: #fff0f2; color: #aa263d;
+}
+.tp-option.correct .tp-box { background: var(--green); border-color: var(--green); }
+.tp-option.wrong .tp-box { background: #e0405d; border-color: #e0405d; }
 .tp-box { width: 22px; height: 22px; border-radius: 5px; border: 2px solid var(--line); flex: none;
   display: grid; place-items: center; color: #fff; }
 .tp-option.selected .tp-box { background: var(--blue); border-color: var(--blue); }
@@ -308,6 +316,16 @@
 .tp-foot.ok .tp-feedback strong { color: #2f8c4d; }
 .tp-foot.bad .tp-feedback strong { color: #c13049; }
 .tp-feedback p { margin: 0; font-size: 14.5px; line-height: 1.55; }
+.tp-correction {
+  margin-top: 12px; padding: 12px 14px; background: rgba(255,255,255,.78);
+  border: 1px solid #f0b8c1; border-radius: 12px; display: grid; gap: 7px;
+}
+.tp-correction > span { color: #a2263b; font-size: 11.5px; font-weight: 850;
+  letter-spacing: .055em; text-transform: uppercase; }
+.tp-correction div { display: flex; gap: 9px; align-items: flex-start; font-size: 14px; line-height: 1.4; }
+.tp-correction b { color: #2f8c4d; min-width: 18px; }
+.tp-returns { display: flex; align-items: center; gap: 6px; margin-top: 9px;
+  color: #8d3a49; font-size: 12.5px; font-weight: 650; }
 .tp-action { display: block; max-width: 680px; margin: 0 auto; width: 100%; border: none;
   border-radius: var(--radius); padding: 15px; font-weight: 800; font-size: 15.5px; cursor: pointer;
   background: var(--green); color: #fff; }
@@ -330,6 +348,77 @@
 @media (max-width: 720px) {
   .tp-prompt { font-size: 19px; }
   .tp-body { padding: 16px; }
+}
+
+/* ===================================== Duolingo-artiger Lernpfad */
+.lt-unit { margin: 0 auto; max-width: 720px; }
+.lt-unit-head {
+  position: sticky; top: 10px; z-index: 4; display: grid;
+  grid-template-columns: minmax(0, 1fr) auto; gap: 7px 22px;
+  padding: 18px 20px 14px; border-radius: 18px; margin: 0 0 26px;
+  box-shadow: 0 5px 0 color-mix(in srgb, currentColor 20%, transparent), 0 13px 28px rgba(20,43,88,.12);
+}
+.lt-unit-head > div:first-child > span { display: block; font-size: 11.5px; font-weight: 850;
+  letter-spacing: .07em; text-transform: uppercase; opacity: .85; }
+.lt-unit-head strong { font-size: 20px; margin-top: 1px; }
+.lt-unit-head p { margin: 3px 0 0; font-size: 13px; opacity: .9; }
+.lt-unit-progress { text-align: right; align-self: center; }
+.lt-unit-progress b { display: block; font-size: 20px; line-height: 1; }
+.lt-unit-progress span { font-size: 11.5px; opacity: .86; }
+.lt-unit-bar { grid-column: 1 / -1; height: 8px; overflow: hidden; border-radius: 999px;
+  background: rgba(0,0,0,.16); margin-top: 5px; }
+.lt-unit-bar span { display: block; height: 100%; border-radius: inherit; background: #fff;
+  transition: width .35s ease; }
+
+.lt-path { position: relative; padding: 3px 0 34px; }
+.lt-path-step { position: relative; min-height: 128px; display: grid; align-items: center;
+  grid-template-columns: minmax(0, 1fr) 76px minmax(0, 1fr); }
+.lt-path-step.left .lt-task { grid-column: 1; justify-self: end; }
+.lt-path-step.right .lt-task { grid-column: 3; justify-self: start; }
+.lt-path-node { grid-column: 2; grid-row: 1; justify-self: center; z-index: 2;
+  width: 68px; height: 64px; border-radius: 50%; cursor: pointer;
+  display: grid; place-items: center; font-size: 19px; font-weight: 900;
+  color: #68789a; background: #fff; border: 3px solid #dbe4f4; border-bottom-width: 7px;
+  transition: transform .14s ease, filter .14s ease; }
+.lt-path-node:hover { transform: translateY(-2px); filter: brightness(.99); }
+.lt-path-node:active { transform: translateY(3px); border-bottom-width: 3px; }
+.lt-path-node.current { color: #fff; background: var(--blue); border-color: #174fc4;
+  box-shadow: 0 0 0 8px rgba(36,104,242,.11); animation: pathPulse 2.2s ease-in-out infinite; }
+.lt-path-node.done { color: #fff; background: var(--green); border-color: #2c9149; }
+.lt-path-line { position: absolute; z-index: 0; left: 50%; top: -36px; height: 76px;
+  border-left: 5px dotted #d7e1f1; transform: translateX(-50%); }
+@keyframes pathPulse { 0%,100% { box-shadow: 0 0 0 7px rgba(36,104,242,.1); }
+  50% { box-shadow: 0 0 0 12px rgba(36,104,242,.04); } }
+
+.lt-path .lt-task { grid-row: 1; width: min(285px, 100%); margin: 0; padding: 15px;
+  border-radius: 16px; box-shadow: 0 4px 0 #e2e9f4; transition: transform .14s ease, border-color .14s ease; }
+.lt-path .lt-task:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #dbe5f4; }
+.lt-path .lt-task.current { border-color: #8bb1ff; background: #f8fbff; }
+.lt-path .lt-task.done { border-color: #bee6c8; box-shadow: 0 4px 0 #d4ead9; }
+.lt-path .lt-task-main > span { display: -webkit-box; -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical; overflow: hidden; line-height: 1.38; margin-top: 3px; }
+.lt-path .lt-task-meta { padding-left: 10px; }
+.lt-path .lt-task-meta b { color: var(--blue); font-size: 12px; margin-top: 4px; }
+.lt-path .lt-task.done .lt-task-meta b { color: #2f8c4d; }
+
+.ls-card, .lt-task, .tp-chip, .tp-option, .tp-action, .ls-lang-btn {
+  outline: none;
+}
+.ls-card:focus-visible, .lt-task:focus-visible, .lt-path-node:focus-visible,
+.tp-chip:focus-visible, .tp-option:focus-visible, .tp-action:focus-visible,
+.ls-lang-btn:focus-visible { box-shadow: 0 0 0 4px rgba(36,104,242,.2); }
+.tp-action:not(:disabled):active, .ls-card:active, .lt-task:active { transform: translateY(2px); }
+
+@media (max-width: 720px) {
+  .lt-unit-head { position: static; border-radius: 15px; }
+  .lt-path-step { min-height: 142px; grid-template-columns: 64px minmax(0, 1fr); gap: 8px; }
+  .lt-path-step.left .lt-task, .lt-path-step.right .lt-task { grid-column: 2; justify-self: stretch; }
+  .lt-path-node { grid-column: 1; width: 58px; height: 55px; }
+  .lt-path-line { left: 29px; transform: none; top: -48px; height: 96px; }
+  .lt-path .lt-task { width: 100%; }
+  .tp-head { padding: 13px 14px; gap: 10px; }
+  .tp-hearts svg { width: 14px; }
+  .tp-foot { padding: 13px 16px max(13px, env(safe-area-inset-bottom)); }
 }
 .content-single { padding: 26px 34px 40px; }
 .lt-section { font-size: 18px; margin: 0 0 14px; }
