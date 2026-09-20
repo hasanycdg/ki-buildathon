@@ -1,131 +1,302 @@
 /**
- * Housekeeping — Handgriffe, nicht Vokabeln.
+ * Housekeeping — Handgriffe, fuenfsprachig.
  *
- * Eine Aufgabe (task) ist eine echte Taetigkeit aus der Schicht.
- * Ihre Schritte fuehren durch: erst zeigen, dann selbst machen, dann pruefen.
- *
- * Schritt-Typen
- *   demo      - animierte Vorfuehrung, Frame fuer Frame, mit Erklaertext
- *   hotspot   - "Wo musst du ueberall schauen?" - alle Stellen antippen
- *   sequence  - Arbeitsschritte in die richtige Reihenfolge bringen
- *   checklist - alle zutreffenden Punkte auswaehlen (Mehrfachauswahl)
- *   decide    - Situation aus dem Alltag, eine richtige Reaktion
+ * Sprachen: de (Grundsprache), en, pl, hr, sr
+ * Kroatisch und Serbisch sind eng verwandt; wo sich die Woerter wirklich
+ * unterscheiden, ist das beruecksichtigt (madrac/dušek, ručnik/peškir,
+ * kupaonica/kupatilo, točno/tačno). Serbisch in lateinischer Schrift.
  */
+import { extraTasks } from "./housekeeping-extra.js";
 
-export const housekeepingTasks = {
-  id: "housekeeping",
-  name: "Housekeeping",
-  tagline: "Zimmer machen nach Hausstandard",
-  accent: "#2468f2",
-  icon: "BedDouble",
-  blurb: "Die Handgriffe, die du wirklich brauchst — vorgemacht, dann selbst gemacht.",
-  tasks: [
+const bettBeziehen = {
+  id: "hk-bett",
+  title: { de: "Bett beziehen", en: "Making the bed", pl: "Ścielenie łóżka",
+           hr: "Namještanje kreveta", sr: "Nameštanje kreveta" },
+  goal: { de: "Du beziehst ein Bett mit gespannten Ecken — ohne Falten.",
+          en: "You make a bed with tight corners — no wrinkles.",
+          pl: "Ścielisz łóżko z napiętymi rogami — bez fałd.",
+          hr: "Namjestiš krevet s zategnutim uglovima — bez nabora.",
+          sr: "Nameštaš krevet sa zategnutim uglovima — bez nabora." },
+  minutes: 4,
+  steps: [
     {
-      id: "hk-bett",
-      title: "Bett beziehen",
-      goal: "Du beziehst ein Bett mit gespannten Ecken — ohne Falten.",
-      minutes: 4,
-      steps: [
-        {
-          type: "demo",
-          scene: "bed",
-          title: "Schau dir den Ablauf an",
-          intro: "Fünf Handgriffe. Achte besonders auf die Ecken — daran sieht man ein gut gemachtes Bett.",
-          frames: [
-            { caption: "Matratze prüfen",
-              detail: "Bevor frische Wäsche draufkommt: Flecken, Risse oder Haare? Dann melden und nicht einfach überdecken." },
-            { caption: "Leintuch auflegen",
-              detail: "Mittig auflegen und zu beiden Seiten gleich weit überstehen lassen. So reicht der Stoff für alle vier Ecken." },
-            { caption: "Ecken spannen",
-              detail: "Stoff unter die Matratze ziehen und straff einschlagen. Gespannte Ecken halten die ganze Nacht — lose Ecken rutschen." },
-            { caption: "Decke aufziehen",
-              detail: "Bezug über die Decke ziehen und ausschütteln, bis die Füllung in allen vier Ecken sitzt." },
-            { caption: "Polster aufschütteln",
-              detail: "Kräftig aufschütteln und aufrecht ans Kopfteil stellen. Ein platter Polster lässt das ganze Bett ungemacht wirken." },
-            { caption: "Fertig",
-              detail: "Zum Schluss von der Tür aus draufschauen: Liegt die Decke gerade? Sind die Kanten parallel?" }
-          ]
-        },
-        {
-          type: "sequence",
-          prompt: "Jetzt du — in welcher Reihenfolge?",
-          steps: ["Matratze prüfen", "Leintuch auflegen", "Ecken spannen", "Decke aufziehen", "Polster aufschütteln"],
-          explain: "Die Reihenfolge ist kein Ritual: Wer die Ecken erst nach der Decke spannt, muss alles wieder abnehmen."
-        },
-        {
-          type: "decide",
-          prompt: "Du ziehst die alte Wäsche ab und siehst einen Fleck auf der Matratze. Was tust du?",
-          options: [
-            "Leintuch drüber, sieht ja niemand",
-            "Matratze wenden und weitermachen",
-            "Melden und eintragen, bevor du weiterarbeitest",
-            "Zimmer überspringen"
-          ],
-          answer: 2,
-          explain: "Gemeldet ist der Fleck ein Vorfall, den die Hausdame löst. Überdeckt wird er später zu deiner Reklamation."
-        },
-        {
-          type: "checklist",
-          prompt: "Was gehört zu einem fertigen Bett? Wähle alles Richtige.",
-          items: [
-            { label: "Gespannte Ecken ohne Falten", correct: true },
-            { label: "Polster aufgeschüttelt", correct: true },
-            { label: "Decke mittig und gerade", correct: true },
-            { label: "Tagesdecke über dem zerknitterten Leintuch", correct: false },
-            { label: "Persönliche Sachen des Gastes aufs Bett gelegt", correct: false }
-          ],
-          explain: "Eine Tagesdecke kaschiert nichts — und Gästesachen werden nie umgeräumt."
-        }
+      type: "demo",
+      scene: "bed",
+      title: { de: "Schau dir den Ablauf an", en: "Watch the sequence", pl: "Obejrzyj przebieg",
+               hr: "Pogledaj postupak", sr: "Pogledaj postupak" },
+      intro: { de: "Fünf Handgriffe. Achte besonders auf die Ecken — daran sieht man ein gut gemachtes Bett.",
+               en: "Five moves. Watch the corners — that's what shows a well-made bed.",
+               pl: "Pięć ruchów. Zwróć uwagę na rogi — po nich poznaje się dobrze pościelone łóżko.",
+               hr: "Pet pokreta. Pazi na uglove — po njima se vidi dobro namješten krevet.",
+               sr: "Pet pokreta. Pazi na uglove — po njima se vidi dobro namešten krevet." },
+      frames: [
+        { caption: { de: "Matratze prüfen", en: "Check the mattress", pl: "Sprawdź materac",
+                     hr: "Provjeri madrac", sr: "Proveri dušek" },
+          detail: { de: "Bevor frische Wäsche draufkommt: Flecken, Risse oder Haare? Dann melden und nicht einfach überdecken.",
+                    en: "Before fresh linen goes on: stains, tears or hair? Report it, don't just cover it up.",
+                    pl: "Zanim położysz świeżą pościel: plamy, rozdarcia, włosy? Zgłoś, nie przykrywaj.",
+                    hr: "Prije nego staviš čistu posteljinu: mrlje, poderotine ili dlake? Prijavi, nemoj samo prekriti.",
+                    sr: "Pre nego staviš čistu posteljinu: mrlje, pocepano ili dlake? Prijavi, nemoj samo prekriti." } },
+        { caption: { de: "Leintuch auflegen", en: "Lay the sheet", pl: "Połóż prześcieradło",
+                     hr: "Stavi plahtu", sr: "Stavi čaršav" },
+          detail: { de: "Mittig auflegen und zu beiden Seiten gleich weit überstehen lassen. So reicht der Stoff für alle vier Ecken.",
+                    en: "Lay it centred with equal overhang on both sides. Then the fabric reaches all four corners.",
+                    pl: "Połóż na środku, z równym zapasem po obu stronach. Wtedy materiał wystarczy na cztery rogi.",
+                    hr: "Stavi po sredini, jednako preko s obje strane. Tako tkanina dosegne sva četiri ugla.",
+                    sr: "Stavi po sredini, jednako preko sa obe strane. Tako tkanina stiže do sva četiri ugla." } },
+        { caption: { de: "Ecken spannen", en: "Tuck the corners", pl: "Napnij rogi",
+                     hr: "Zategni uglove", sr: "Zategni uglove" },
+          detail: { de: "Stoff unter die Matratze ziehen und straff einschlagen. Gespannte Ecken halten die ganze Nacht — lose Ecken rutschen.",
+                    en: "Pull the fabric under the mattress and fold it tight. Tight corners hold all night — loose ones slip.",
+                    pl: "Wsuń materiał pod materac i mocno podwiń. Napięte rogi trzymają całą noc — luźne się zsuwają.",
+                    hr: "Povuci tkaninu ispod madraca i čvrsto podvij. Zategnuti uglovi drže cijelu noć — labavi kliznu.",
+                    sr: "Povuci tkaninu ispod dušeka i čvrsto podvij. Zategnuti uglovi drže celu noć — labavi kliznu." } },
+        { caption: { de: "Decke aufziehen", en: "Put on the duvet cover", pl: "Załóż poszwę",
+                     hr: "Navuci navlaku", sr: "Navuci navlaku" },
+          detail: { de: "Bezug über die Decke ziehen und ausschütteln, bis die Füllung in allen vier Ecken sitzt.",
+                    en: "Pull the cover over the duvet and shake it out until the filling reaches all four corners.",
+                    pl: "Naciągnij poszwę na kołdrę i wytrzep, aż wypełnienie dojdzie do wszystkich rogów.",
+                    hr: "Navuci navlaku na poplun i istresi dok punjenje ne dođe u sva četiri ugla.",
+                    sr: "Navuci navlaku na jorgan i istresi dok punjenje ne dođe u sva četiri ugla." } },
+        { caption: { de: "Polster aufschütteln", en: "Plump the pillow", pl: "Wytrzep poduszkę",
+                     hr: "Protresi jastuk", sr: "Protresi jastuk" },
+          detail: { de: "Kräftig aufschütteln und aufrecht ans Kopfteil stellen. Ein platter Polster lässt das ganze Bett ungemacht wirken.",
+                    en: "Shake it firmly and stand it against the headboard. A flat pillow makes the whole bed look unmade.",
+                    pl: "Mocno wytrzep i postaw przy wezgłowiu. Płaska poduszka sprawia, że całe łóżko wygląda niepościelone.",
+                    hr: "Snažno protresi i nasloni na uzglavlje. Spljošten jastuk čini da cijeli krevet izgleda nenamješten.",
+                    sr: "Snažno protresi i nasloni na uzglavlje. Spljošten jastuk čini da ceo krevet izgleda nenamešten." } },
+        { caption: { de: "Fertig", en: "Done", pl: "Gotowe", hr: "Gotovo", sr: "Gotovo" },
+          detail: { de: "Zum Schluss von der Tür aus draufschauen: Liegt die Decke gerade? Sind die Kanten parallel?",
+                    en: "Finally, look from the door: is the duvet straight? Are the edges parallel?",
+                    pl: "Na koniec spójrz od drzwi: czy kołdra leży prosto? Czy krawędzie są równoległe?",
+                    hr: "Na kraju pogledaj s vrata: leži li poplun ravno? Jesu li rubovi paralelni?",
+                    sr: "Na kraju pogledaj sa vrata: leži li jorgan ravno? Jesu li ivice paralelne?" } }
       ]
     },
     {
-      id: "hk-kontrolle",
-      title: "Abreisezimmer kontrollieren",
-      goal: "Du findest alles, was ein Gast vergisst — und alles, was übersehen wird.",
-      minutes: 5,
+      type: "sequence",
+      prompt: { de: "Jetzt du — in welcher Reihenfolge?", en: "Now you — in what order?",
+                pl: "Teraz ty — w jakiej kolejności?", hr: "Sada ti — kojim redoslijedom?",
+                sr: "Sada ti — kojim redosledom?" },
       steps: [
-        {
-          type: "hotspot",
-          scene: "room",
-          prompt: "Wo musst du überall schauen, bevor du das Zimmer freigibst?",
-          hint: "Sieben Stellen. Vergessene Sachen tauchen fast immer an denselben Orten auf.",
-          spots: [
-            { id: "bett", x: 58, y: 70, r: 34, label: "Unter dem Bett",
-              why: "Der häufigste Fundort überhaupt: Ladekabel, Socken, Schuhe rutschen darunter." },
-            { id: "tuer", x: 9,  y: 47, r: 30, label: "Hinter der Tür",
-              why: "Dort hängen Jacken und Bademäntel, die beim Rausgehen niemand sieht." },
-            { id: "schrank", x: 27, y: 48, r: 32, label: "Im Schrank",
-              why: "Immer aufmachen — auch das Fach oben. Safe nicht vergessen." },
-            { id: "lade", x: 87, y: 64, r: 28, label: "Nachttisch-Lade",
-              why: "Aufladegeräte, Schmuck und Dokumente landen in der Lade und bleiben dort." },
-            { id: "korb", x: 35, y: 88, r: 28, label: "Papierkorb",
-              why: "Leeren und hineinschauen: Manchmal liegt der Zimmerschlüssel im Müll." },
-            { id: "minibar", x: 90, y: 90, r: 28, label: "Minibar",
-              why: "Verbrauch prüfen und melden, sonst kann die Rezeption nicht abrechnen." },
-            { id: "fenster", x: 74, y: 30, r: 30, label: "Fensterbank und Fenster",
-              why: "Fenster schließen — und auf der Bank liegen oft Gläser oder Aschenbecher." }
-          ],
-          explain: "Diese sieben Stellen kosten dich eine Minute. Eine vergessene Fundsache kostet die Rezeption eine Stunde."
-        },
-        {
-          type: "decide",
-          prompt: "Du findest eine Geldbörse in der Nachttisch-Lade. Was tust du?",
-          options: [
-            "Liegen lassen, der Gast kommt zurück",
-            "In den Safe legen und nichts sagen",
-            "Sofort ungeöffnet an die Rezeption geben und eintragen lassen",
-            "Inhalt prüfen, um den Besitzer zu finden"
-          ],
-          answer: 2,
-          explain: "Ungeöffnet abgeben schützt dich selbst: Über den Inhalt entsteht sonst schnell ein Verdacht."
-        },
-        {
-          type: "sequence",
-          prompt: "In welcher Reihenfolge gehst du ein Abreisezimmer an?",
-          steps: ["Anklopfen und melden", "Fenster öffnen", "Müll und Wäsche raus", "Die sieben Stellen kontrollieren", "Reinigen", "Kontrollblick von der Tür"],
-          explain: "Kontrollieren kommt vor dem Reinigen: Was du vorher findest, saugst du nachher nicht ein."
-        }
-      ]
+        { de: "Matratze prüfen", en: "Check the mattress", pl: "Sprawdź materac", hr: "Provjeri madrac", sr: "Proveri dušek" },
+        { de: "Leintuch auflegen", en: "Lay the sheet", pl: "Połóż prześcieradło", hr: "Stavi plahtu", sr: "Stavi čaršav" },
+        { de: "Ecken spannen", en: "Tuck the corners", pl: "Napnij rogi", hr: "Zategni uglove", sr: "Zategni uglove" },
+        { de: "Decke aufziehen", en: "Put on the duvet cover", pl: "Załóż poszwę", hr: "Navuci navlaku", sr: "Navuci navlaku" },
+        { de: "Polster aufschütteln", en: "Plump the pillow", pl: "Wytrzep poduszkę", hr: "Protresi jastuk", sr: "Protresi jastuk" }
+      ],
+      explain: { de: "Die Reihenfolge ist kein Ritual: Wer die Ecken erst nach der Decke spannt, muss alles wieder abnehmen.",
+                 en: "The order isn't a ritual: tuck the corners after the duvet and you have to take it all off again.",
+                 pl: "Kolejność to nie rytuał: kto napina rogi po kołdrze, musi wszystko zdjąć od nowa.",
+                 hr: "Redoslijed nije ritual: tko zategne uglove nakon popluna, mora sve ponovno skinuti.",
+                 sr: "Redosled nije ritual: ko zategne uglove posle jorgana, mora sve ponovo da skine." }
+    },
+    {
+      type: "decide",
+      prompt: { de: "Du ziehst die alte Wäsche ab und siehst einen Fleck auf der Matratze. Was tust du?",
+                en: "You strip the old linen and see a stain on the mattress. What do you do?",
+                pl: "Zdejmujesz starą pościel i widzisz plamę na materacu. Co robisz?",
+                hr: "Skidaš staru posteljinu i vidiš mrlju na madracu. Što ćeš učiniti?",
+                sr: "Skidaš staru posteljinu i vidiš mrlju na dušeku. Šta ćeš uraditi?" },
+      options: [
+        { de: "Leintuch drüber, sieht ja niemand", en: "Sheet over it, nobody will see",
+          pl: "Prześcieradło na wierzch, nikt nie zobaczy", hr: "Plahtu preko, nitko neće vidjeti",
+          sr: "Čaršav preko, niko neće videti" },
+        { de: "Matratze wenden und weitermachen", en: "Flip the mattress and carry on",
+          pl: "Odwróć materac i pracuj dalej", hr: "Okreni madrac i nastavi", sr: "Okreni dušek i nastavi" },
+        { de: "Melden und eintragen, bevor du weiterarbeitest", en: "Report and log it before you continue",
+          pl: "Zgłoś i zapisz, zanim będziesz pracować dalej", hr: "Prijavi i upiši prije nego nastaviš",
+          sr: "Prijavi i upiši pre nego nastaviš" },
+        { de: "Zimmer überspringen", en: "Skip the room", pl: "Pomiń pokój", hr: "Preskoči sobu", sr: "Preskoči sobu" }
+      ],
+      answer: 2,
+      explain: { de: "Gemeldet ist der Fleck ein Vorfall, den die Hausdame löst. Überdeckt wird er später zu deiner Reklamation.",
+                 en: "Reported, the stain is an issue the housekeeper solves. Covered up, it becomes your complaint later.",
+                 pl: "Zgłoszona plama to sprawa dla gospodyni. Przykryta — stanie się później twoją reklamacją.",
+                 hr: "Prijavljena mrlja je stvar koju rješava domaćica. Prekrivena, poslije postaje tvoja reklamacija.",
+                 sr: "Prijavljena mrlja je stvar koju rešava domaćica. Prekrivena, kasnije postaje tvoja reklamacija." }
+    },
+    {
+      type: "checklist",
+      prompt: { de: "Was gehört zu einem fertigen Bett? Wähle alles Richtige.",
+                en: "What belongs to a finished bed? Select everything correct.",
+                pl: "Co należy do gotowego łóżka? Zaznacz wszystko poprawne.",
+                hr: "Što spada u gotov krevet? Odaberi sve točno.",
+                sr: "Šta spada u gotov krevet? Izaberi sve tačno." },
+      items: [
+        { label: { de: "Gespannte Ecken ohne Falten", en: "Tight corners, no wrinkles", pl: "Napięte rogi bez fałd",
+                   hr: "Zategnuti uglovi bez nabora", sr: "Zategnuti uglovi bez nabora" }, correct: true },
+        { label: { de: "Polster aufgeschüttelt", en: "Pillow plumped", pl: "Wytrzepana poduszka",
+                   hr: "Protresen jastuk", sr: "Protresen jastuk" }, correct: true },
+        { label: { de: "Decke mittig und gerade", en: "Duvet centred and straight", pl: "Kołdra na środku i prosto",
+                   hr: "Poplun po sredini i ravno", sr: "Jorgan po sredini i ravno" }, correct: true },
+        { label: { de: "Tagesdecke über dem zerknitterten Leintuch", en: "Bedspread over the wrinkled sheet",
+                   pl: "Narzuta na pomiętym prześcieradle", hr: "Prekrivač preko zgužvane plahte",
+                   sr: "Prekrivač preko zgužvanog čaršava" }, correct: false },
+        { label: { de: "Persönliche Sachen des Gastes aufs Bett gelegt", en: "Guest's belongings placed on the bed",
+                   pl: "Rzeczy gościa położone na łóżku", hr: "Gostove stvari stavljene na krevet",
+                   sr: "Gostove stvari stavljene na krevet" }, correct: false }
+      ],
+      explain: { de: "Eine Tagesdecke kaschiert nichts — und Gästesachen werden nie umgeräumt.",
+                 en: "A bedspread hides nothing — and guest belongings are never moved.",
+                 pl: "Narzuta niczego nie ukryje — a rzeczy gościa nigdy się nie przekłada.",
+                 hr: "Prekrivač ništa ne skriva — a gostove stvari se nikad ne premještaju.",
+                 sr: "Prekrivač ništa ne skriva — a gostove stvari se nikad ne premeštaju." }
     }
   ]
+};
+
+const abreiseKontrolle = {
+  id: "hk-kontrolle",
+  title: { de: "Abreisezimmer kontrollieren", en: "Checking a departure room",
+           pl: "Kontrola pokoju po wyjeździe", hr: "Provjera sobe nakon odlaska",
+           sr: "Provera sobe nakon odlaska" },
+  goal: { de: "Du findest alles, was ein Gast vergisst — und alles, was übersehen wird.",
+          en: "You find everything a guest forgets — and everything that gets missed.",
+          pl: "Znajdujesz wszystko, co gość zapomni — i wszystko, co bywa pominięte.",
+          hr: "Nađeš sve što gost zaboravi — i sve što se previdi.",
+          sr: "Nađeš sve što gost zaboravi — i sve što se previdi." },
+  minutes: 5,
+  steps: [
+    {
+      type: "hotspot",
+      scene: "room",
+      prompt: { de: "Wo musst du überall schauen, bevor du das Zimmer freigibst?",
+                en: "Where do you have to look before you release the room?",
+                pl: "Gdzie musisz wszędzie zajrzeć, zanim zwolnisz pokój?",
+                hr: "Gdje sve moraš pogledati prije nego oslobodiš sobu?",
+                sr: "Gde sve moraš da pogledaš pre nego oslobodiš sobu?" },
+      hint: { de: "Sieben Stellen. Vergessene Sachen tauchen fast immer an denselben Orten auf.",
+              en: "Seven spots. Forgotten things turn up in almost the same places every time.",
+              pl: "Siedem miejsc. Zapomniane rzeczy pojawiają się prawie zawsze w tych samych miejscach.",
+              hr: "Sedam mjesta. Zaboravljene stvari nalaze se gotovo uvijek na istim mjestima.",
+              sr: "Sedam mesta. Zaboravljene stvari nalaze se skoro uvek na istim mestima." },
+      spots: [
+        { id: "bett", x: 58, y: 70, r: 34,
+          label: { de: "Unter dem Bett", en: "Under the bed", pl: "Pod łóżkiem", hr: "Ispod kreveta", sr: "Ispod kreveta" },
+          why: { de: "Der häufigste Fundort überhaupt: Ladekabel, Socken, Schuhe rutschen darunter.",
+                 en: "The most common find of all: chargers, socks and shoes slide under it.",
+                 pl: "Najczęstsze miejsce znalezisk: ładowarki, skarpetki, buty wsuwają się pod spód.",
+                 hr: "Najčešće mjesto nalaza: punjači, čarape i cipele skliznu ispod.",
+                 sr: "Najčešće mesto nalaza: punjači, čarape i cipele skliznu ispod." } },
+        { id: "tuer", x: 9, y: 47, r: 30,
+          label: { de: "Hinter der Tür", en: "Behind the door", pl: "Za drzwiami", hr: "Iza vrata", sr: "Iza vrata" },
+          why: { de: "Dort hängen Jacken und Bademäntel, die beim Rausgehen niemand sieht.",
+                 en: "Jackets and bathrobes hang there — nobody sees them on the way out.",
+                 pl: "Wiszą tam kurtki i szlafroki, których nikt nie widzi przy wyjściu.",
+                 hr: "Ondje vise jakne i ogrtači koje nitko ne vidi na izlasku.",
+                 sr: "Tamo vise jakne i bade mantili koje niko ne vidi na izlasku." } },
+        { id: "schrank", x: 27, y: 48, r: 32,
+          label: { de: "Im Schrank", en: "In the wardrobe", pl: "W szafie", hr: "U ormaru", sr: "U ormaru" },
+          why: { de: "Immer aufmachen — auch das Fach oben. Safe nicht vergessen.",
+                 en: "Always open it — including the top shelf. Don't forget the safe.",
+                 pl: "Zawsze otwórz — także górną półkę. Nie zapomnij o sejfie.",
+                 hr: "Uvijek otvori — i gornju policu. Ne zaboravi sef.",
+                 sr: "Uvek otvori — i gornju policu. Ne zaboravi sef." } },
+        { id: "lade", x: 87, y: 64, r: 28,
+          label: { de: "Nachttisch-Lade", en: "Nightstand drawer", pl: "Szuflada szafki nocnej",
+                   hr: "Ladica noćnog ormarića", sr: "Fioka noćnog ormarića" },
+          why: { de: "Aufladegeräte, Schmuck und Dokumente landen in der Lade und bleiben dort.",
+                 en: "Chargers, jewellery and documents end up in the drawer and stay there.",
+                 pl: "Ładowarki, biżuteria i dokumenty lądują w szufladzie i tam zostają.",
+                 hr: "Punjači, nakit i dokumenti završe u ladici i ostanu ondje.",
+                 sr: "Punjači, nakit i dokumenti završe u fioci i ostanu tu." } },
+        { id: "korb", x: 35, y: 88, r: 28,
+          label: { de: "Papierkorb", en: "Waste bin", pl: "Kosz na śmieci", hr: "Koš za smeće", sr: "Korpa za smeće" },
+          why: { de: "Leeren und hineinschauen: Manchmal liegt der Zimmerschlüssel im Müll.",
+                 en: "Empty it and look inside: sometimes the room key is in the rubbish.",
+                 pl: "Opróżnij i zajrzyj do środka: czasem klucz do pokoju leży w śmieciach.",
+                 hr: "Isprazni i pogledaj unutra: ponekad je ključ sobe u smeću.",
+                 sr: "Isprazni i pogledaj unutra: ponekad je ključ sobe u smeću." } },
+        { id: "minibar", x: 90, y: 90, r: 28,
+          label: { de: "Minibar", en: "Minibar", pl: "Minibar", hr: "Minibar", sr: "Minibar" },
+          why: { de: "Verbrauch prüfen und melden, sonst kann die Rezeption nicht abrechnen.",
+                 en: "Check consumption and report it, otherwise reception can't bill it.",
+                 pl: "Sprawdź zużycie i zgłoś, inaczej recepcja nie rozliczy.",
+                 hr: "Provjeri potrošnju i prijavi, inače recepcija ne može naplatiti.",
+                 sr: "Proveri potrošnju i prijavi, inače recepcija ne može da naplati." } },
+        { id: "fenster", x: 74, y: 30, r: 30,
+          label: { de: "Fensterbank und Fenster", en: "Windowsill and window", pl: "Parapet i okno",
+                   hr: "Prozorska klupčica i prozor", sr: "Prozorska daska i prozor" },
+          why: { de: "Fenster schließen — und auf der Bank liegen oft Gläser oder Aschenbecher.",
+                 en: "Close the window — and glasses or ashtrays are often left on the sill.",
+                 pl: "Zamknij okno — a na parapecie często stoją szklanki lub popielniczki.",
+                 hr: "Zatvori prozor — a na klupčici često stoje čaše ili pepeljare.",
+                 sr: "Zatvori prozor — a na dasci često stoje čaše ili pepeljare." } }
+      ],
+      explain: { de: "Diese sieben Stellen kosten dich eine Minute. Eine vergessene Fundsache kostet die Rezeption eine Stunde.",
+                 en: "These seven spots cost you a minute. One missed lost item costs reception an hour.",
+                 pl: "Te siedem miejsc kosztuje cię minutę. Jedna przeoczona rzecz kosztuje recepcję godzinę.",
+                 hr: "Ovih sedam mjesta košta te minutu. Jedna propuštena stvar košta recepciju sat vremena.",
+                 sr: "Ovih sedam mesta košta te minut. Jedna propuštena stvar košta recepciju sat vremena." }
+    },
+    {
+      type: "decide",
+      prompt: { de: "Du findest eine Geldbörse in der Nachttisch-Lade. Was tust du?",
+                en: "You find a wallet in the nightstand drawer. What do you do?",
+                pl: "Znajdujesz portfel w szufladzie szafki nocnej. Co robisz?",
+                hr: "Nađeš novčanik u ladici noćnog ormarića. Što ćeš učiniti?",
+                sr: "Nađeš novčanik u fioci noćnog ormarića. Šta ćeš uraditi?" },
+      options: [
+        { de: "Liegen lassen, der Gast kommt zurück", en: "Leave it, the guest will come back",
+          pl: "Zostaw, gość wróci", hr: "Ostavi, gost će se vratiti", sr: "Ostavi, gost će se vratiti" },
+        { de: "In den Safe legen und nichts sagen", en: "Put it in the safe and say nothing",
+          pl: "Włóż do sejfu i nic nie mów", hr: "Stavi u sef i ne reci ništa", sr: "Stavi u sef i ne reci ništa" },
+        { de: "Sofort ungeöffnet an die Rezeption geben und eintragen lassen",
+          en: "Hand it to reception unopened straight away and have it logged",
+          pl: "Od razu oddaj nieotwarty na recepcję i każ zapisać",
+          hr: "Odmah neotvoren predaj recepciji i daj upisati",
+          sr: "Odmah neotvoren predaj recepciji i daj da se upiše" },
+        { de: "Inhalt prüfen, um den Besitzer zu finden", en: "Check the contents to find the owner",
+          pl: "Sprawdź zawartość, by znaleźć właściciela", hr: "Provjeri sadržaj da nađeš vlasnika",
+          sr: "Proveri sadržaj da nađeš vlasnika" }
+      ],
+      answer: 2,
+      explain: { de: "Ungeöffnet abgeben schützt dich selbst: Über den Inhalt entsteht sonst schnell ein Verdacht.",
+                 en: "Handing it over unopened protects you: otherwise suspicion about the contents arises fast.",
+                 pl: "Oddanie nieotwartego chroni ciebie: inaczej szybko pada podejrzenie o zawartość.",
+                 hr: "Predaja neotvorenog štiti tebe: inače brzo nastane sumnja oko sadržaja.",
+                 sr: "Predaja neotvorenog štiti tebe: inače brzo nastane sumnja oko sadržaja." }
+    },
+    {
+      type: "sequence",
+      prompt: { de: "In welcher Reihenfolge gehst du ein Abreisezimmer an?",
+                en: "In what order do you tackle a departure room?",
+                pl: "W jakiej kolejności bierzesz się za pokój po wyjeździe?",
+                hr: "Kojim redoslijedom se prihvaćaš sobe nakon odlaska?",
+                sr: "Kojim redosledom se prihvataš sobe nakon odlaska?" },
+      steps: [
+        { de: "Anklopfen und melden", en: "Knock and announce yourself", pl: "Zapukaj i zgłoś się",
+          hr: "Pokucaj i najavi se", sr: "Pokucaj i najavi se" },
+        { de: "Fenster öffnen", en: "Open the window", pl: "Otwórz okno", hr: "Otvori prozor", sr: "Otvori prozor" },
+        { de: "Müll und Wäsche raus", en: "Rubbish and linen out", pl: "Śmieci i pościel na zewnątrz",
+          hr: "Smeće i rublje van", sr: "Smeće i veš napolje" },
+        { de: "Die sieben Stellen kontrollieren", en: "Check the seven spots", pl: "Sprawdź siedem miejsc",
+          hr: "Provjeri sedam mjesta", sr: "Proveri sedam mesta" },
+        { de: "Reinigen", en: "Clean", pl: "Sprzątaj", hr: "Očisti", sr: "Očisti" },
+        { de: "Kontrollblick von der Tür", en: "Final look from the door", pl: "Kontrolne spojrzenie od drzwi",
+          hr: "Kontrolni pogled s vrata", sr: "Kontrolni pogled sa vrata" }
+      ],
+      explain: { de: "Kontrollieren kommt vor dem Reinigen: Was du vorher findest, saugst du nachher nicht ein.",
+                 en: "Checking comes before cleaning: what you find first, you won't vacuum up later.",
+                 pl: "Kontrola przed sprzątaniem: co znajdziesz wcześniej, tego później nie odkurzysz.",
+                 hr: "Provjera ide prije čišćenja: što nađeš prije, poslije nećeš usisati.",
+                 sr: "Provera ide pre čišćenja: što nađeš pre, kasnije nećeš usisati." }
+    }
+  ]
+};
+
+export const housekeepingTasks = {
+  id: "housekeeping",
+  name: { de: "Housekeeping", en: "Housekeeping", pl: "Housekeeping", hr: "Housekeeping", sr: "Housekeeping" },
+  tagline: { de: "Zimmer machen nach Hausstandard", en: "Rooms to house standard",
+             pl: "Pokoje według standardu hotelu", hr: "Sobe prema standardu kuće", sr: "Sobe prema standardu kuće" },
+  accent: "#2468f2",
+  icon: "BedDouble",
+  blurb: { de: "Die Handgriffe, die du wirklich brauchst — vorgemacht, dann selbst gemacht.",
+           en: "The moves you actually need — shown first, then done by you.",
+           pl: "Ruchy, których naprawdę potrzebujesz — najpierw pokaz, potem ty.",
+           hr: "Pokreti koji ti stvarno trebaju — prvo pokazano, onda ti.",
+           sr: "Pokreti koji ti stvarno trebaju — prvo pokazano, onda ti." },
+  tasks: [bettBeziehen, abreiseKontrolle, ...extraTasks]
 };

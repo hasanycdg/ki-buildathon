@@ -13,7 +13,7 @@ const HEART_REFILL_MS = 15 * 60 * 1000; // ein Herz alle 15 Minuten
 export function emptyState() {
   return {
     roleId: null,
-    lang: "en",
+    lang: "de",
     items: {},
     lessons: {},
     xp: 0,

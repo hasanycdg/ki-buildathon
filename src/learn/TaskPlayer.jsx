@@ -1,9 +1,38 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Check, ChevronLeft, ChevronRight, Heart, Play, Pause, RotateCcw, X } from "lucide-react";
-import { BedScene, RoomScene } from "./scenes/index.js";
+import * as Scenes from "./scenes/index.js";
 import { createQueue, current, answer, isComplete, progress, qualityOf } from "./queue.js";
+import { t, tList } from "./i18n.js";
 
-const SCENES = { bed: BedScene, room: RoomScene };
+
+/* Feste Oberflaechentexte — dieselbe Struktur wie die Inhalte. */
+const RETRY   = { de: "Nochmal — das war noch nicht richtig", en: "Again — that wasn't right yet",
+                  pl: "Jeszcze raz — to nie było poprawne", hr: "Ponovno — to još nije bilo točno",
+                  sr: "Ponovo — to još nije bilo tačno" };
+const CHECK   = { de: "Prüfen", en: "Check", pl: "Sprawdź", hr: "Provjeri", sr: "Proveri" };
+const NEXT    = { de: "Weiter", en: "Continue", pl: "Dalej", hr: "Dalje", sr: "Dalje" };
+const RIGHT   = { de: "Richtig", en: "Correct", pl: "Poprawnie", hr: "Točno", sr: "Tačno" };
+const WRONG   = { de: "Noch nicht", en: "Not yet", pl: "Jeszcze nie", hr: "Još ne", sr: "Još ne" };
+const WATCH   = { de: "Schau dir alle Schritte an", en: "Watch all the steps",
+                  pl: "Obejrzyj wszystkie kroki", hr: "Pogledaj sve korake", sr: "Pogledaj sve korake" };
+const GOT_IT  = { de: "Verstanden — jetzt selbst", en: "Got it — now your turn",
+                  pl: "Rozumiem — teraz ty", hr: "Razumijem — sada ti", sr: "Razumem — sada ti" };
+const STEP_OF = { de: "Schritt", en: "Step", pl: "Krok", hr: "Korak", sr: "Korak" };
+const OF      = { de: "von", en: "of", pl: "z", hr: "od", sr: "od" };
+const AGAIN   = { de: "Nochmal", en: "Replay", pl: "Jeszcze raz", hr: "Ponovno", sr: "Ponovo" };
+const PLAY    = { de: "Abspielen", en: "Play", pl: "Odtwórz", hr: "Pokreni", sr: "Pokreni" };
+const PAUSE   = { de: "Pause", en: "Pause", pl: "Pauza", hr: "Pauza", sr: "Pauza" };
+const FOUND   = { de: "Stellen gefunden", en: "spots found", pl: "znalezione miejsca",
+                  hr: "pronađenih mjesta", sr: "pronađenih mesta" };
+const MISSHIT = { de: "Fehlgriff", en: "miss", pl: "pudło", hr: "promašaj", sr: "promašaj" };
+const ORDER_H = { de: "Tippe die Schritte in der richtigen Reihenfolge an",
+                  en: "Tap the steps in the right order", pl: "Dotknij kroków we właściwej kolejności",
+                  hr: "Dodirni korake ispravnim redoslijedom", sr: "Dodirni korake ispravnim redosledom" };
+
+const SCENES = {
+  bed: Scenes.BedScene, room: Scenes.RoomScene, bath: Scenes.BathScene,
+  reception: Scenes.ReceptionScene, buffet: Scenes.BuffetScene, lobby: Scenes.LobbyScene
+};
 
 function shuffle(list, seed) {
   const arr = [...list];
@@ -18,7 +47,7 @@ function shuffle(list, seed) {
 
 /* ============================================ Vorfuehrung mit Animation */
 
-function Demo({ step, onDone }) {
+function Demo({ step, onDone, lang }) {
   const Scene = SCENES[step.scene];
   const [frame, setFrame] = useState(0);
   const [playing, setPlaying] = useState(true);
@@ -34,16 +63,16 @@ function Demo({ step, onDone }) {
 
   return (
     <div className="tp-demo">
-      {step.intro && <p className="tp-intro">{step.intro}</p>}
+      {step.intro && <p className="tp-intro">{t(step.intro, lang)}</p>}
 
       <div className="tp-stage">
         <Scene frame={frame} />
       </div>
 
       <div className="tp-caption">
-        <span className="tp-step-badge">Schritt {frame + 1} von {step.frames.length}</span>
-        <strong>{f.caption}</strong>
-        <p>{f.detail}</p>
+        <span className="tp-step-badge">{t(STEP_OF, lang)} {frame + 1} {t(OF, lang)} {step.frames.length}</span>
+        <strong>{t(f.caption, lang)}</strong>
+        <p>{t(f.detail, lang)}</p>
       </div>
 
       <div className="tp-controls">
@@ -52,7 +81,7 @@ function Demo({ step, onDone }) {
 
         <button type="button" className="tp-play"
           onClick={() => { if (frame >= last) { setFrame(0); setPlaying(true); } else setPlaying((p) => !p); }}>
-          {frame >= last ? <><RotateCcw size={18} /> Nochmal</> : playing ? <><Pause size={18} /> Pause</> : <><Play size={18} /> Abspielen</>}
+          {frame >= last ? <><RotateCcw size={18} /> {t(AGAIN, lang)}</> : playing ? <><Pause size={18} /> {t(PAUSE, lang)}</> : <><Play size={18} /> {t(PLAY, lang)}</>}
         </button>
 
         <button type="button" onClick={() => { setPlaying(false); setFrame((n) => Math.min(last, n + 1)); }}
@@ -68,7 +97,7 @@ function Demo({ step, onDone }) {
 
       <button type="button" className="tp-action ok" onClick={onDone}
         disabled={frame < last}>
-        {frame < last ? "Schau dir alle Schritte an" : "Verstanden — jetzt selbst"}
+        {frame < last ? t(WATCH, lang) : t(GOT_IT, lang)}
       </button>
     </div>
   );
@@ -76,7 +105,7 @@ function Demo({ step, onDone }) {
 
 /* ================================================= Stellen antippen */
 
-function Hotspot({ step, found, setFound, miss, setMiss, locked }) {
+function Hotspot({ step, found, setFound, miss, setMiss, locked, lang }) {
   const Scene = SCENES[step.scene];
   const total = step.spots.length;
 
@@ -87,7 +116,7 @@ function Hotspot({ step, found, setFound, miss, setMiss, locked }) {
 
   return (
     <div className="tp-hotspot">
-      <p className="tp-hint">{step.hint}</p>
+      <p className="tp-hint">{t(step.hint, lang)}</p>
       <div className="tp-stage tp-stage-click" onClick={() => { if (!locked) setMiss(miss + 1); }}>
         <Scene dim />
         {step.spots.map((spot) => {
@@ -99,7 +128,7 @@ function Hotspot({ step, found, setFound, miss, setMiss, locked }) {
               className={"tp-spot" + (hit ? " hit" : "")}
               style={{ left: spot.x + "%", top: spot.y + "%", width: spot.r + "px", height: spot.r + "px" }}
               onClick={(e) => { e.stopPropagation(); tapSpot(spot); }}
-              aria-label={hit ? spot.label + " gefunden" : "Unbekannte Stelle"}
+              aria-label={hit ? t(spot.label, lang) : "Unbekannte Stelle"}
             >
               {hit && <Check size={16} />}
             </button>
@@ -109,15 +138,15 @@ function Hotspot({ step, found, setFound, miss, setMiss, locked }) {
 
       <div className="tp-found">
         <div className="tp-found-head">
-          <strong>{found.length} von {total} Stellen gefunden</strong>
-          {miss > 0 && <span className="tp-miss">{miss} Fehlgriff{miss > 1 ? "e" : ""}</span>}
+          <strong>{found.length} / {total} — {t(FOUND, lang)}</strong>
+          {miss > 0 && <span className="tp-miss">{miss} × {t(MISSHIT, lang)}</span>}
         </div>
         <ul>
           {step.spots.map((spot) => {
             const hit = found.includes(spot.id);
             return (
               <li key={spot.id} className={hit ? "on" : ""}>
-                {hit ? <><Check size={15} /> <b>{spot.label}</b> — {spot.why}</> : <span className="tp-blank" />}
+                {hit ? <><Check size={15} /> <b>{t(spot.label, lang)}</b> — {t(spot.why, lang)}</> : <span className="tp-blank" />}
               </li>
             );
           })}
@@ -129,13 +158,14 @@ function Hotspot({ step, found, setFound, miss, setMiss, locked }) {
 
 /* ================================================= Reihenfolge */
 
-function Sequence({ step, value, setValue, locked }) {
-  const pool = useMemo(() => shuffle(step.steps, step.steps.join("").length * 53), [step]);
+function Sequence({ step, value, setValue, locked, lang }) {
+  const labels = useMemo(() => tList(step.steps, lang), [step, lang]);
+  const pool = useMemo(() => shuffle(labels, labels.join("").length * 53), [labels]);
   const picked = value || [];
   return (
     <>
       <ol className="tp-seq-line">
-        {picked.length === 0 && <span className="tp-placeholder">Tippe die Schritte in der richtigen Reihenfolge an</span>}
+        {picked.length === 0 && <span className="tp-placeholder">{t(ORDER_H, lang)}</span>}
         {picked.map((s, i) => (
           <li key={s}>
             <button type="button" disabled={locked} className="tp-chip picked"
@@ -157,10 +187,10 @@ function Sequence({ step, value, setValue, locked }) {
 
 /* ================================================= Entscheidung */
 
-function Decide({ step, value, setValue, locked }) {
+function Decide({ step, value, setValue, locked, lang }) {
   return (
     <div className="tp-options">
-      {step.options.map((opt, i) => (
+      {tList(step.options, lang).map((opt, i) => (
         <button key={i} type="button" disabled={locked}
           className={"tp-option" + (value === i ? " selected" : "")}
           onClick={() => setValue(i)}>{opt}</button>
@@ -171,7 +201,7 @@ function Decide({ step, value, setValue, locked }) {
 
 /* ================================================= Checkliste */
 
-function Checklist({ step, value, setValue, locked }) {
+function Checklist({ step, value, setValue, locked, lang }) {
   const picked = value || [];
   return (
     <div className="tp-options">
@@ -182,7 +212,7 @@ function Checklist({ step, value, setValue, locked }) {
             className={"tp-option tp-check" + (on ? " selected" : "")}
             onClick={() => setValue(on ? picked.filter((x) => x !== i) : [...picked, i])}>
             <span className="tp-box">{on && <Check size={14} />}</span>
-            {item.label}
+            {t(item.label, lang)}
           </button>
         );
       })}
@@ -200,9 +230,9 @@ export function stepAnswered(step, value, found) {
   return true;
 }
 
-export function stepCorrect(step, value, found) {
+export function stepCorrect(step, value, found, lang = "de") {
   if (step.type === "hotspot") return found.length === step.spots.length;
-  if (step.type === "sequence") return (value || []).join("|") === step.steps.join("|");
+  if (step.type === "sequence") return (value || []).join("|") === tList(step.steps, lang).join("|");
   if (step.type === "decide") return value === step.answer;
   if (step.type === "checklist") {
     const want = step.items.map((it, i) => (it.correct ? i : null)).filter((x) => x !== null);
@@ -212,13 +242,13 @@ export function stepCorrect(step, value, found) {
   return true;
 }
 
-function promptOf(step) {
-  return step.prompt || step.title || "";
+function promptOf(step, lang) {
+  return t(step.prompt, lang) || t(step.title, lang) || "";
 }
 
 /* ================================================= Der Player */
 
-export default function TaskPlayer({ task, hearts, onHeartLost, onAnswered, onFinish, onQuit }) {
+export default function TaskPlayer({ task, hearts, lang, onHeartLost, onAnswered, onFinish, onQuit }) {
   const interactive = task.steps.filter((s) => s.type !== "demo");
   const [demoIndex, setDemoIndex] = useState(task.steps[0]?.type === "demo" ? 0 : -1);
   const [queue, setQueue] = useState(() => createQueue(interactive));
@@ -241,10 +271,10 @@ export default function TaskPlayer({ task, hearts, onHeartLost, onAnswered, onFi
       <div className="tp">
         <header className="tp-head">
           <button type="button" className="tp-quit" onClick={onQuit} aria-label="Verlassen"><X size={22} /></button>
-          <div className="tp-title"><strong>{task.title}</strong><span>{demo.title}</span></div>
+          <div className="tp-title"><strong>{t(task.title, lang)}</strong><span>{t(demo.title, lang)}</span></div>
           <div className="tp-hearts"><Heart size={19} fill="#e0405d" color="#e0405d" /><b>{hearts}</b></div>
         </header>
-        <div className="tp-body"><Demo step={demo} onDone={() => setDemoIndex(-1)} /></div>
+        <div className="tp-body"><Demo step={demo} lang={lang} onDone={() => setDemoIndex(-1)} /></div>
       </div>
     );
   }
@@ -253,9 +283,9 @@ export default function TaskPlayer({ task, hearts, onHeartLost, onAnswered, onFi
 
   function check() {
     if (!stepAnswered(step, value, found) || locked) return;
-    const correct = stepCorrect(step, value, found);
+    const correct = stepCorrect(step, value, found, lang);
     if (!correct) onHeartLost();
-    setFeedback({ correct, explain: step.explain });
+    setFeedback({ correct, explain: t(step.explain, lang) });
   }
 
   function next() {
@@ -283,19 +313,19 @@ export default function TaskPlayer({ task, hearts, onHeartLost, onAnswered, onFi
       </header>
 
       <div className="tp-body">
-        <p className="tp-kicker">{!entry.firstTry ? "Nochmal — das war noch nicht richtig" : task.title}</p>
-        <h2 className="tp-prompt">{promptOf(step)}</h2>
+        <p className="tp-kicker">{!entry.firstTry ? t(RETRY, lang) : t(task.title, lang)}</p>
+        <h2 className="tp-prompt">{promptOf(step, lang)}</h2>
 
-        {step.type === "hotspot" && <Hotspot step={step} found={found} setFound={setFound} miss={miss} setMiss={setMiss} locked={locked} />}
-        {step.type === "sequence" && <Sequence step={step} value={value} setValue={setValue} locked={locked} />}
-        {step.type === "decide" && <Decide step={step} value={value} setValue={setValue} locked={locked} />}
-        {step.type === "checklist" && <Checklist step={step} value={value} setValue={setValue} locked={locked} />}
+        {step.type === "hotspot" && <Hotspot step={step} found={found} setFound={setFound} miss={miss} setMiss={setMiss} locked={locked} lang={lang} />}
+        {step.type === "sequence" && <Sequence step={step} value={value} setValue={setValue} locked={locked} lang={lang} />}
+        {step.type === "decide" && <Decide step={step} value={value} setValue={setValue} locked={locked} lang={lang} />}
+        {step.type === "checklist" && <Checklist step={step} value={value} setValue={setValue} locked={locked} lang={lang} />}
       </div>
 
       <footer className={"tp-foot" + (feedback ? (feedback.correct ? " ok" : " bad") : "")}>
         {feedback && (
           <div className="tp-feedback">
-            <strong>{feedback.correct ? <><Check size={18} /> Richtig</> : <><X size={18} /> Noch nicht</>}</strong>
+            <strong>{feedback.correct ? <><Check size={18} /> {t(RIGHT, lang)}</> : <><X size={18} /> {t(WRONG, lang)}</>}</strong>
             <p>{feedback.explain}</p>
           </div>
         )}
@@ -303,7 +333,7 @@ export default function TaskPlayer({ task, hearts, onHeartLost, onAnswered, onFi
           className={"tp-action" + (feedback ? (feedback.correct ? " ok" : " bad") : " ok")}
           disabled={!feedback && !stepAnswered(step, value, found)}
           onClick={feedback ? next : check}>
-          {feedback ? "Weiter" : "Prüfen"}
+          {feedback ? t(NEXT, lang) : t(CHECK, lang)}
         </button>
       </footer>
     </div>

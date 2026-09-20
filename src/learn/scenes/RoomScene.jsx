@@ -48,8 +48,6 @@ export default function RoomScene({ dim = false }) {
       <circle cx="415" cy="194" r="2.5" fill="#8fa0bd" />
 
       {/* Schreibtisch mit Minibar darunter */}
-      <rect x="92" y="244" width="0" height="0" />
-      <rect x="196" y="120" width="0" height="0" />
 
       {/* Papierkorb */}
       <path d="M150 246 L156 288 L184 288 L190 246 Z" fill="#dde5f2" stroke="#b9c8e0" strokeWidth="2.2" />
@@ -61,7 +59,7 @@ export default function RoomScene({ dim = false }) {
       <circle cx="456" cy="253" r="2.5" fill="#8fa0bd" />
 
       {/* Spiegel */}
-      <rect x="216" y="44" width="70" height="52" rx="4" fill="#e6f0fd" stroke="#a9c3e8" strokeWidth="2.5" />
+      <rect x="186" y="44" width="68" height="50" rx="4" fill="#e6f0fd" stroke="#a9c3e8" strokeWidth="2.5" />
     </svg>
   );
 }

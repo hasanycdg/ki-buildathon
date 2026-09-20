@@ -335,3 +335,9 @@
 .lt-section { font-size: 18px; margin: 0 0 14px; }
 .lt-task-meta { display: inline-flex; align-items: center; gap: 5px; }
 @media (max-width: 720px) { .content-single { padding: 16px; } }
+.ls-lang-btn { display: inline-flex; align-items: center; gap: 6px; }
+.ls-lang-btn b { font-size: 12px; letter-spacing: .03em; }
+.ls-lang-full { font-size: 13px; }
+.lt .ls-lang { padding: 10px 14px; margin-bottom: 18px; text-align: left; display: flex; align-items: center; gap: 12px; }
+.lt .ls-lang-row { justify-content: flex-start; }
+@media (max-width: 720px) { .ls-lang-full { display: none; } }
