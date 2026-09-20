@@ -84,7 +84,6 @@ const navItems = [
   { id: "team", label: "Team & Kontakte", icon: Users }
 ];
 
-/* Alle vier Vorschlaege treffen einen Eintrag in quickHelpKnowledge.json. */
 const quickHelpPrompts = [
   "Wie reinige ich Zimmer 203?",
   "Wie funktioniert das alte Buchungssystem?",
@@ -141,13 +140,6 @@ const imageThinkingLabels = {
   de: "Bild wird geprüft",
   en: "Checking image",
   tr: "Görsel kontrol ediliyor"
-};
-
-const answerSourceLabels = {
-  openai: "WorkLingo AI",
-  setup: "WorkLingo AI Setup",
-  catalog: "Bekanntes Hausbeispiel",
-  fallback: "Allgemeine Hausregel"
 };
 
 function thinkingLabel(mode, language) {
@@ -357,7 +349,7 @@ function findQuickHelpAnswer(question) {
     answer: "Dazu habe ich noch keine genaue Unternehmensantwort. Ich kann dir aber bei Zimmerreinigung, Wäschekammer, Rezeption, Gastbeschwerden, Krankmeldung, Fundsachen und Notfällen helfen.",
     steps: [
       "Formuliere die Frage mit einem konkreten Stichwort",
-      "Oder wähle eine der vorgeschlagenen Fragen unten",
+      "Beschreibe kurz die Situation oder den Ort",
       "Bei dringenden Gästeanliegen: Rezeption intern 100"
     ],
     linkLabel: "Teamkontakte",
@@ -366,7 +358,7 @@ function findQuickHelpAnswer(question) {
         answer: "I do not have an exact company answer for that yet. I can help with room cleaning, laundry room, reception, guest complaints, sick leave, lost property, and emergencies.",
         steps: [
           "Ask with a concrete keyword",
-          "Or choose one of the suggested questions",
+          "Briefly describe the situation or location",
           "For urgent guest issues: call reception on internal 100"
         ],
         linkLabel: "Team contacts"
@@ -375,7 +367,7 @@ function findQuickHelpAnswer(question) {
         answer: "Bunun için henüz kesin bir otel cevabım yok. Oda temizliği, çamaşırhane, resepsiyon, misafir şikayetleri, hastalık bildirimi, kayıp eşya ve acil durumlarda yardımcı olabilirim.",
         steps: [
           "Soruyu somut bir anahtar kelimeyle sor",
-          "Ya da aşağıdaki önerilen sorulardan birini seç",
+          "Durumu veya yeri kısaca açıkla",
           "Acil misafir konularında: dahili 100'ü ara"
         ],
         linkLabel: "Ekip iletişim listesi"
@@ -1289,7 +1281,7 @@ function LearningModules({ data, onOpenRole, onOpenLanguage, onShowAll }) {
 
 function QuickAccess({ onNavigate }) {
   const quickCards = [
-    ["quickhelp", "Quick Help fragen", `${contentStats.answers} Hausantworten, auch auf EN & TR`, MessageCircle],
+    ["quickhelp", "Quick Help fragen", "Direkte Hilfe für Fragen im Arbeitsalltag", MessageCircle],
     ["sprachhilfe", "Wörter & Sätze üben", `${contentStats.words} Begriffe als Karteikarten`, Globe2],
     ["fortschritt", "Mein Fortschritt", "Sterne, Serie und XP im Überblick", ChartNoAxesColumn],
     ["team", "Team & Kontakte", "Hausdame, Rezeption, interne 100", Users]
@@ -1478,20 +1470,6 @@ function ChatPanel({ mode = "side", messages, setMessages, onOpenLanguageHelp })
         </div>
         <p className="chat-intro">Frage alles rund um Zimmerstandards, Rezeption, Gäste oder deine Aufgaben.</p>
         <div className="conversation" ref={conversationRef}>
-          {messages.length === 0 && !isThinking && (
-            <div className="empty-chat">
-              <Bot size={22} />
-              <strong>Stelle deine erste Frage.</strong>
-              <span>Quick Help antwortet mit gespeicherten Unternehmensstandards aus eurem MVP-Katalog.</span>
-              <div className="empty-question-list">
-                {quickHelpPrompts.map((prompt) => (
-                  <button type="button" key={prompt} onClick={() => askQuickHelp(prompt)}>
-                    {prompt}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
           {messages.map((message) => (
             message.role === "user" ? (
               <div className="message outgoing" key={message.id}>
@@ -1507,9 +1485,6 @@ function ChatPanel({ mode = "side", messages, setMessages, onOpenLanguageHelp })
                   <Bot size={18} />
                 </div>
                 <div className="message incoming">
-                  {message.source && (
-                    <span className={`answer-source ${message.source}`}>{answerSourceLabels[message.source]}</span>
-                  )}
                   <p>{message.text}</p>
                   {message.steps?.length > 0 && (
                     <ol className="answer-steps">
@@ -1728,20 +1703,6 @@ function QuickHelpWorkspace({ threads, setThreads, activeThreadId, setActiveThre
         </div>
 
         <div className="conversation fullpage-conversation" ref={conversationRef}>
-          {messages.length === 0 && !isThinking && (
-            <div className="empty-chat fullpage-empty-chat">
-              <Bot size={24} />
-              <strong>Wähle eine Frage oder starte einen neuen Chat.</strong>
-              <span>Deine Chats erscheinen links im Verlauf und können jederzeit wieder geöffnet werden.</span>
-              <div className="empty-question-list">
-                {quickHelpPrompts.map((prompt) => (
-                  <button type="button" key={prompt} onClick={() => askQuickHelp(prompt)}>
-                    {prompt}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
           {messages.map((message) => (
             message.role === "user" ? (
               <div className="message outgoing" key={message.id}>
@@ -1757,9 +1718,6 @@ function QuickHelpWorkspace({ threads, setThreads, activeThreadId, setActiveThre
                   <Bot size={18} />
                 </div>
                 <div className="message incoming">
-                  {message.source && (
-                    <span className={`answer-source ${message.source}`}>{answerSourceLabels[message.source]}</span>
-                  )}
                   <p>{message.text}</p>
                   {message.steps?.length > 0 && (
                     <ol className="answer-steps">
@@ -1790,6 +1748,12 @@ function QuickHelpWorkspace({ threads, setThreads, activeThreadId, setActiveThre
               </div>
             </div>
           )}
+        </div>
+
+        <div className="prompt-list fullpage-prompt-list">
+          {quickHelpPrompts.map((prompt) => (
+            <button type="button" key={prompt} onClick={() => askQuickHelp(prompt)} disabled={isThinking}>{prompt}</button>
+          ))}
         </div>
 
         <ChatComposer

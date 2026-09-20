@@ -514,11 +514,6 @@ kbd {
   max-width: min(420px, 70%);
 }
 
-.fullpage-empty-chat {
-  min-height: 100%;
-  border-style: solid;
-}
-
 .fullpage-chat-input {
   margin-top: 0;
 }
@@ -582,15 +577,6 @@ kbd {
   padding-right: 2px;
 }
 
-.quickhelp-wide .empty-chat {
-  min-height: 190px;
-  padding: 20px;
-}
-
-.quickhelp-wide .empty-question-list {
-  width: min(470px, 100%);
-}
-
 .quickhelp-wide .outgoing {
   width: fit-content;
   max-width: min(360px, 78%);
@@ -598,12 +584,6 @@ kbd {
 
 .quickhelp-wide .answer-image {
   aspect-ratio: 16 / 7;
-}
-
-.empty-question-list button:hover,
-.prompt-list button:hover {
-  border-color: #b9cdf4;
-  background: #edf4ff;
 }
 
 .team-grid {
@@ -2063,57 +2043,6 @@ h2 {
   scrollbar-width: thin;
 }
 
-.empty-chat {
-  display: grid;
-  justify-items: center;
-  gap: 7px;
-  min-height: 190px;
-  align-content: center;
-  padding: 22px;
-  border: 1px dashed #cfdcf0;
-  border-radius: 8px;
-  color: #50607f;
-  background: #f8fbff;
-  text-align: center;
-}
-
-.empty-chat svg {
-  color: #1765ff;
-}
-
-.empty-chat strong {
-  color: #0b1744;
-  font-size: 15px;
-}
-
-.empty-chat span {
-  max-width: 360px;
-  font-size: 12px;
-  line-height: 1.45;
-}
-
-.empty-question-list {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 7px;
-  width: min(520px, 100%);
-  margin-top: 7px;
-}
-
-.empty-question-list button {
-  min-height: 38px;
-  padding: 8px 10px;
-  border: 1px solid #d7e1f1;
-  border-radius: 8px;
-  color: #0d3584;
-  background: #fff;
-  font-size: 12px;
-  font-weight: 750;
-  line-height: 1.25;
-  text-align: left;
-  cursor: pointer;
-}
-
 .message {
   position: relative;
   width: fit-content;
@@ -2315,6 +2244,10 @@ h2 {
   margin: 34px 10px 16px;
 }
 
+.fullpage-prompt-list {
+  margin: 10px 0 12px;
+}
+
 .prompt-list button {
   min-height: 34px;
   padding: 0 14px;
@@ -2324,6 +2257,11 @@ h2 {
   background: #f5f9ff;
   font-size: 12px;
   cursor: pointer;
+}
+
+.prompt-list button:hover {
+  border-color: #b9cdf4;
+  background: #edf4ff;
 }
 
 .prompt-list button:disabled,
@@ -2703,22 +2641,4 @@ h2 {
 .message-muted {
   color: #50607f;
   font-style: italic;
-}
-
-.answer-source {
-  display: inline-block;
-  margin-bottom: 8px;
-  padding: 2px 8px;
-  border-radius: 999px;
-  color: #0d3584;
-  background: #dce6ff;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-
-.answer-source.fallback {
-  color: #7a4b00;
-  background: #ffeecc;
 }
