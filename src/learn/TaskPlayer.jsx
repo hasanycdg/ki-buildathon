@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Check, ChevronLeft, ChevronRight, Clock, Flag, Heart, Play, Pause, RotateCcw, Star, Target, X } from "lucide-react";
 import * as Scenes from "./scenes/index.js";
+import GeneratedScene from "./scenes/GeneratedScene.jsx";
 import { createQueue, current, answer, isComplete, progress } from "./queue.js";
 import { t, tList } from "./i18n.js";
 import { stagesOf, starsFor, formatTime, STAR_TEXT } from "./stages.js";
-import { getAsset, getAssetVisual } from "../admin/assetLibrary.js";
 
 
 /* Feste Oberflaechentexte — dieselbe Struktur wie die Inhalte. */
@@ -92,7 +92,7 @@ function Stars({ n, size = 26 }) {
 /* ============================================ Vorfuehrung mit Animation */
 
 function Demo({ step, onDone, lang }) {
-  const Scene = SCENES[step.scene];
+  const Scene = SCENES[step.scene] || Scenes.RoomScene;
   const [frame, setFrame] = useState(0);
   const [playing, setPlaying] = useState(true);
   const last = step.frames.length - 1;
@@ -104,15 +104,12 @@ function Demo({ step, onDone, lang }) {
   }, [playing, frame, last]);
 
   const f = step.frames[frame];
-  const assetFrame = step.assetFrames?.[frame];
-  const assetVisual = assetFrame && getAssetVisual(assetFrame.assetId, assetFrame.state);
-
   return (
     <div className="tp-demo">
       {step.intro && <p className="tp-intro">{t(step.intro, lang)}</p>}
 
       <div className="tp-stage">
-        {assetVisual ? <div className={`tp-asset-scene motion-${assetFrame.motion || "focus"}`} key={`${assetFrame.assetId}-${assetFrame.state}-${frame}`}><img src={assetVisual} alt={getAsset(assetFrame.assetId)?.name || "Lernobjekt"} /></div> : <Scene frame={frame} />}
+        {step.customScene ? <GeneratedScene scene={step.customScene} frame={frame} /> : <Scene frame={frame} />}
       </div>
 
       <div className="tp-caption">
@@ -152,7 +149,7 @@ function Demo({ step, onDone, lang }) {
 /* ================================================= Stellen antippen */
 
 function Hotspot({ step, found, setFound, miss, setMiss, locked, lang }) {
-  const Scene = SCENES[step.scene];
+  const Scene = SCENES[step.scene] || Scenes.RoomScene;
   const total = step.spots.length;
 
   function tapSpot(spot) {
@@ -164,7 +161,7 @@ function Hotspot({ step, found, setFound, miss, setMiss, locked, lang }) {
     <div className="tp-hotspot">
       <p className="tp-hint">{t(step.hint, lang)}</p>
       <div className="tp-stage tp-stage-click" onClick={() => { if (!locked) setMiss(miss + 1); }}>
-        <Scene dim />
+        {step.customScene ? <GeneratedScene scene={step.customScene} dim /> : <Scene dim />}
         {step.spots.map((spot) => {
           const hit = found.includes(spot.id);
           return (

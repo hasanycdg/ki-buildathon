@@ -63,6 +63,7 @@ export function buildCustomTask(draft) {
     exercise = {
       type: "hotspot",
       scene: draft.scene || "room",
+      customScene: draft.customScene || null,
       prompt: question,
       hint: localized("Finde alle markierten Stellen in der Szene.", {}, draft.translationMode),
       spots: objects.slice(0, 6).map((object, index) => {
@@ -91,6 +92,7 @@ export function buildCustomTask(draft) {
   const demo = draft.storyboard?.length ? {
     type: "demo",
     scene: draft.scene || "room",
+    customScene: draft.customScene || null,
     intro: localized("Schau dir den vollständigen Ablauf an.", {}, draft.translationMode),
     assetFrames: draft.storyboard.map((frame) => ({
       ...frame,
@@ -113,6 +115,7 @@ export function buildCustomTask(draft) {
     minutes: Number(draft.minutes) || 4,
     builder: {
       scene: draft.scene,
+      customScene: draft.customScene || null,
       objects: draft.objects || [],
       animation: draft.animation || [],
       storyboard: draft.storyboard || [],

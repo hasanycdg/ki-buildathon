@@ -60,6 +60,20 @@ function parseOpenAiJson(text) {
   }
 }
 
+function parseLessonDraftJson(text) {
+  const start = text.indexOf("{");
+  const end = text.lastIndexOf("}");
+  if (start === -1 || end <= start) {
+    throw new Error("OpenAI response did not contain JSON");
+  }
+
+  const parsed = JSON.parse(text.slice(start, end + 1));
+  if (!parsed?.title || !parsed?.goal) {
+    throw new Error("Generated lesson draft is incomplete");
+  }
+  return parsed;
+}
+
 function extractResponseText(data) {
   if (typeof data.output_text === "string") return data.output_text;
 
@@ -69,6 +83,31 @@ function extractResponseText(data) {
     .map((content) => content.text)
     .join("\n")
     .trim();
+}
+
+function lessonDraftInstructions() {
+  return [
+    "Du bist der WorkLingo Lesson Director.",
+    "Du verwandelst freie deutsche Admin-Wuensche in vollstaendige, visuell inszenierte A2-Microlearning-Lektionen fuer Hotelmitarbeitende.",
+    "Nutze ausschliesslich IDs aus dem gelieferten Objektkatalog.",
+    "scene ist nur room, bath, buffet oder reception.",
+    "taskType ist nur decision, order, hotspot oder checklist.",
+    "Erzeuge 3 bis 6 konkrete storyboard-Schritte.",
+    "Jeder storyboard-Schritt hat caption, detail, assetId, state und motion.",
+    "Erzeuge fuer jede neue Admin-Lektion immer eine eigene promptbezogene customScene, damit das sichtbare Bild exakt zum Wunsch passt.",
+    "Nutze scene nur als grobe Kategorie/Hintergrund-Fallback. customScene ist die primaere sichtbare Animation.",
+    "customScene ist KEIN rohes SVG, sondern ein sicherer Baukasten: {\"label\":\"\", \"background\":\"wall\", \"floor\":\"floor\", \"elements\":[...]}",
+    "customScene.elements duerfen nur diese types haben: rect, circle, ellipse, line, path, polyline, polygon, text.",
+    "Nutze fuer Farben bevorzugt diese Tokens: wall, floor, surface, panel, panel2, line, text, muted, accent, green, red, orange, yellow, blueSoft.",
+    "Jedes Element darf showFrom, hideAfter und motion haben, damit es mit den storyboard-Frames sichtbar animiert wird.",
+    "Die customScene muss das konkrete Objekt und die konkrete Handlung aus dem Wunsch zeigen, z.B. bei Staubsauger reinigen: Staubsauger, Behaelter/Filter, Ausleeren/Reinigen, Kontrollhaken.",
+    "Halte customScene im gleichen flachen, klaren Schulungsstil wie die vorhandenen SVG-Szenen.",
+    "state ist nur closed, open oder clean.",
+    "motion ist nur focus, open, close, remove, insert, wipe oder check.",
+    "Die Handlung muss fachlich plausibel und sichtbar animierbar sein.",
+    "Schreibe kurze, einfache Saetze. Zielniveau A2.",
+    "Antworte ausschliesslich als valides JSON ohne Markdown-Codeblock."
+  ].join("\n");
 }
 
 function quickHelpInstructions() {
@@ -190,13 +229,83 @@ async function handleQuickHelp(request, response, env) {
   }
 }
 
-function quickHelpApiPlugin(env) {
-  const middleware = (request, response, next) => {
-    if (!request.url?.startsWith("/api/quick-help")) {
-      next();
+async function handleLessonDraft(request, response, env) {
+  if (request.method !== "POST") {
+    sendJson(response, 405, { error: "Method not allowed" });
+    return;
+  }
+
+  const apiKey = env.OPENAI_API_KEY;
+  if (!apiKey) {
+    sendJson(response, 503, { error: "OPENAI_API_KEY is not configured" });
+    return;
+  }
+
+  try {
+    const payload = JSON.parse(await readBody(request));
+    const description = String(payload.description || "").trim();
+    if (!description) {
+      sendJson(response, 400, { error: "description is required" });
       return;
     }
-    handleQuickHelp(request, response, env);
+
+    const model = env.OPENAI_MODEL || "gpt-4.1-mini";
+    const openAiResponse = await fetch("https://api.openai.com/v1/responses", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model,
+        instructions: lessonDraftInstructions(),
+        input: [
+          {
+            role: "user",
+            content: [
+              {
+                type: "input_text",
+                text: [
+                  `Wunsch des Admins: ${description}`,
+                  `Verfuegbare interaktive Objekte: ${JSON.stringify(payload.assets || [])}`,
+                  "Ausgabe exakt in diesem Shape:",
+                  "{\"title\":\"\", \"goal\":\"\", \"minutes\":4, \"scene\":\"\", \"customScene\":{\"label\":\"\", \"background\":\"wall\", \"floor\":\"floor\", \"elements\":[{\"type\":\"rect\", \"x\":120, \"y\":120, \"width\":120, \"height\":60, \"rx\":10, \"fill\":\"panel\", \"stroke\":\"line\", \"showFrom\":0, \"motion\":\"focus\"}]}, \"objects\":[{\"id\":\"\", \"x\":50, \"y\":58}], \"animation\":[\"\"], \"storyboard\":[{\"caption\":\"\", \"detail\":\"\", \"assetId\":\"\", \"state\":\"closed\", \"motion\":\"focus\"}], \"taskType\":\"decision\", \"question\":\"\", \"correctAnswer\":\"\", \"wrongAnswerOne\":\"\", \"wrongAnswerTwo\":\"\", \"explanation\":\"\"}"
+                ].join("\n")
+              }
+            ]
+          }
+        ],
+        temperature: 0.35,
+        max_output_tokens: 1600
+      })
+    });
+
+    const data = await openAiResponse.json();
+    if (!openAiResponse.ok) {
+      sendJson(response, openAiResponse.status, {
+        error: data.error?.message || "OpenAI request failed"
+      });
+      return;
+    }
+
+    const draft = parseLessonDraftJson(extractResponseText(data));
+    sendJson(response, 200, { draft, source: "openai", model });
+  } catch (error) {
+    sendJson(response, 500, { error: error.message || "Lesson draft generation failed" });
+  }
+}
+
+function quickHelpApiPlugin(env) {
+  const middleware = (request, response, next) => {
+    if (request.url?.startsWith("/api/quick-help")) {
+      handleQuickHelp(request, response, env);
+      return;
+    }
+    if (request.url?.startsWith("/api/lesson-draft")) {
+      handleLessonDraft(request, response, env);
+      return;
+    }
+    next();
   };
 
   return {
@@ -214,6 +323,9 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
   return {
+    define: {
+      __WORKLINGO_SERVER_AI__: JSON.stringify(Boolean(env.OPENAI_API_KEY))
+    },
     plugins: [
       react(),
       quickHelpApiPlugin(env)
