@@ -4,6 +4,7 @@ import * as Scenes from "./scenes/index.js";
 import { createQueue, current, answer, isComplete, progress } from "./queue.js";
 import { t, tList } from "./i18n.js";
 import { stagesOf, starsFor, formatTime, STAR_TEXT } from "./stages.js";
+import { getAsset, getAssetVisual } from "../admin/assetLibrary.js";
 
 
 /* Feste Oberflaechentexte — dieselbe Struktur wie die Inhalte. */
@@ -103,13 +104,15 @@ function Demo({ step, onDone, lang }) {
   }, [playing, frame, last]);
 
   const f = step.frames[frame];
+  const assetFrame = step.assetFrames?.[frame];
+  const assetVisual = assetFrame && getAssetVisual(assetFrame.assetId, assetFrame.state);
 
   return (
     <div className="tp-demo">
       {step.intro && <p className="tp-intro">{t(step.intro, lang)}</p>}
 
       <div className="tp-stage">
-        <Scene frame={frame} />
+        {assetVisual ? <div className={`tp-asset-scene motion-${assetFrame.motion || "focus"}`} key={`${assetFrame.assetId}-${assetFrame.state}-${frame}`}><img src={assetVisual} alt={getAsset(assetFrame.assetId)?.name || "Lernobjekt"} /></div> : <Scene frame={frame} />}
       </div>
 
       <div className="tp-caption">
@@ -295,6 +298,17 @@ export function stepCorrect(step, value, found, lang = "de") {
 
 function promptOf(step, lang) {
   return t(step.prompt, lang) || t(step.title, lang) || "";
+}
+
+function StepMedia({ media }) {
+  if (!media?.length) return null;
+  return (
+    <div className="tp-media">
+      {media.map((item) => item.type?.startsWith("video/")
+        ? <video key={item.id || item.url} src={item.url} controls playsInline />
+        : <img key={item.id || item.url} src={item.url} alt={item.name || "Lernbild"} />)}
+    </div>
+  );
 }
 
 /** Menschlich lesbare Loesung fuer die Fehlerkarte. */
@@ -523,6 +537,7 @@ export default function TaskPlayer({ task, lang, initialHearts = 5, onHeartsChan
           {t(STAGE, lang)} {stageIndex + 1} · {!entry.firstTry ? t(RETRY, lang) : t(stage.goal, lang)}
         </p>
         <h2 className="tp-prompt">{promptOf(step, lang)}</h2>
+        <StepMedia media={step.media} />
 
         {step.type === "hotspot" && <Hotspot step={step} found={found} setFound={setFound} miss={miss} setMiss={setMiss} locked={locked} lang={lang} />}
         {step.type === "sequence" && <Sequence step={step} value={value} setValue={setValue} locked={locked} lang={lang} feedback={feedback} />}

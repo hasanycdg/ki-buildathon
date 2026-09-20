@@ -5,6 +5,7 @@ import { stagesOf, formatTime, STAR_TEXT } from "./stages.js";
 import { LANGS, t } from "./i18n.js";
 import * as store from "./store.js";
 import TaskPlayer, { Stars } from "./TaskPlayer.jsx";
+import { applyContentState, CONTENT_EVENT, loadContentState } from "../admin/contentStore.js";
 import "./learn.css";
 
 const ICONS = { BedDouble, ConciergeBell, UtensilsCrossed, SprayCan };
@@ -30,6 +31,9 @@ const UI = {
   completed: { de: "abgeschlossen", en: "completed", pl: "ukończono", hr: "završeno", sr: "završeno" },
   startTask: { de: "Starten", en: "Start", pl: "Zacznij", hr: "Pokreni", sr: "Pokreni" },
   repeatTask: { de: "Wiederholen", en: "Practice again", pl: "Powtórz", hr: "Ponovi", sr: "Ponovi" },
+  noTasks: { de: "Für diese Rolle sind aktuell keine Lerninhalte aktiv.", en: "There are currently no active learning items for this role.",
+             pl: "Obecnie nie ma aktywnych treści dla tej roli.", hr: "Trenutačno nema aktivnih sadržaja za ovu ulogu.",
+             sr: "Trenutno nema aktivnih sadržaja za ovu ulogu." },
   switch:    { de: "Rolle wechseln", en: "Switch role", pl: "Zmień rolę", hr: "Promijeni ulogu", sr: "Promeni ulogu" },
   days:      { de: "Tage", en: "days", pl: "dni", hr: "dana", sr: "dana" },
   min:       { de: "Min", en: "min", pl: "min", hr: "min", sr: "min" },
@@ -132,14 +136,21 @@ function Done({ result, lang, onClose }) {
 
 export default function LearnTab() {
   const [state, setState] = useState(() => store.syncHearts(store.load()));
+  const [contentState, setContentState] = useState(loadContentState);
   const [active, setActive] = useState(null);
   const [result, setResult] = useState(null);
 
   useEffect(() => { store.save(state); }, [state]);
+  useEffect(() => {
+    const sync = (event) => setContentState(event.detail || loadContentState());
+    window.addEventListener(CONTENT_EVENT, sync);
+    return () => window.removeEventListener(CONTENT_EVENT, sync);
+  }, []);
 
   const lang = state.lang || "de";
   const setLang = (l) => setState((s) => ({ ...s, lang: l }));
-  const role = getRole(state.roleId);
+  const baseRole = getRole(state.roleId);
+  const role = baseRole ? applyContentState(baseRole, contentState) : null;
   const startTask = (task) => {
     // Nach einem kompletten Rueckwurf darf sofort weitergeuebt werden.
     // Gleichzeitig bleiben Kopfzeile und Player auf demselben Herzestand.
@@ -177,7 +188,7 @@ export default function LearnTab() {
   }
 
   const doneCount = role.tasks.filter((task) => state.lessons[task.id]?.completed).length;
-  const pathPercent = Math.round((doneCount / role.tasks.length) * 100);
+  const pathPercent = role.tasks.length ? Math.round((doneCount / role.tasks.length) * 100) : 0;
   const nextTaskId = role.tasks.find((task) => !state.lessons[task.id]?.completed)?.id;
 
   return (
@@ -199,6 +210,7 @@ export default function LearnTab() {
             <div className="lt-unit-bar" aria-label={`${pathPercent}%`}><span style={{ width: pathPercent + "%" }} /></div>
           </div>
           <div className="lt-path">
+          {role.tasks.length === 0 && <div className="lt-empty-path">{t(UI.noTasks, lang)}</div>}
           {role.tasks.map((task, i) => {
           const rec = state.lessons[task.id];
           const done = Boolean(rec?.completed);

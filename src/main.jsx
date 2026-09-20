@@ -3,11 +3,18 @@ import { createRoot } from "react-dom/client";
 import {
   Bell,
   BookOpen,
+  BookOpenCheck,
   Bot,
   Building2,
   ChartNoAxesColumn,
   Check,
+  ChevronRight,
   ChevronDown,
+  CircleAlert,
+  CircleCheckBig,
+  ClipboardCheck,
+  Clock3,
+  Download,
   ExternalLink,
   FileText,
   Flame,
@@ -15,8 +22,10 @@ import {
   Globe2,
   Home,
   Link as LinkIcon,
+  LayoutDashboard,
   Lock,
   MessageCircle,
+  MoreHorizontal,
   MoreVertical,
   Paperclip,
   Plus,
@@ -28,10 +37,13 @@ import {
   Sparkles,
   Star,
   Trophy,
+  UserPlus,
+  UserRoundCheck,
   Users,
   X
 } from "lucide-react";
 import LearnTab from "./learn/LearnTab.jsx";
+import AdminContentStudio from "./admin/AdminContentStudio.jsx";
 import quickHelpKnowledge from "./data/quickHelpKnowledge.json";
 import { analyzeImage, isSupportedImage, readImageFile, visionEnabled } from "./imageAnalysis";
 import "./styles.css";
@@ -336,10 +348,11 @@ function Sidebar({ activeTab, onTabChange }) {
       <div className="nav-divider" />
 
       <nav className="nav-list">
-        <a className="nav-item" href="#">
+        <button className={activeTab === "unternehmen" ? "nav-item active" : "nav-item"}
+          type="button" onClick={() => onTabChange("unternehmen")}>
           <Building2 size={20} />
           <span>Unternehmen</span>
-        </a>
+        </button>
         <a className="nav-item" href="#">
           <Settings size={20} />
           <span>Einstellungen</span>
@@ -356,6 +369,158 @@ function Sidebar({ activeTab, onTabChange }) {
         </div>
       </div>
     </aside>
+  );
+}
+
+const adminEmployees = [
+  { name: "Maria Yılmaz", initials: "MY", role: "Housekeeping", language: "Türkisch", progress: 72, status: "Aktiv", last: "Heute, 09:14" },
+  { name: "Ivana Kovač", initials: "IK", role: "Housekeeping", language: "Kroatisch", progress: 88, status: "Aktiv", last: "Heute, 07:52" },
+  { name: "Piotr Nowak", initials: "PN", role: "Frühstück", language: "Polnisch", progress: 46, status: "Aktiv", last: "Gestern, 18:20" },
+  { name: "Amir Hadžić", initials: "AH", role: "Rezeption", language: "Bosnisch", progress: 31, status: "Einladung offen", last: "Noch nie" },
+  { name: "Sofia Petrova", initials: "SP", role: "Reinigung", language: "Bulgarisch", progress: 100, status: "Abgeschlossen", last: "18. Sep., 16:05" }
+];
+
+function AdminPanel() {
+  const [section, setSection] = useState("overview");
+  const [query, setQuery] = useState("");
+  const [notice, setNotice] = useState("");
+
+  function notify(message) {
+    setNotice(message);
+    window.setTimeout(() => setNotice(""), 2600);
+  }
+
+  const employees = adminEmployees.filter((item) =>
+    `${item.name} ${item.role} ${item.language}`.toLowerCase().includes(query.toLowerCase())
+  );
+
+  return (
+    <div className="admin-page">
+      {notice && <div className="admin-toast"><CircleCheckBig size={18} />{notice}</div>}
+      <header className="admin-hero">
+        <div>
+          <span className="admin-eyebrow"><ShieldCheck size={14} /> Admin-Bereich · Vorschau</span>
+          <h1>Hotel Alpenblick verwalten</h1>
+          <p>Mitarbeitende, Lerninhalte und Onboarding-Fortschritt an einem Ort.</p>
+        </div>
+        <div className="admin-hero-actions">
+          <button className="admin-secondary" type="button" onClick={() => notify("Bericht wurde für den Export vorbereitet.")}>
+            <Download size={17} /> Bericht exportieren
+          </button>
+          <button className="admin-primary" type="button" onClick={() => notify("Einladungsdialog ist im Prototyp vorgemerkt.")}>
+            <UserPlus size={17} /> Mitarbeitende einladen
+          </button>
+        </div>
+      </header>
+
+      <nav className="admin-tabs" aria-label="Unternehmensbereiche">
+        {[
+          ["overview", "Übersicht", LayoutDashboard],
+          ["people", "Mitarbeitende", Users],
+          ["content", "Lerninhalte", BookOpenCheck]
+        ].map(([id, label, Icon]) => (
+          <button key={id} type="button" className={section === id ? "active" : ""} onClick={() => setSection(id)}>
+            <Icon size={17} /> {label}
+          </button>
+        ))}
+      </nav>
+
+      {section === "overview" && (
+        <>
+          <section className="admin-metrics">
+            {[
+              [Users, "24", "Mitarbeitende", "+3 diesen Monat", "blue"],
+              [UserRoundCheck, "79%", "Onboarding-Quote", "+8% seit August", "green"],
+              [BookOpenCheck, "12", "Aktive Lerninhalte", "4 Rollen abgedeckt", "violet"],
+              [CircleAlert, "3", "Brauchen Aufmerksamkeit", "2 überfällig", "orange"]
+            ].map(([Icon, value, label, detail, tone]) => (
+              <article className={`admin-metric ${tone}`} key={label}>
+                <span><Icon size={20} /></span>
+                <div><b>{value}</b><strong>{label}</strong><small>{detail}</small></div>
+              </article>
+            ))}
+          </section>
+
+          <section className="admin-overview-grid">
+            <article className="admin-card admin-rollout">
+              <div className="admin-card-head">
+                <div><h2>Onboarding nach Bereich</h2><p>Fortschritt der aktuell zugewiesenen Lernpfade</p></div>
+                <button type="button" onClick={() => setSection("people")}>Alle ansehen <ChevronRight size={15} /></button>
+              </div>
+              <div className="admin-bars">
+                {[
+                  ["Housekeeping", 12, 86, "#2468f2"],
+                  ["Rezeption", 5, 71, "#8b5cf6"],
+                  ["Frühstück & Buffet", 4, 64, "#f59e0b"],
+                  ["Öffentliche Bereiche", 3, 48, "#18a78b"]
+                ].map(([label, people, pct, color]) => (
+                  <div className="admin-bar-row" key={label}>
+                    <div><strong>{label}</strong><span>{people} Mitarbeitende</span></div>
+                    <div className="admin-bar-track"><span style={{ width: `${pct}%`, background: color }} /></div>
+                    <b>{pct}%</b>
+                  </div>
+                ))}
+              </div>
+            </article>
+
+            <article className="admin-card admin-attention">
+              <div className="admin-card-head"><div><h2>Aufmerksamkeit nötig</h2><p>Automatisch erkannte nächste Schritte</p></div></div>
+              <div className="admin-alert-list">
+                <button type="button" onClick={() => setSection("people")}>
+                  <span className="warn"><Clock3 size={17} /></span><div><strong>2 Einladungen laufen bald ab</strong><small>Amir und Elena haben noch nicht gestartet.</small></div><ChevronRight size={16} />
+                </button>
+                <button type="button" onClick={() => setSection("content")}>
+                  <span className="info"><ClipboardCheck size={17} /></span><div><strong>1 Inhalt wartet auf Freigabe</strong><small>Sicherheit im Nachtdienst · Entwurf</small></div><ChevronRight size={16} />
+                </button>
+                <button type="button" onClick={() => notify("Erinnerung für die Wiederholung vorbereitet.")}>
+                  <span className="danger"><CircleAlert size={17} /></span><div><strong>4 Wiederholungen überfällig</strong><small>Vor allem im Bereich Reinigung.</small></div><ChevronRight size={16} />
+                </button>
+              </div>
+            </article>
+          </section>
+
+          <section className="admin-card admin-activity">
+            <div className="admin-card-head"><div><h2>Letzte Aktivitäten</h2><p>Was sich im Unternehmen zuletzt getan hat</p></div><span className="admin-live"><i /> Live</span></div>
+            <div className="admin-activity-list">
+              {[
+                ["MY", "Maria Yılmaz", "hat „Bett beziehen“ mit 5 Sternen abgeschlossen.", "vor 12 Min."],
+                ["AB", "Anna Berger", "hat den Inhalt „Zimmerkontrolle“ aktualisiert.", "vor 46 Min."],
+                ["PN", "Piotr Nowak", "hat seinen Lernpfad „Frühstück“ begonnen.", "vor 2 Std."],
+                ["LM", "Lena Maier", "hat Amir zur Rolle Rezeption eingeladen.", "gestern"]
+              ].map(([initials, name, action, time]) => (
+                <div key={name + time}><span className="admin-avatar">{initials}</span><p><strong>{name}</strong> {action}</p><time>{time}</time></div>
+              ))}
+            </div>
+          </section>
+        </>
+      )}
+
+      {section === "people" && (
+        <section className="admin-card admin-table-card">
+          <div className="admin-table-toolbar">
+            <div><h2>Mitarbeitende</h2><p>24 Personen · 4 Bereiche · 7 Sprachen</p></div>
+            <label><Search size={16} /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Name, Rolle oder Sprache …" /></label>
+          </div>
+          <div className="admin-table-wrap"><table className="admin-table">
+            <thead><tr><th>Person</th><th>Rolle</th><th>Sprache</th><th>Fortschritt</th><th>Status</th><th>Letzte Aktivität</th><th /></tr></thead>
+            <tbody>{employees.map((item) => (
+              <tr key={item.name}>
+                <td><span className="admin-avatar">{item.initials}</span><strong>{item.name}</strong></td>
+                <td>{item.role}</td><td>{item.language}</td>
+                <td><div className="admin-inline-progress"><span><i style={{ width: `${item.progress}%` }} /></span><b>{item.progress}%</b></div></td>
+                <td><em className={`admin-status ${item.status === "Aktiv" ? "active" : item.status === "Abgeschlossen" ? "done" : "pending"}`}>{item.status}</em></td>
+                <td>{item.last}</td><td><button className="admin-more" type="button" aria-label={`${item.name} verwalten`} onClick={() => notify(`${item.name}: Detailansicht im Prototyp vorgemerkt.`)}><MoreHorizontal size={18} /></button></td>
+              </tr>
+            ))}</tbody>
+          </table></div>
+          {employees.length === 0 && <div className="admin-empty">Keine Mitarbeitenden für „{query}“ gefunden.</div>}
+        </section>
+      )}
+
+      {section === "content" && (
+        <AdminContentStudio onNotice={notify} />
+      )}
+    </div>
   );
 }
 
@@ -1065,6 +1230,10 @@ function TabContent({
 
   if (activeTab === "lernen") {
     return <LearnTab />;
+  }
+
+  if (activeTab === "unternehmen") {
+    return <AdminPanel />;
   }
 
   if (activeTab === "fortschritt") {
