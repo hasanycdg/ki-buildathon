@@ -1,20 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
+  BedDouble,
   Bell,
   BookOpen,
   Bot,
   Building2,
+  ConciergeBell,
   ChartNoAxesColumn,
   Check,
   ChevronDown,
-  FileText,
   Flame,
   Gauge,
   Globe2,
   Home,
-  Link as LinkIcon,
-  Lock,
   MessageCircle,
   MoreVertical,
   Paperclip,
@@ -25,9 +24,11 @@ import {
   Settings,
   ShieldCheck,
   Sparkles,
+  SprayCan,
   Star,
   Trophy,
   Users,
+  UtensilsCrossed,
   X
 } from "lucide-react";
 import LearnTab from "./learn/LearnTab.jsx";
@@ -37,53 +38,30 @@ import * as LearningScenes from "./learn/scenes/index.js";
 import SprachhilfeTab from "./sprachhilfe/SprachhilfeTab.jsx";
 import { ROLES as LANGUAGE_ROLES } from "./sprachhilfe-inhalte/index.js";
 import * as languageStore from "./sprachhilfe/store.js";
+import { countWordsOfRole, WORD_LANGS } from "./sprachhilfe/vokabular.js";
 import quickHelpKnowledge from "./data/quickHelpKnowledge.json";
 import { isSupportedImage, readImageFile } from "./imageAnalysis";
 import "./styles.css";
 
-const modules = [
-  {
-    image: "/assets/module-welcome.png",
-    title: "1. Willkommen im Haus",
-    text: "Hotel, Team und Wege kennenlernen",
-    progress: 100,
-    status: "done"
-  },
-  {
-    image: "/assets/module-safety.png",
-    title: "2. Zimmer & Hygiene",
-    text: "Hausstandard Schritt für Schritt",
-    progress: 60
-  },
-  {
-    image: "/assets/module-machine.png",
-    title: "3. Wäsche & Geräte",
-    text: "Abläufe sicher bedienen",
-    progress: 0,
-    status: "play"
-  },
-  {
-    image: "/assets/module-process.png",
-    title: "4. Rezeption & Systeme",
-    text: "Buchungen und Übergaben",
-    progress: 0,
-    status: "locked"
-  },
-  {
-    image: "/assets/module-team.png",
-    title: "5. Team & Gäste",
-    text: "Sätze, Kontakte und Notfälle",
-    progress: 0,
-    status: "locked"
-  }
-];
+/* Bild je Bereich. Die vier Bereiche kommen aus den Lerninhalten selbst
+   (src/learn/tasks/index.js) — hier steht nur, welches Foto dazugehoert. */
+const roleImages = {
+  housekeeping: "/assets/module-safety.png",
+  reception: "/assets/module-process.png",
+  breakfast: "/assets/module-team.png",
+  cleaning: "/assets/module-welcome.png"
+};
 
-const quickCards = [
-  ["Dokumente", "Anleitungen, Formulare, Richtlinien", FileText],
-  ["Team & Kontakte", "Wer ist wofür zuständig?", Users],
-  ["Wichtige Links", "Interne Tools und Systeme", LinkIcon],
-  ["Feedback geben", "Hilf uns, WorkLingo zu verbessern", MessageCircle]
-];
+const roleIcons = { BedDouble, ConciergeBell, UtensilsCrossed, SprayCan };
+
+/* Umfang der Inhalte — aus den Daten gezaehlt, nicht geschaetzt. */
+const contentStats = {
+  tasks: LEARN_ROLES.reduce((sum, role) => sum + role.tasks.length, 0),
+  lessons: getLessonsFromRoles(LANGUAGE_ROLES).length,
+  words: LANGUAGE_ROLES.reduce((sum, role) => sum + countWordsOfRole(role.id), 0),
+  languages: WORD_LANGS.length + 1,
+  answers: quickHelpKnowledge.length
+};
 
 const navItems = [
   { id: "dashboard", label: "Dashboard", icon: Home },
@@ -94,11 +72,12 @@ const navItems = [
   { id: "team", label: "Team & Kontakte", icon: Users }
 ];
 
+/* Alle vier Vorschlaege treffen einen Eintrag in quickHelpKnowledge.json. */
 const quickHelpPrompts = [
   "Wie reinige ich Zimmer 203?",
+  "Wie funktioniert das alte Buchungssystem?",
   "Was mache ich bei einer Gastbeschwerde?",
-  "Wo finde ich die Wäschekammer?",
-  "Wer ist heute an der Rezeption?"
+  "Wo finde ich die Wäschekammer?"
 ];
 
 const visualAnswerIds = new Set(["laundry-room", "guest-complaint", "reception-today"]);
@@ -617,23 +596,109 @@ function Topbar() {
   );
 }
 
-function Hero() {
+/* ------------------------------------------------- Dashboard-Datenstand */
+
+/**
+ * Das Dashboard erfindet nichts: Bereiche, Taetigkeiten und Lektionen
+ * kommen aus den Inhalten, der Fortschritt aus den beiden Speichern von
+ * Lernen und Sprachhilfe.
+ */
+function createDashboardSnapshot() {
+  const learnState = learnStore.load();
+  const languageState = languageStore.load();
+
+  const roles = LEARN_ROLES.map((role) => {
+    const done = role.tasks.filter((task) => learnState.lessons[task.id]?.completed).length;
+    const stars = role.tasks.reduce((sum, task) => sum + (learnState.lessons[task.id]?.stars || 0), 0);
+    const next = role.tasks.find((task) => !learnState.lessons[task.id]?.completed) || null;
+    return {
+      id: role.id,
+      title: role.name.de,
+      text: role.tagline.de,
+      image: roleImages[role.id],
+      accent: role.accent,
+      icon: role.icon,
+      total: role.tasks.length,
+      done,
+      stars,
+      percent: percent(done, role.tasks.length),
+      nextTitle: next ? next.title.de : null,
+      nextMinutes: next ? next.minutes : 0
+    };
+  });
+
+  const totalTasks = roles.reduce((sum, role) => sum + role.total, 0);
+  const doneTasks = roles.reduce((sum, role) => sum + role.done, 0);
+  const finishedRoles = roles.filter((role) => role.total > 0 && role.done === role.total);
+
+  const languageLessons = getLessonsFromRoles(LANGUAGE_ROLES);
+  const languageDone = countCompleted(languageState.lessons);
+
+  /* Die Rolle, die im Lern-Reiter zuletzt gewaehlt war, hat Vorrang. */
+  const current = roles.find((role) => role.id === learnState.roleId && role.nextTitle);
+  const next = current || roles.find((role) => role.nextTitle) || null;
+
+  return {
+    roles,
+    totalTasks,
+    doneTasks,
+    percent: percent(doneTasks, totalTasks),
+    stars: roles.reduce((sum, role) => sum + role.stars, 0),
+    badges: finishedRoles.length + (languageLessons.length && languageDone === languageLessons.length ? 1 : 0),
+    xp: (learnState.xp || 0) + (languageState.xp || 0),
+    streak: Math.max(learnState.streak?.count || 0, languageState.streak?.count || 0),
+    roleId: learnState.roleId,
+    next,
+    language: {
+      done: languageDone,
+      total: languageLessons.length,
+      percent: percent(languageDone, languageLessons.length),
+      roleId: languageState.roleId
+    }
+  };
+}
+
+function useDashboardSnapshot() {
+  const [snapshot, setSnapshot] = useState(createDashboardSnapshot);
+
+  useEffect(() => {
+    const refresh = () => setSnapshot(createDashboardSnapshot());
+    refresh();
+    window.addEventListener("focus", refresh);
+    window.addEventListener("storage", refresh);
+    return () => {
+      window.removeEventListener("focus", refresh);
+      window.removeEventListener("storage", refresh);
+    };
+  }, []);
+
+  return snapshot;
+}
+
+function Hero({ data, onContinue, onOpenLanguage }) {
+  const started = data.doneTasks > 0;
+  const next = data.next;
+
   return (
     <section className="hero">
       <div className="hero-copy">
         <h1>
-          Willkommen bei <br />
+          Willkommen im <br />
           Hotel Alpenblick, <span>Maria!</span>
         </h1>
-        <p>Lerne Zimmerstandards, Rezeption und Teamwege. In deiner Sprache. Schritt für Schritt.</p>
+        <p>
+          {next
+            ? `Als Nächstes: ${next.nextTitle} — ${next.title}, rund ${next.nextMinutes} Minuten. In deiner Sprache, Schritt für Schritt.`
+            : `Alle ${contentStats.tasks} Tätigkeiten sitzen. Wiederhole, was länger her ist, oder üb die Wörter dazu.`}
+        </p>
         <div className="hero-actions">
-          <button className="primary-btn">
-            Weiter lernen
+          <button className="primary-btn" onClick={onContinue}>
+            {next ? (started ? "Weiter lernen" : "Jetzt starten") : "Tätigkeit wiederholen"}
             <span>→</span>
           </button>
-          <button className="secondary-btn">
+          <button className="secondary-btn" onClick={onOpenLanguage}>
             <Play size={17} />
-            Hausstandard anschauen
+            Wörter üben
           </button>
         </div>
       </div>
@@ -644,22 +709,24 @@ function Hero() {
   );
 }
 
-function ProgressSummary() {
+function ProgressSummary({ data }) {
   return (
     <section className="summary-grid">
       <div className="progress-card">
         <div className="card-title">Dein Onboarding-Fortschritt</div>
         <div className="progress-row">
           <div className="progress-track">
-            <span style={{ width: "27%" }} />
+            <span style={{ width: `${data.percent}%` }} />
           </div>
-          <strong>25%</strong>
+          <strong>{data.percent}%</strong>
         </div>
-        <p>3 von 12 Modulen abgeschlossen</p>
+        <p>
+          {data.doneTasks} von {data.totalTasks} Tätigkeiten · Sprachhilfe {data.language.done}/{data.language.total} Lektionen
+        </p>
       </div>
-      <Metric icon={<Flame size={22} />} value="7" label="Tage in Folge" tone="orange" />
-      <Metric icon={<Star size={22} />} value="120" label="XP Punkte" tone="gold" />
-      <Metric icon={<Trophy size={22} />} value="2" label="Abzeichen" tone="orange" />
+      <Metric icon={<Flame size={22} />} value={data.streak} label="Tage in Folge" tone="orange" />
+      <Metric icon={<Star size={22} />} value={data.xp} label="XP Punkte" tone="gold" />
+      <Metric icon={<Trophy size={22} />} value={data.badges} label="Bereiche fertig" tone="orange" />
     </section>
   );
 }
@@ -980,59 +1047,95 @@ function Metric({ icon, value, label, tone }) {
   );
 }
 
-function LearningModules() {
+function LearningModules({ data, onOpenRole, onOpenLanguage, onShowAll }) {
   return (
     <section className="modules-section">
       <div className="section-heading">
         <h2>Deine Lernmodule</h2>
-        <a href="#">
+        <button type="button" className="section-link" onClick={onShowAll}>
           Alle Module anzeigen
           <span>→</span>
-        </a>
+        </button>
       </div>
       <div className="module-grid">
-        {modules.map((item) => (
-          <article className="module-card" key={item.title}>
-            <div className="module-image">
-              <img src={item.image} alt="" />
-              {item.status === "done" && (
-                <span className="state done">
-                  <Check size={20} />
+        {data.roles.map((role) => {
+          const done = role.done === role.total;
+          const current = data.next?.id === role.id;
+          const Icon = roleIcons[role.icon] || BedDouble;
+          return (
+            <button type="button" className={"module-card" + (current ? " current" : "")}
+              key={role.id} onClick={() => onOpenRole(role.id)}>
+              <div className="module-image">
+                <img src={role.image} alt="" />
+                {done ? (
+                  <span className="state done">
+                    <Check size={20} />
+                  </span>
+                ) : (
+                  <span className="state play">
+                    <Play size={18} fill="currentColor" />
+                  </span>
+                )}
+                <span className="module-tag" style={{ background: role.accent }}>
+                  <Icon size={13} />
+                  {role.total} Tätigkeiten
                 </span>
-              )}
-              {item.status === "play" && (
-                <span className="state play">
-                  <Play size={18} fill="currentColor" />
-                </span>
-              )}
-              {item.status === "locked" && (
-                <span className="state locked">
-                  <Lock size={17} />
-                </span>
-              )}
-            </div>
-            <h3>{item.title}</h3>
-            <p>{item.text}</p>
-            <div className="module-progress">
-              <div>
-                <span style={{ width: `${item.progress}%` }} />
               </div>
-              <strong>{item.progress}%</strong>
+              <h3>{role.title}</h3>
+              <p>{role.text}</p>
+              <span className="module-next">
+                {done ? "Alles geschafft — wiederholen" : `Als Nächstes: ${role.nextTitle}`}
+              </span>
+              <div className="module-progress">
+                <div>
+                  <span style={{ width: `${role.percent}%` }} />
+                </div>
+                <strong>{role.done}/{role.total}</strong>
+              </div>
+            </button>
+          );
+        })}
+        <button type="button" className="module-card" onClick={onOpenLanguage}>
+          <div className="module-image tile">
+            <Globe2 size={30} />
+            <span className="module-tag" style={{ background: "#0f9b8e" }}>
+              <BookOpen size={13} />
+              {contentStats.lessons} Lektionen
+            </span>
+          </div>
+          <h3>Sprachhilfe</h3>
+          <p>{contentStats.words} Wörter aus dem Haus, {contentStats.languages} Sprachen</p>
+          <span className="module-next">
+            {data.language.done === data.language.total && data.language.total
+              ? "Alles geschafft — wiederholen"
+              : "Wörter, Sätze und Karteikarten"}
+          </span>
+          <div className="module-progress">
+            <div>
+              <span style={{ width: `${data.language.percent}%` }} />
             </div>
-          </article>
-        ))}
+            <strong>{data.language.done}/{data.language.total}</strong>
+          </div>
+        </button>
       </div>
     </section>
   );
 }
 
-function QuickAccess() {
+function QuickAccess({ onNavigate }) {
+  const quickCards = [
+    ["quickhelp", "Quick Help fragen", `${contentStats.answers} Hausantworten, auch auf EN & TR`, MessageCircle],
+    ["sprachhilfe", "Wörter & Sätze üben", `${contentStats.words} Begriffe als Karteikarten`, Globe2],
+    ["fortschritt", "Mein Fortschritt", "Sterne, Serie und XP im Überblick", ChartNoAxesColumn],
+    ["team", "Team & Kontakte", "Hausdame, Rezeption, interne 100", Users]
+  ];
+
   return (
     <section className="quick-section">
       <h2>Schnellzugriff</h2>
       <div className="quick-grid">
-        {quickCards.map(([title, text, Icon]) => (
-          <a className="quick-card" href="#" key={title}>
+        {quickCards.map(([tab, title, text, Icon]) => (
+          <button type="button" className="quick-card" key={tab} onClick={() => onNavigate(tab)}>
             <div className="quick-icon">
               <Icon size={24} />
             </div>
@@ -1040,14 +1143,15 @@ function QuickAccess() {
               <strong>{title}</strong>
               <span>{text}</span>
             </div>
-          </a>
+          </button>
         ))}
       </div>
     </section>
   );
 }
 
-function Encouragement() {
+function Encouragement({ data, onProgress }) {
+  const open = data.totalTasks - data.doneTasks;
   return (
     <section className="encouragement">
       <div className="plant">
@@ -1055,9 +1159,15 @@ function Encouragement() {
       </div>
       <div>
         <h3>Kleine Schritte. Große Fortschritte.</h3>
-        <p>Du machst das großartig! Lerne weiter und werde Teil des Teams.</p>
+        <p>
+          {data.doneTasks === 0
+            ? `${data.totalTasks} Tätigkeiten warten auf dich. Die erste dauert nur wenige Minuten.`
+            : open === 0
+              ? `Alle ${data.totalTasks} Tätigkeiten geschafft — ${data.stars} Sterne gesammelt.`
+              : `${data.doneTasks} geschafft, noch ${open} offen. ${data.stars} Sterne bisher.`}
+        </p>
       </div>
-      <button className="secondary-btn">
+      <button className="secondary-btn" onClick={onProgress}>
         Mein Fortschritt
         <span>→</span>
       </button>
@@ -1297,7 +1407,10 @@ function ChatPanel({ mode = "side", messages, setMessages, onOpenLanguageHelp })
           </div>
           <div className="language-copy">
             <h3>Sprachhilfe</h3>
-            <p>Bereich ist vorbereitet und aktuell ohne Einträge.</p>
+            <p>
+              {contentStats.words} Wörter aus dem Haus in {contentStats.languages} Sprachen — als Karteikarten
+              und in {contentStats.lessons} Lektionen.
+            </p>
             <button className="secondary-btn" onClick={onOpenLanguageHelp}>
               Zu den Sprachübungen
               <span>→</span>
@@ -1643,18 +1756,42 @@ function TabContent({
 
   return (
     <div className="content-grid">
-      <div className="dashboard">
-        <Hero />
-        <ProgressSummary />
-        <LearningModules />
-        <QuickAccess />
-        <Encouragement />
-      </div>
+      <Dashboard setActiveTab={setActiveTab} />
       <ChatPanel
         messages={quickHelpMessages}
         setMessages={setQuickHelpMessages}
         onOpenLanguageHelp={() => setActiveTab("sprachhilfe")}
       />
+    </div>
+  );
+}
+
+function Dashboard({ setActiveTab }) {
+  const data = useDashboardSnapshot();
+
+  /* Ein Klick aufs Modul waehlt die Rolle im Lern-Reiter vor — derselbe
+     Speicher, den LearnTab beim Oeffnen liest. */
+  const openRole = (roleId) => {
+    learnStore.save({ ...learnStore.load(), roleId });
+    setActiveTab("lernen");
+  };
+
+  return (
+    <div className="dashboard">
+      <Hero
+        data={data}
+        onContinue={() => (data.next ? openRole(data.next.id) : setActiveTab("lernen"))}
+        onOpenLanguage={() => setActiveTab("sprachhilfe")}
+      />
+      <ProgressSummary data={data} />
+      <LearningModules
+        data={data}
+        onOpenRole={openRole}
+        onOpenLanguage={() => setActiveTab("sprachhilfe")}
+        onShowAll={() => setActiveTab("lernen")}
+      />
+      <QuickAccess onNavigate={setActiveTab} />
+      <Encouragement data={data} onProgress={() => setActiveTab("fortschritt")} />
     </div>
   );
 }
