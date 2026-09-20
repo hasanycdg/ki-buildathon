@@ -100,7 +100,7 @@ const quickHelpPrompts = [
 const visualAnswerIds = new Set(["laundry-room", "guest-complaint", "reception-today"]);
 
 function normalizeText(value) {
-  return value
+  return String(value ?? "")
     .toLowerCase()
     .replace(/ı/g, "i")
     .replace(/ä/g, "ae")
@@ -731,13 +731,16 @@ function AdminPanel() {
   );
 }
 
-function searchResultsFor(query) {
+function searchResultsFor(query, language = "de") {
   const needle = normalizeText(query);
   if (needle.length < 2) return [];
   const tokens = needle.split(" ").filter(Boolean);
   const customTasks = loadContentState().customTasks || [];
   const entries = [
-    ...navItems.map((item) => ({ id: `page-${item.id}`, type: "page", tab: item.id, title: item.label, detail: "Bereich öffnen", Icon: item.icon, text: item.label })),
+    ...navItems.map((item) => {
+      const label = appText(language, item.labelKey);
+      return { id: `page-${item.id}`, type: "page", tab: item.id, title: label, detail: language === "en" ? "Open section" : "Bereich öffnen", Icon: item.icon, text: `${label} ${item.id}` };
+    }),
     { id: "page-company", type: "page", tab: "unternehmen", title: "Unternehmen", detail: "Admin-Bereich", Icon: Building2, text: "unternehmen admin lerninhalte mitarbeitende" },
     { id: "page-settings", type: "page", tab: "settings", title: "Einstellungen", detail: "Darstellung und Sprache", Icon: Settings, text: "einstellungen hell dunkel system sprache" },
     ...LEARN_ROLES.flatMap((role) => role.tasks.map((task) => ({
@@ -763,7 +766,7 @@ function Topbar({ onSearchSelect, language, setLanguage, onOpenProfile }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
-  const results = searchResultsFor(query);
+  const results = searchResultsFor(query, language);
   const languageLabel = APP_LANGUAGES.find(([code]) => code === language)?.[1] || "Deutsch";
   const t = (key) => appText(language, key);
 
